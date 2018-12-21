@@ -1,0 +1,118 @@
+{extend name="nonelayout"}
+{block name="css"}
+<style>
+.leftfloat{float:left}
+    .company_table{display: none}
+</style>
+{/block}
+{block name='content'}
+<div style="width: 400px;margin-top: 20px;">
+    <div class="layui-form">
+        <div class="layui-form-item">
+            <input type="hidden" name="id" value="{$id?$id:''}">
+            <label class="layui-form-label">发票抬头</label>
+            <div class="layui-input-block">
+                <div class="leftfloat"><input type="radio" lay-filter="type"  name="type" value="1" {if ($invoiceData['type']==1)} checked {/if} title="个人" ></div>
+                <div class="leftfloat"><input type="radio" lay-filter="type" name="type" value="2" {if ($invoiceData['type']==2)} checked {/if} title="公司" ></div>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">发票抬头</label>
+            <div class="layui-input-block">
+                <input type="text" name="invoice_name" value="{$invoiceData['invoice_name']?$invoiceData['invoice_name']:''}" placeholder="" required lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+
+        <div class="layui-form-item  company_table">
+            <label class="layui-form-label">纳税人识别号</label>
+            <div class="layui-input-block">
+                <input type="text" name="identification" value="{$invoiceData['identification']?$invoiceData['identification']:''}" placeholder="" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item company_table">
+            <label class="layui-form-label">开户行名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="bank" value="{$invoiceData['bank']?$invoiceData['bank']:''}"  placeholder=""  autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item company_table">
+            <label class="layui-form-label">开户行账号</label>
+            <div class="layui-input-block">
+                <input type="text" name="number" value="{$invoiceData['number']?$invoiceData['number']:''}"  placeholder=""  autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">开户行地址</label>
+            <div class="layui-input-block">
+                <input type="text" name="bankaddress"  value="{$invoiceData['bankaddress']?$invoiceData['bankaddress']:''}"  placeholder=""  required lay-verify="required"  autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item ">
+            <label class="layui-form-label">邮寄地址</label>
+            <div class="layui-input-block">
+                <input type="text" name="address"  value="{$invoiceData['address']?$invoiceData['address']:''}"   placeholder="" required lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item company_table">
+            <label class="layui-form-label">电话</label>
+            <div class="layui-input-block">
+                <input type="text" name="phone"  value="{$invoiceData['phone']?$invoiceData['phone']:''}"  placeholder=""  autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="formDemo">确认提交</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+{/block}
+{block name='script'}
+<script type="text/javascript">
+
+    layui.use(['form', 'laypage','laydate','layer','jquery'], function() {
+        var form = layui.form,
+                $ = layui.jquery;
+        form.render();
+        var laydate = layui.laydate;
+        $ = layui.jquery;
+        form.render();
+
+        var laypage = layui.laypage;
+        var aaa=function() {
+            var typevalue = $("input[name=type]:checked").val();
+            if(typevalue == 1){
+                $(".geren_table").show();
+                $(".company_table").hide();
+            }else{
+                $(".company_table").show();
+                $(".geren_table").hide();
+            }
+        }
+        aaa();
+        form.on('radio(type)',function (data) {
+            aaa();
+        })
+
+
+        //监听提交
+        form.on('submit(formDemo)', function (data) {
+            var formData = data.field;
+            $.post("/api/Invoice/add", formData, function (data) {
+                if (data.code === 1) {
+                    layer.msg(data.msg, {icon: 1, time: 1000}, function () {
+                        layer.close(layer.index);
+                        window.parent.location.reload();
+                    });
+                } else {
+                    layer.msg(data.msg, {icon: 5});
+                }
+            });
+            return false;
+        });
+    });
+</script>
+{/block}

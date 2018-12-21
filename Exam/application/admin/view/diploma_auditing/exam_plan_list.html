@@ -1,0 +1,73 @@
+{extend name="common@layout/layout" /}
+{block name="title"}{/block}
+{block name="css"}
+<style>
+    .title {
+        display: block;
+        width: 200px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+</style>
+{/block}
+
+{block name='crumbs'}
+<span class="layui-breadcrumb" lay-separator="">
+  <a href="/admin" class="county">
+    <i class="layui-icon layui-icon-home"></i>
+    &nbsp;首页
+  </a>
+  <a><cite>鉴定计划列表</cite></a>
+</span>
+{/block}
+{block name="content"}
+
+<table class="layui-table">
+    <thead>
+    <tr>
+        <th width="40px">编号</th>
+        <th width="200px">标题</th>
+        <th width="50px">工种类型</th>
+        <th width="100px">考试时间</th>
+        <th width="50px">状态</th>
+        <th width="100px">操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    {volist name="arrExamPlan" id="vo"}
+    <tr>
+        <td id="id">{$i}</td>
+        <td><a  class="title" href="#" title="{$vo['title']}">{$vo['title']}</a></td>
+        <td>{$vo['work_type_name']}</td>
+        <td>{$vo['exam_time']}</td>
+        <td>{if ($vo['status']==1)}已发布{else if($vo['status']!=1)/}未发布{/if}</td>
+        <td>
+            <button exam_plan_id="{$vo.id}"  class="layui-btn layui-btn-sm detail">申请</button>
+        </td>
+    </tr>
+    {/volist}
+    </tbody>
+</table>
+<div class="layui-form-item">
+
+    <div class="layui-fluid tp-pages">
+        {$arrExamPlan->render()}
+    </div>
+</div>
+{/block}
+{/extend}
+{block name="script"}
+<script>
+
+    layui.use(['form', 'layer','jquery'], function () {
+        var form = layui.form;
+        var $ = layui.jquery;
+        $(".detail").click(function () {
+            var id =$(this).attr("exam_plan_id");
+            // alert(id);
+            location.href = urladdr.scoreListDiploma+"?exam_plan_id="+id;
+        });
+    });
+</script>
+{/block}

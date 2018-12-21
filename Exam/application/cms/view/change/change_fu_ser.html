@@ -1,0 +1,537 @@
+
+<link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css">
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/cms1.0.css" />
+
+<body >
+<form  class="layui-form" >
+<div class="tongzhi_main">
+    <div class="layui-col-xs5" style="margin-left: 13%">
+    <div class="jieshao xuanxiang">
+        <div class="jieshao_header">
+            <span class="jieshao_header_left">网上服务</span>
+        </div>
+        <div class="layui-tab layui-tab-card">
+            <ul class="layui-tab-title">
+                {volist name='data' id='v' key='k'}
+                <li name="serve" value="{$v.id}" a="{$k}" {eq name="k" value="1" } class="layui-this"{/eq} >{$v.title}</li>
+               {/volist}
+            </ul>
+            <div class="layui-tab-content" style="height: 350px;">
+                <div class="layui-tab-item layui-show">
+                    <div class="jd_btn2">
+                        <input type="hidden" name="link1[order]" value="1">
+                        <select name="link1[id]" id="li1">
+                                <option value="">请选择</option>
+                            {volist name='info1' id='v1'}
+                            <option value="{$v1.id}" {eq name="v1.order" value="1"} selected {/eq}>{$v1.name}</option>
+                            {/volist}
+                            </select>
+                     </div>
+                    <div class="jd_btn2">
+                        <input type="hidden" name="link2[order]" value="2">
+                        <select name="link2[id]" id="li2">
+                            <option value="">请选择</option>
+                            {volist name='info1' id='v1'}
+                            <option value="{$v1.id}" {eq name="v1.order" value="2"} selected {/eq}>{$v1.name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="jd_btn2">
+                        <input type="hidden" name="link3[order]" value="3">
+                        <select name="link3[id]" id="li3">
+                            <option value="">请选择</option>
+                            {volist name='info1' id='v1'}
+                            <option value="{$v1.id}" {eq name="v1.order" value="3"} selected {/eq}>{$v1.name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="jd_btn2">
+                        <input type="hidden" name="link4[order]" value="4">
+                        <select name="link4[id]" id="li4">
+                            <option value="">请选择</option>
+                            {volist name='info1' id='v1'}
+                            <option value="{$v1.id}" {eq name="v1.order" value="4"} selected {/eq}>{$v1.name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="jd_btn2">
+                        <input type="hidden" name="link5[order]" value="5">
+                        <select name="link5[id]" id="li5">
+                            <option value="">请选择</option>
+                            {volist name='info1' id='v1'}
+                            <option value="{$v1.id}" {eq name="v1.order" value="5"} selected {/eq}>{$v1.name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="jd_btn2">
+                        <input type="hidden" name="link6[order]" value="6">
+                        <select name="link6[id]" id="li6">
+                            <option value="">请选择</option>
+                            {volist name='info1' id='v1'}
+                            <option value="{$v1.id}" {eq name="v1.order" value="6"} selected {/eq}>{$v1.name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="jd_btn2">
+                        <input type="hidden" name="link7[order]" value="7">
+                        <select name="link7[id]" id="li7">
+                            <option value="">请选择</option>
+                            {volist name='info1' id='v1'}
+                            <option value="{$v1.id}" {eq name="v1.order" value="7"} selected {/eq}>{$v1.name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="jd_btn2">
+                        <input type="hidden" name="link8[order]" value="8">
+                        <select name="link8[id]" id="li8">
+                            <option value="">请选择</option>
+                            {volist name='info1' id='v1'}
+                            <option value="{$v1.id}" {eq name="v1.order" value="8"} selected {/eq}>{$v1.name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-tab-item">
+                    <div class="jd_btn2">
+                        <input type="hidden" name="two1[order]" value="1">
+                        <select name="two1[id]" id="two1">
+                            <option value="">请选择</option>
+                           {volist name='info2' id='v2'}
+                            <option value="{$v2.id}" {eq name="v2.order" value="1"} selected {/eq}>{$v2.name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="jd_btn2">
+                        <input type="hidden" name="two2[order]" value="2">
+                        <select name="two2[id]" id="two2">
+                            <option value="">请选择</option>
+                            {volist name='info2' id='v2'}
+                            <option value="{$v2.id}" {eq name="v2.order" value="2"} selected {/eq}>{$v2.name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="jd_btn2">
+                        <input type="hidden" name="two3[order]" value="3">
+                        <select name="two3[id]" id="two3">
+                            <option value="">请选择</option>
+                            {volist name='info2' id='v2'}
+                            <option value="{$v2.id}" {eq name="v2.order" value="3"} selected {/eq}>{$v2.name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="jd_btn2">
+                        <input type="hidden" name="two4[order]" value="4">
+                        <select name="two4[id]" id="two4">
+                            <option value="">请选择</option>
+                            {volist name='info2' id='v2'}
+                            <option value="{$v2.id}" {eq name="v2.order" value="4"} selected {/eq}>{$v2.name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="jd_btn2">
+                        <input type="hidden" name="two5[order]" value="5">
+                        <select name="two5[id]" id="two5">
+                            <option value="">请选择</option>
+                            {volist name='info2' id='v2'}
+                            <option value="{$v2.id}" {eq name="v2.order" value="5"} selected {/eq}>{$v2.name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="jd_btn2">
+                        <input type="hidden" name="two6[order]" value="6">
+                        <select name="two6[id]" id="two6">
+                            <option value="">请选择</option>
+                            {volist name='info2' id='v2'}
+                            <option value="{$v2.id}" {eq name="v2.order" value="6"} selected {/eq}>{$v2.name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="jd_btn2">
+                        <input type="hidden" name="two7[order]" value="7">
+                        <select name="two7[id]" id="two7">
+                            <option value="">请选择</option>
+                            {volist name='info2' id='v2'}
+                            <option value="{$v2.id}" {eq name="v2.order" value="7"} selected {/eq}>{$v2.name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="jd_btn2">
+                        <input type="hidden" name="two8[order]" value="8">
+                        <select name="two8[id]" id="two8">
+                            <option value="">请选择</option>
+                            {volist name='info2' id='v2'}
+                            <option value="{$v2.id}" {eq name="v2.order" value="8"} selected {/eq}>{$v2.name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-tab-item">
+                    <div class="jd_btn2">
+                    <input type="hidden" name="three1[order]" value="1">
+                    <select name="three1[id]" id="three1">
+                        <option value="">请选择</option>
+                        {volist name='info3' id='v3'}
+                        <option value="{$v3.id}" {eq name="v3.order" value="1"} selected {/eq}>{$v3.name}</option>
+                        {/volist}
+                    </select>
+                </div>
+                    <div class="jd_btn2">
+                        <input type="hidden" name="three2[order]" value="2">
+                        <select name="three2[id]" id="three2">
+                            <option value="">请选择</option>
+                            {volist name='info3' id='v3'}
+                            <option value="{$v3.id}" {eq name="v3.order" value="2"} selected {/eq}>{$v3.name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="jd_btn2">
+                        <input type="hidden" name="three3[order]" value="3">
+                        <select name="three3[id]" id="three3">
+                            <option value="">请选择</option>
+                            {volist name='info3' id='v3'}
+                            <option value="{$v3.id}" {eq name="v3.order" value="3"} selected {/eq}>{$v3.name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="jd_btn2">
+                        <input type="hidden" name="three4[order]" value="4">
+                        <select name="three4[id]" id="three4">
+                            <option value="">请选择</option>
+                            {volist name='info3' id='v3'}
+                            <option value="{$v3.id}" {eq name="v3.order" value="4"} selected {/eq}>{$v3.name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="jd_btn2">
+                        <input type="hidden" name="three5[order]" value="5">
+                        <select name="three5[id]" id="three5">
+                            <option value="">请选择</option>
+                            {volist name='info3' id='v3'}
+                            <option value="{$v3.id}" {eq name="v3.order" value="5"} selected {/eq}>{$v3.name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="jd_btn2">
+                        <input type="hidden" name="three6[order]" value="6">
+                        <select name="three6[id]" id="three6">
+                            <option value="">请选择</option>
+                            {volist name='info3' id='v3'}
+                            <option value="{$v3.id}" {eq name="v3.order" value="6"} selected {/eq}>{$v3.name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="jd_btn2">
+                        <input type="hidden" name="three7[order]" value="7">
+                        <select name="three7[id]" id="three7">
+                            <option value="">请选择</option>
+                            {volist name='info3' id='v3'}
+                            <option value="{$v3.id}" {eq name="v3.order" value="7"} selected {/eq}>{$v3.name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="jd_btn2">
+                        <input type="hidden" name="three8[order]" value="8">
+                        <select name="three8[id]" id="three8">
+                            <option value="">请选择</option>
+                            {volist name='info3' id='v3'}
+                            <option value="{$v3.id}" {eq name="v3.order" value="8"} selected {/eq}>{$v3.name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-tab-item">
+                    <div class="jd_btn2">
+                        <input type="hidden" name="four1[order]" value="1">
+                        <select name="four1[id]" id="four1">
+                            <option value="">请选择</option>
+                            {volist name='info4' id='v4'}
+                            <option value="{$v4.id}" {eq name="v4.order" value="1"} selected {/eq}>{$v4.name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="jd_btn2">
+                        <input type="hidden" name="four2[order]" value="2">
+                        <select name="four2[id]" id="four2">
+                            <option value="">请选择</option>
+                            {volist name='info4' id='v4'}
+                            <option value="{$v4.id}" {eq name="v4.order" value="2"} selected {/eq}>{$v4.name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="jd_btn2">
+                        <input type="hidden" name="four3[order]" value="3">
+                        <select name="four3[id]" id="four3">
+                            <option value="">请选择</option>
+                            {volist name='info4' id='v4'}
+                            <option value="{$v4.id}" {eq name="v4.order" value="3"} selected {/eq}>{$v4.name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="jd_btn2">
+                        <input type="hidden" name="four4[order]" value="4">
+                        <select name="four4[id]" id="four4">
+                            <option value="">请选择</option>
+                            {volist name='info4' id='v4'}
+                            <option value="{$v4.id}" {eq name="v4.order" value="4"} selected {/eq}>{$v4.name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="jd_btn2">
+                        <input type="hidden" name="four5[order]" value="5">
+                        <select name="four5[id]" id="four5">
+                            <option value="">请选择</option>
+                            {volist name='info4' id='v4'}
+                            <option value="{$v4.id}" {eq name="v4.order" value="5"} selected {/eq}>{$v4.name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="jd_btn2">
+                        <input type="hidden" name="four6[order]" value="6">
+                        <select name="four6[id]" id="four6">
+                            <option value="">请选择</option>
+                            {volist name='info4' id='v4'}
+                            <option value="{$v4.id}" {eq name="v4.order" value="6"} selected {/eq}>{$v4.name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="jd_btn2">
+                        <input type="hidden" name="four7[order]" value="7">
+                        <select name="four7[id]" id="four7">
+                            <option value="">请选择</option>
+                            {volist name='info4' id='v4'}
+                            <option value="{$v4.id}" {eq name="v4.order" value="7"} selected {/eq}>{$v4.name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="jd_btn2">
+                        <input type="hidden" name="four8[order]" value="8">
+                        <select name="four8[id]" id="four8">
+                            <option value="">请选择</option>
+                            {volist name='info4' id='v4'}
+                            <option value="{$v4.id}" {eq name="v4.order" value="8"} selected {/eq}>{$v4.name}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+</div>
+<div>
+    <div class="layui-form-item" style="margin-left: 13%">
+        <div class="layui-input-block">
+            <button  class="layui-btn" lay-submit lay-filter="sub">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary chong">重置</button>
+            <button class="layui-btn layui-btn-lg yulan" >
+               预览
+            </button>
+        </div>
+    </div>
+</div>
+</form>
+
+</body>
+<script src="__PUBLIC__/js/jquery.min.js"></script>
+<script src="__PUBLIC__/layui/layui.js"></script>
+
+<!--<script src="__PUBLIC__/layui/layui.js"></script>-->
+<script type="text/javascript">
+    layui.use('element', function(){
+        var element = layui.element;
+    });
+    layui.use(['form', 'layer','jquery'], function () {
+        var form  = layui.form;
+        var $  = layui.jquery;
+         function select(ser,serve)
+         {
+             form.on('select()',function()
+             {
+
+                 var arr = [];
+
+                 var arr2 = [];
+                 var his = $(this);
+
+                 if($('#'+ser+1).val()==0){
+                     arr2.push(ser+1);
+                 }else{
+
+                     arr.push($('#'+ser+1).val());
+                 }if($('#'+ser+2).val()==0){
+                 arr2.push(ser+2);
+             }else{
+                 arr.push($('#'+ser+2).val());
+             }if($('#'+ser+3).val()==0){
+                 arr2.push(ser+3);
+             }else{
+                 arr.push($('#'+ser+3).val());
+             }if($('#'+ser+4).val()==0){
+                 arr2.push(ser+4);
+             }else{
+                 arr.push($('#'+ser+4).val());
+             }if($('#'+ser+5).val()==0){
+                 arr2.push(ser+5);
+             }else{
+                 arr.push($('#'+ser+5).val());
+             }if($('#'+ser+6).val()==0){
+                 arr2.push(ser+6);
+             }else{
+                 arr.push($('#'+ser+6).val());
+             }if($('#'+ser+7).val()==0){
+                 arr2.push(ser+7);
+             }else{
+                 arr.push($('#'+ser+7).val());
+             }if($('#'+ser+8).val()==0){
+                 arr2.push(ser+8);
+             }else{
+                 arr.push($('#'+ser+8).val());
+             }
+                 //  arr = JSON.stringify(arr);
+
+                 $.ajax({
+                     url:"changeFuSer",
+                     type:'post',
+                     data:{data:arr,serve:serve},
+                     dataType:'json',
+                     success:function(res)
+                     {
+                         console.log(res);
+                         var html='';
+                         html +='<option value="">请选择</option>';
+                         for(var i=0;i<res.length;i++)
+                         {
+                             html+='<option value="'+res[i].id+'">'+res[i].name+'</option>'
+                         }
+
+                         var id = his.attr('id');
+                         for(var j=0;j<arr2.length;j++)
+                         {
+                             $('#'+arr2[j]).html('');
+                             $('#'+arr2[j]).html(html);
+                             form.render();
+                         }
+                         return false;
+                     }
+                 })
+             });
+         }
+       $('.chong').click(function()
+       {
+           var serve = $('.layui-this').val();
+           var data = 'chong';
+           $.post('changeFuSer',{data:data,serve:serve},function(res)
+           {
+               if(res.code==1)
+               {
+                   layer.msg(res.msg, {
+                       icon: 1,//提示的样式
+                       time: 2000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                      end:function()
+                      {
+                          location.reload();
+                      }
+                   })
+               }else{
+                   layer.msg(res.msg);
+               }
+           });
+           return false;
+
+       });
+
+
+        $('li[name=serve]').click(function()
+        {
+            var key = $(this).attr('a');
+            var serve = 1;
+            var ser = 'li';
+
+            if(key==1)
+            {
+                ser = 'li';
+                serve = $(this).val();
+
+            }else if(key==2)
+            {
+                ser = 'two';
+                serve = $(this).val();
+            }else if(key==3)
+            {
+                ser = 'three';
+                serve = $(this).val();
+            }else{
+                ser = 'four';
+                serve = $(this).val();
+            }
+            select(ser,serve);
+        });
+        //添加表单监听事件
+        form.on('submit(sub)',function (data) {
+            data = data.field;
+            $.post("/api/CmsFuServe/changeFuSer",data,function (data) {
+                if (data.code == 1){
+                    layer.msg(data.msg, {
+                        icon: 1,//提示的样式
+                        time: 2000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+
+                    })
+                }else{
+                    layer.msg(data.msg);
+                }
+            })
+            //防止页面跳转
+            return false;
+        });
+    });
+    layui.use(['form', 'layer','jquery'], function () {
+        var form  = layui.form;
+        var $  = layui.jquery;
+        $(".yulan").click(function () {
+            // data = data.field;
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['90%', '90%'], //宽高
+                title: "网上服务",
+                content: "/cms/change/service",  //调到新增页面
+                yes: function(index, layero){
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+            return false;
+        });
+    });
+
+
+
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

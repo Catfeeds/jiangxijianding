@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/layui/css/lay.css" />
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/layui/css/main.css" />
+    <!--<link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css">-->
+    <title>社会考生登录</title>
+</head>
+
+<body class="login">
+<div class="header_top">
+    <div class="layui-container">
+        <div class="layui-col-xs6 jd_header_left"><span>当前日期：2018年9月10日</span><span>10:30</span><span>星期一</span></div>
+        <div class="layui-col-xs6 jd_header_right">
+            <span>设为首页 </span>
+            <span>加入收藏</span>
+            <span>主任信箱</span>
+        </div>
+    </div>
+</div>
+<div class="banner"><img src="__PUBLIC__/layui/img/banner.png" /></div>
+<nav>
+    <div id="daohang"></div>
+    <div class="layui-container">
+        <ul class="nav">
+            <li>
+                <a href="#">首页</a>
+            </li><span>|</span>
+            <li>
+                <a href="#">政务公开</a>
+            </li><span>|</span>
+            <li>
+                <a href="#">鉴定安排</a>
+            </li><span>|</span>
+            <li>
+                <a href="#">政策法规</a>
+            </li><span>|</span>
+            <li>
+                <a href="#">资讯中心</a>
+            </li><span>|</span>
+            <li>
+                <a href="#">技能竞赛</a>
+            </li><span>|</span>
+            <li>
+                <a href="#">党建园地</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div class="layui-container jigouliucheng_main"  style=" height:438px;">
+    <div class="layui-col-xs8">
+        <div class="JiGouLC">
+            <h2 class="JiGouLC_title">考生工作流程图</h2>
+            <img src="__PUBLIC__/layui/img/SheKaoLC.png" />
+        </div>
+    </div>
+    <div class="layui-col-xs4">
+        <div class="login_conent SKlogin_conent" style=" height:339px;">
+            <h2>社会考生登录</h2>
+            <form class="layui-form" action="">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">证件类型：</label>
+                    <div class="layui-input-block">
+                        <select  name="id_type" id="type" lay-filter="type">
+                            <option value="">请选择</option>
+                            <option value="1">身份证</option>
+                            <option value="2">护照</option>
+                            <option value="3">军官证</option>
+                            <option value="4" >港澳台证</option>
+                            <option value="5" >其他</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">证件号：</label>
+                    <div class="layui-input-block">
+                        <input type="text"  id="id_no" name="id_no" required  lay-verify="required" placeholder="请输入证件号" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">密&nbsp;&nbsp;码：</label>
+                    <div class="layui-input-block">
+                        <input type="password" id="name" name="name" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <!--<div class="layui-form-item">-->
+                        <!--<label class="layui-form-label">验证码：</label>-->
+                        <!--<div class="layui-input-block">-->
+                            <!--<input type="text" name="yzm" name="code"   lay-verify="code" autocomplete="off" placeholder="请输入验证码" class="layui-input yzm_input">-->
+                            <!--<img id="yzmimg" title="点击更换" src="/captcha.html?seed=<?=mt_rand()?>" onclick="this.src='{<:captcha_src()>}?seed='+Math.random()"  />-->
+                        <!--</div>-->
+                <!--</div>-->
+                <div class="layui-form-item">
+                    <label class="layui-form-label">验证码：</label>
+                    <div class="layui-input-block">
+                        <!--<img class="yzmimg" src="__PUBLIC__/layui/img/yanzm.png" />-->
+                        <input type="text" name="yzm" id="yzm" lay-verify="code" autocomplete="off" placeholder="请输入验证码" class="layui-input yzm_input">
+
+                        <img  id="verifycode_imgq" class="verifycode_imgq" style="width: 88px;height: 35px" onclick="this.src='{:captcha_src()}?'+Math.random()" src="{:captcha_src()}" alt="captcha" />
+                    </div>
+                </div>
+
+
+                <div class="denglu_btn" lay-submit lay-filter="sub">登录</div>
+                <p><a href="/examinee/index/signature" class="fl">注册</a></p>
+                <div class="SKzhaomi"><span><a href="/examinee/index/forgetPass" class="fr">找回密码</a></span><span class="shu">|</span><span><a href="#baomingxuzhi">报名须知</a></span></div>
+            </form>
+        </div>
+    </div>
+</div>
+<br>
+<br>
+<div class="layui-container xuzhi" id="baomingxuzhi" name="baomingxuzhi">
+    <h2>报名须知：</h2>
+    <p>欢迎您使用江西省职业技能鉴定考试网上报名系统，请务必认真阅读以下事项：</p>
+    <p>一、考生不得以他人身份、他人的照片进行报考，否则由此引起的纠纷，由考生承担全部责任。</p>
+    <p>二、本系统以身份证号及报名序号作为登录的依据，报考人员请保管好自己的身份证号和报名序号，否则他人误用造成的后果，本网站不承担任何责任。</p>
+    <p>三、网上报名基本操作程序如下：</p>
+    <p>第一步，考生仔细阅读本须知及相关公告后，点击“注册报名”，进入报名登记系统。</p>
+    <p>第二步，请按照报名登记表内容如实、准确填写，填写内容要求能够较全面的反映报考要求。</p>
+    <p>第三步，正确上传本人的电子照片。</p>
+    <p>照片上传说明:</p>
+    <p>①上传电子版照片为近期免冠正面证件照，格式为jpg，大小为40K以下，宽度90像素，高度120像素，分辨率300像素。</p>
+    <p>②上传照片必须能反映本人特征。</p>
+    <p>③获得电子版照片的途径：</p>
+    <p>A.拥有扫描仪的报考人员，可以通过扫描照片（照片原件大小：小2寸，扫描比例：1：1，扫描模式：256色以上）；</p>
+    <p>B.拥有数码相机的报考人员，可以通过数码拍摄；</p>
+    <p>C.直接到照相馆拍摄电子版照片，并让工作人员按要求帮助处理。</p>
+    <p>第四步，提交审查。</p>
+    <p>第五步，资格审查合格后，立即缴费。</p>
+    <p>四、准考证打印。考生缴费成功后请于规定时间内登录本网站自行打印准考证。打印准考证一律使用A4规格纸张打印。</p>
+</div>
+<footer class="footer">
+    <img class="quanwei" src="__PUBLIC__/layui/img/quanwei.png" />
+    <p>主办单位：江西省职业技能鉴定指导中心 技术支持：博奥教育科技有限公司</p>
+    <p>网上支持（职业资格问答） 　　您是第 9027267 位访问者</p>
+</footer>
+</body>
+
+</html>
+
+
+<script src="__PUBLIC__/layui/layui.js"></script>
+<script src="__PUBLIC__/layui/js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript">
+    layui.use(['form', 'layer','jquery'], function () {
+        var form  = layui.form;
+        var $  = layui.jquery;
+
+        var name = $("#name").val();
+        var id_no = $("#id_no").val();
+
+        $.get('common/view/content/daohang.html', function(data) {
+                $(".daohang").html(data);
+            });
+
+
+
+        // 为密码添加正则验证
+        $('#name').blur(function() {
+            var reg = /^[\w]{8,12}$/;
+            if(!($('#name').val().match(reg))){
+                layer.msg('请输入密码');
+            }
+            return false;
+        });
+
+        //验证证件号
+        $('#id_no').blur(function() {
+            var data=$("#type").val();
+            if(data=='1'){
+                var reg =  /(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+                if(!($('#id_no').val().match(reg))){
+                    layer.msg('请输入合法身份证!');
+                }
+            }else if(data=='2') {
+                var reg = /^[A-Z][0-9]{8}$/;
+                if (!($('#id_no').val().match(reg))) {
+                    layer.msg('请输入合法护照!');
+                }
+            }else if(data=='3'){
+                var reg = /^[\u4e00-\u9fa5]{2}[0-9]{6,8}$/;
+                if(!($('#id_no').val().match(reg))){
+                    layer.msg('请输入合法军官证!');
+                }
+            }else if(data=='4'){
+                var reg = /^[A-Z][0-9]{8}$/;
+                if(!($('#id_no').val().match(reg))){
+                    layer.msg('请输入合法港澳通行证!');
+                }
+            }
+            return false;
+        });
+
+        //添加表单监听事件
+        form.on('submit(sub)',function () {
+            // alert(1);
+            var  id_type = $('#type').val();
+            var  id_no = $('#id_no').val();
+            var  name = $('#name').val();
+            var  yzm = $('#yzm').val();
+            if (id_no == ''){
+                layer.msg('请重新输入证件号');
+                return false;
+            }
+            if (name == ''){
+                layer.msg('请重新输入密码');
+                return false;
+            }
+            if (yzm == ''){
+                layer.msg('请输入验证码');
+                return false;
+            }
+
+            $.ajax({
+                url:'/api/UserLogin/loginAction',
+                type:'post',
+                data:{
+                    'yzm' : yzm,
+                    'id_card':id_no,
+                    'password':name,
+                    'id_type':id_type,
+                },
+                dataType:'json',
+                //判断登录状态
+                success:function (data) {
+                    if (data.code==1){
+                        layer.msg(data.msg, {
+                            icon: 1,//提示的样式
+                            time: 2000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                            end: function () {
+                                if(location.search.indexOf('back')>-1)
+                                {
+                                    location.href = decodeURIComponent(location.search.substring(6));
+                                }else
+                                    {
+                                        location.href = '/examinee/menu/index';
+                                    }
+
+                            }
+                        })
+                    } else if (data.code == -2) {
+                        layer.msg(data.msg);
+                        $("#verifycode_imgq").click();
+                        $('#yzm').val("").focus();
+                    }else{
+                        layer.msg(data.msg);
+                        $("#verifycode_imgq").click();
+                        $('#yzm').val("").focus();
+                    }
+
+                },error:function () {
+                    $("#verifycode_imgq").click();
+                    alert('网络错误');
+                }
+            });
+            //防止页面跳转
+            return false;
+        });
+    });
+
+</script>

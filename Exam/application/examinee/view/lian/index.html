@@ -1,0 +1,289 @@
+<style>
+    .mores{width: 120px;
+        min-height: 100px;border: 1px solid #ccc;border-radius: 4px;position: absolute;
+        top: 35px;
+        left: 20px;
+        background: #fff;
+        display: none;
+        z-index: 99999;
+        transition: all .3s;
+        padding: 5px;
+    }
+    .mores_btn:hover .mores{
+        display: block;
+        transition: all .3s;
+    }
+    .mores button{margin: 3px 0px}
+    .wid{width: 105px;}
+</style>
+<div>
+    <div class="header_title"><span>报名信息</span></div>
+    <div class="layui-fluid">
+        <div class="layui-card">
+            <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+                <div class="layui-form-item">
+                    <button class="dayin_btn borderwid" id="addExamInfo">
+                        <i class="layui-icon">&#xe608;</i> 我要报名
+                    </button>
+                </div>
+            </div>
+            <div class="layui-card-body">
+                <table class="layui-table myorder_table">
+                    <colgroup>
+                        <!--<col width="5%">-->
+                        <col width="200">
+                        <col>
+                        <col>
+                        <col>
+                        <!--<col>-->
+                        <col>
+                        <col width="200px">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <!--<th>ID</th>-->
+                        <th>鉴定计划</th>
+                        <th>工种</th>
+                        <!--<th>方向</th>-->
+                        <th>级别</th>
+                        <th>状态</th>
+                        <th>报考时间</th>
+                        <th >操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {volist name="examData" id="vo"}
+                    <tr>
+                        <!--<td></td>-->
+                        <td>{$vo['title']}</td>
+                        <td>{$vo['workname']}</td>
+                        <!--<td>{$vo['directionname']}</td>-->
+                        <td>{$vo->work_level_subject_level}</td>
+                        <td>
+                            {$vo->status}
+                        </td>
+                        <td>{$vo['create_time']}</td>
+                        <td style="text-align:right">
+
+                            <div class="looks_btn margin_right_10 borderwid mores_btn" style="width: 40px" >更多
+                                <div class="mores">
+                                    {if (in_array($vo.status,config('EnrollStatus.apply')))}
+                                    <button class="dayin_btn wid borderwid printApply" title="" value="{$vo['id']}">打印报名表</button>
+                                    {elseif(in_array($vo.status,config('EnrollStatus.audit'))) /}
+                                    <!--<button class="looks_btn wid margin_right_10 borderwid upbth audit">上传审核资料</button>-->
+                                    <button class="looks_btn wid margin_right_10 borderwid upbth auditChick" title="审核截止时间为{$vo['audit_endtime']|date='Y-m-d H:i:s',###},请尽快提交审核!" value="{$vo['id']}" >提交资格审查</button>
+                                    <button class="looks_btn wid margin_right_10 borderwid layui-btn-normal edit" value="{$vo['id']}"><i class="layui-icon"></i></button>
+                                    {else /}
+                                    <!--<button class="looks_btn wid margin_right_10 borderwid upbth audit" value="{$vo['id']}">上传审核资料</button>-->
+                                    <button class="looks_btn wid margin_right_10 borderwid layui-btn-normal edit"value="{$vo['id']}"><i class="layui-icon"></i></button>
+                                    <!--<button class="looks_btn wid margin_right_10 borderwid upbth audit">上传审核资料</button>-->
+                                    {/if}
+                                    {if (in_array($vo.status,config('EnrollStatus.pay'))) && $now<$vo.pay_endtime }
+                                    <button class="looks_btn wid margin_right_10 borderwid layui-btn-normal feepayment" title="缴费开始时间为{$vo.pay_endtime|date='Y-m-d H:i:s',###},请尽快完成缴费!" data-value="{$vo['id']}" >缴费</button>
+                                    {else /}
+                                    {/if}
+                                    {if (in_array($vo.status,config('EnrollStatus.ticket')) &&  $now > $vo.print_starttime && $now < $vo.print_endtime )}
+                                    <button class="looks_btn wid margin_right_10 borderwid layui-btn-normal printExam" title="打印准考证时间为{$vo.print_starttime|date='Y-m-d H:i:s',###}-{$vo.print_endtime|date='Y-m-d H:i:s',###},请在规定时间内打印准考证" data-value="{$vo['id']}" >打印准考证</button>
+                                    {else /}
+                                    {/if}
+                                    <button class="looks_btn margin_right_10 wid borderwid  auditDetail" value="{$vo['id']}">详情</button>
+                                    <button class="looks_btn margin_right_10 wid borderwid layui-btn-danger delete" value="{$vo['id']}"><i class="layui-icon"></i></button>
+                                </div>
+
+                            </div>
+                            <!--<a href='{:url("/examinee/Center/examdetail/id/$vo[id]")}' class="layui-btn">详情</a>-->
+                            <div class="look_btn margin_right_10 ajax-linkk" rel="/examinee/Center/examdetail?id={$vo['id']}">详情</div>
+                        </td>
+
+                    </tr >
+                    {/volist}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+<script type="text/javascript">
+    layui.use('element', function(){
+        var element = layui.element;
+
+    });
+
+    //添加报考信息
+    layui.use(['form', 'layer','jquery'], function () {
+
+        var form  = layui.form;
+        var $  = layui.jquery;
+        $("#addExamInfo").click(function () {
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['90%', '90%'], //宽高
+                title: "添加报考信息",
+                content: "/examinee/Center/addExamEnroll",  //调到新增页面
+                yes: function(index, layero){
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+
+        //删除报考信息
+        $(".delete").click(function () {
+            var id = $(this).val();
+            layer.confirm("确认删除?", function () {
+                $.ajax({
+                    url: "/api/ExamEnroll/delete",
+                    data: {'id': id},
+                    type: "post",
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.code == 1) {
+                            layer.msg(data.msg,{
+                                icon: 1,//提示的样式
+                                time:  2000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                                end: function () {
+                                    $.get("{:url('/examinee/center/workinfo')}", function(data) {
+                                        window.parent.$("#iframeContent").html(data); //初始化加载界面
+                                        //取消遮罩的时候
+                                        $(".layui-layer-shade").hide();
+                                    });
+                                }
+                            });
+                        } else {
+                            layer.msg(data.msg,{icon:5});
+                        }
+                    }
+                })
+            })
+        });
+
+        //修改报考信息
+        $(".edit").click(function () {
+//			 layer.msg('功能暂未开放',{'icon':5});
+//			 return false;
+            var id = $(this).val();
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['60%', '90%'], //宽高
+                title: "修改报考信息",
+                content: "/examinee/Center/addWorkInfo?id="+id,  //调到新增页面
+                yes: function(index, layero){
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+
+        //上传审核资料
+        $(".audit").click(function () {
+            var id = $(this).val();
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['95%', '90%'], //宽高
+                title: "上传审核资料",
+                content: "/examinee/Center/fileUpload?id="+id,  //调到新增页面
+                yes: function(index, layero){
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+
+
+        //详情
+        $(".auditDetail").click(function () {
+            var id = $(this).val();
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['90%', '90%'], //宽高
+                title: "查看报名详情",
+                content: "/examinee/Center/examdetail?id="+id,  //调到新增页面
+                yes: function(index, layero){
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+
+
+        //提交资格审查
+        $(".auditChick").click(function () {
+            var id = $(this).val();
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['90%', '90%'], //宽高
+                title: "提交资格审查",
+                content: "/examinee/Center/verifyEnroll?id="+id,  //调到新增页面
+                yes: function(index, layero){
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+
+
+
+        //打印报名表
+        $(".printApply").click(function () {
+            var id = $(this).val();
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['90%', '90%'], //宽高
+                title: "打印报名表格",
+                content: "/examinee/center/printApply?id="+id,  //调到新增页面
+                yes: function(index, layero){
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+    });
+    $('.feepayment').on('click', function () {
+        id = $(this).data('value');
+        layer.open({
+            type: 2,
+            area: ['500px', '400px'],
+            title: "缴费",
+            content: '/examinee/center/pay?id='+id,
+        });
+    });
+
+
+    //打印准考证
+    $(".printExam").click(function () {
+        var id = $(this).data('value');
+        layer.open({
+            type: 2,
+            skin: 'layui-layer-rim', //加上边框
+            area: ['600px', '600px'], //宽高
+            title: "打印准考证",
+            content: "/examinee/center/printExam?id="+id,  //调到新增页面
+            yes: function(index, layero){
+                //do something
+                layer.close(index); //如果设定了yes回调，需进行手工关闭
+            }
+        });
+    });
+
+    $(".ajax-linkk").each(function() {
+        $(this).click(function() {
+            var diZhi = $(this).attr("rel");
+            htmlobj = $.ajax({
+                url: diZhi,
+                async: false
+            });
+            $(".ajax-Box").html(htmlobj.responseText);
+        });
+    });
+
+</script>

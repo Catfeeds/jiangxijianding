@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css">
+</head>
+<style type="text/css">
+    .xuxian{
+        width:63%;
+        height:0;
+        border-bottom:#000000 1px dashed;}/*#000000表示白色，边框宽度为一个像素，边框线型为虚线*/
+    }
+</style>
+
+<body>
+<div class="layui-tab-content" style="width: 60%;margin: 0 auto;">
+
+    <div class="layui-form layuiadmin-card-header-auto">
+
+        <ul class="layui-show">
+            {volist name="data" id="vo" }
+            <div class="test">
+                <div class="warp_test">
+                    <table class="outer_table">
+                        <tbody>
+                        <tr>
+                            <td><h5> {$i}、{$vo.topic_name}</h5><br>
+                                <p>A、{$vo.option_a}</p><p>B、{$vo.option_b}</p><p>C、{$vo.option_c} </p><p>D、{$vo.option_d}</p><br>
+                                <table cellpadding="0" cellspacing="0" class="choice_table">
+                                    <tbody>
+                                    <tr>
+                                        <td>
+                                            用户答案：{$vo.user_answer}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            正确答案: {$vo.answer}<br>
+                                            解释说明： {$vo.answer_explain}
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table></td>
+                            <td align="right"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div><br><div class="xuxian"></div><br>
+            {/volist}
+
+        </ul>
+    </div>
+</div>
+</body></html>

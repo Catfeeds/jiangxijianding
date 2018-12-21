@@ -1,0 +1,100 @@
+{extend name="/layout/nonelayout"}
+{block name="css"}
+{/block}
+{block name="content"}
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body"><a href="/organize/Grade/exportRecord?plan={$plan_id}"><button class="layui-btn download" >下载记录</button></div></a>
+        <input type="hidden" value="{$plan_id}" id="plan">
+        <div class="layui-card-body">
+            <table class="layui-table">
+                <colgroup>
+                    <col width="150">
+                    
+                    <col width="200">
+                    <col>
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>审请人</th>
+                    <th>审请价格</th>
+                    <th>申请原因</th>
+                    <th>审核人</th>
+                    <th>审核时间</th>
+                    <td>审核结果</td>
+                </tr>
+                </thead>
+                <tbody>
+                {volist name="data" id="vo" key='n'}
+                <tr>
+                    <td id="id">{$vo['username']}</td>
+                    <td>{$vo['total_money']}</td>
+                    <td>{$vo['remark']}</td>
+                    <td>{$vo['name']}</td>
+                    <td>{$vo['create_time']}</td>
+                    <td>{$vo['reason']}</td>
+                </tr>
+                {/volist}
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+</body>
+{/block}
+{/extend}
+{block name="script"}
+<script type="text/javascript">
+     layui.use('laydate', function(){
+        var laydate = layui.laydate;
+        var myDate = new Date();//获取系统当前时间
+
+    });
+
+    layui.use(['form', 'layer','jquery'], function () {
+        var form = layui.form;
+        var $ = layui.jquery;
+        upload = layui.upload;
+
+       
+        // $('.download').click(function(){
+        //     var plan_id = $('#plan').val();
+        //     $.ajax({
+        //         type: "POST",//方法类型
+        //         dataType: "json",//预期服务器返回的数据类型
+        //         url: "/api/ReviewLog/exportRecord" ,//url
+        //         data: {
+        //             plan:plan_id
+        //         },
+        //         // 判断注册状态
+        //         success:function (data) {
+        //                 if (data.code==1){
+        //                 // layer.msg(data.msg,{
+        //                 //     icon: 1,//提示的样式
+        //                 //     time:  2000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+        //                 //     end: function () {
+        //                 //         //当你在iframe页面关闭自身时
+        //                 //         var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+        //                 //         parent.layer.close(index); //再执行关闭
+        //                 //         parent.location.reload();
+        //                 //     }
+        //                 // });
+        //             }else{
+        //                 layer.msg(data.msg);
+        //             }
+        //         }
+        //     }); 
+        //     return false;
+
+        // })
+
+
+
+    })
+</script>
+{/block}

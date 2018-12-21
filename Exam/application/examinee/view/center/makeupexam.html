@@ -1,0 +1,116 @@
+{extend name="nonelayout"}
+{block name="css"}
+{/block}
+{block name='content'}
+<div>
+    <div class="baoming_main">
+        <form class="layui-form">
+            <input type="hidden" class="exam_plan_id" value="{$exam_plan_id?$exam_plan_id:''}">
+        <table class="layui-table myorder_table" lay-skin="line">
+            <colgroup>
+                <col width="150">
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col width="140">
+            </colgroup>
+            <thead>
+            <tr>
+               <th><input type="checkbox" class="checkboxAll" lay-skin="primary"  lay-filter="allChoose" title='全选'></th>
+                <th>鉴定计划</th>
+                <th>工种</th>
+                <th>方向</th>
+                <th>等级</th>
+                <th>理论</th>
+                <th>实操</th>
+                <th>综合</th>
+            </tr>
+            </thead>
+            <tbody>
+            {volist name="makeexam" id="vo"}
+            <tr>
+                <td><input type="checkbox" name="check[]" value="{$vo.id}" lay-skin="primary" id="check" lay-filter="oneChoose"></td>
+                <!--<td>{$vo.id}</td>-->
+                <td>{$vo.title}</td>
+                <td>{$vo.workname}</td>
+                <td>{$vo.directionname}</td>
+                <td>{$vo->level}</td>
+                <td>{$vo->theory_score_result}</td>
+                <td>{$vo->watch_score_result}</td>
+                <td>{$vo->synthesize_score_result}</td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+        </form>
+
+        <!--<div class="layui-btn " lay-submit lay-filter="formSub">提交</div>-->
+        <button class="layui-btn"  onclick="Submit()" >获取选中行数据</button>
+    </div>
+</div>
+{/block}
+{block name='script'}
+<script type="text/javascript">
+    layui.use(['form', 'upload','jquery'], function() {
+        var form = layui.form,
+                $ = layui.jquery
+                , layer = layui.layer;
+
+        //全选
+        form.on('checkbox(allChoose)', function (data) {
+            $("input[name='check[]']").each(function () {
+                this.checked = data.elem.checked;
+                console.log(data);
+            });
+            form.render('checkbox');
+        });
+    });
+
+
+        function Submit() {
+            var Checkbox = false;
+            var data = [];
+            var exam_plan_id = $(".exam_plan_id").val();
+            $("input[name='check[]']").each(function () {
+                if (this.checked == true) {
+                    Checkbox = true;
+                    data.push({id: this.value});
+                }
+            });
+            if (Checkbox) {
+                layer.confirm('您确认要提交选中的内容吗? ', function(index){
+                    //do something
+                    $.post("/api/ExamPlan/makeExam", {data: data,exam_plan_id:exam_plan_id}, function (data) {
+                        if (data.code == 1) {
+                            layer.msg(data.msg,{
+                                icon: 1,//提示的样式
+                                time:  2000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                                end: function () {
+                                    $.get("{:url('/examinee/Center/workinfo')}", function(data) {
+                                        parent.$("#iframeContent").html(data); //初始化加载界面
+                                        parent.layer.closeAll();
+                                    });
+                                },
+                            });
+                        } else {
+                            layer.msg(data.msg,{icon:5});
+                        }
+                    })
+                    layer.close(index);
+                });
+//                var t = confirm("您确认要提交选中的内容吗？");
+//                if (t == false) return false;
+
+
+            }
+            else {
+                layer.msg("请选择您要提交的内容!");
+                return false;
+            }
+        }
+
+</script>
+{/block}

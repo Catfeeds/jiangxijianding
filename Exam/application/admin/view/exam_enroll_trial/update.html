@@ -1,0 +1,374 @@
+{extend name="common@layout/nonelayout" /}
+{block name="css"}
+{/block}
+{block name="content"}
+<body>
+<form class="layui-form">
+    <table border="1" class="layui-table" width="100px" >
+        <!--<tr>-->
+        <!--<td>操作提示 </td>-->
+        <!--<td colspan="4">您已经完成照片上传，请检查所填信息，无误后提交审查</td>-->
+        <!--</tr>-->
+        <tr>
+            <input type="hidden" name="hiddenid" id="hiddenid" value="{$examenroll.id}" >
+            <td><span class="stars">*</span>证件号码:</td>
+            <td>{$logininfo.userpid?$logininfo.userpid:''}</td>
+            <td><span class="stars">*</span>证件类型:</td>
+            <td>{switch name="$logininfo['id_type']"}
+                {case value="1"}身份证{/case}
+                {case value="2"}护照{/case}
+                {case value="3"}军官证{/case}
+                {case value="4"}港澳台证{/case}
+                {default /}其他
+                {/switch}</td>
+            <td colspan="1" rowspan="6"><img src="{$logininfo.avatar?$logininfo.avatar:''}"> </td>
+        </tr>
+        <tr>
+            <td>姓名:</td>
+            <td>{$logininfo.username?$logininfo.username:''}</td>
+            <td>性别:</td>
+            <td>{$logininfo.gender?$logininfo.gender:''}</td>
+        </tr>
+        <tr>
+            <td>出生日期: </td>
+            <td>{$logininfo.birthday?$logininfo.birthday:''}</td>
+            <td>文化程度:</td>
+            <td>{$logininfo->education?$logininfo->education:''}</td>
+        </tr>
+        <tr>
+            <td>考生来源:</td>
+            <td>
+                {if condition="$examenroll.source eq 7"}  社会
+                {elseif condition="$examenroll.source eq 4"/}企业
+                {elseif condition="$examenroll.source eq 5"/}学校
+                {elseif condition="$examenroll.source eq 6"/}机关事业单位
+                {else/}其他
+                {/if}
+            </td>
+        </tr>
+        <tr>
+            <td>所在单位:</td>
+            <td colspan="3">{$logininfo.company?$logininfo.company:''}</td>
+        </tr>
+        <tr>
+            <td><span class="stars">*</span>联系电话:</td>
+            <td>{$logininfo.mobile?$logininfo.mobile:''}</td>
+            <td>手机:</td>
+            <td>{$logininfo.mobile?$logininfo.mobile:''}</td>
+        </tr>
+        <tr>
+            <td>通讯地址:</td>
+            <td colspan="2">{$logininfo.provid?$logininfo.provid:''}{$logininfo.cityid?$logininfo.cityid:''}{$logininfo.areaid?$logininfo.areaid:''}{$logininfo.address?$logininfo.address:''}</td>
+            <td>邮政编码:</td>
+            <td>{$logininfo.zip_code}</td>
+        </tr>
+        <tr>
+            <td>备注:</td>
+            <td colspan="4">{$arrExamEnroll.remark?$logininfo.remark:''}</td>
+
+        </tr>
+        <tr>
+            <td><span class="stars">*</span>鉴定名称  :</td>
+            <td colspan="2">{$examenroll.title}</td>
+            <td><span class="stars">*</span>考试科目:</td>
+            <td>{$subjectName.subjectName}</td>
+
+        </tr>
+        <tr>
+            <td><span class="stars">*</span>报考职业(工种):</td>
+            <td colspan="2" id="workname" data-value="{$examenroll.wid}">{$examenroll.workname}</td>
+            <td><span class="stars">*</span>报考职业方向:</td>
+            <td >{$examenroll.directionname}</td>
+        </tr>
+        <tr>
+            <td><span class="stars">*</span>鉴定级别:</td>
+            <td colspan="2">{$examenroll->work_level_subject_level?$examenroll->work_level_subject_level:''}</td>
+            <td><span class="stars">*</span>鉴定类别:</td>
+            <td>{$examenroll.work_type_name?$examenroll.work_type_name:''}</td>
+        </tr>
+        <tr>
+            <td><span class="stars">*</span>考试类型:</td>
+            <td colspan="2">
+                {if condition="$examenroll.exam_type eq 1"}  新考
+                {else /}补考
+                {/if}
+            </td>
+            <td><span class="stars">*</span>考生来源:</td>
+            <td>
+                {if $examenroll.source == 1}  鉴定所
+                {elseif $examenroll.source == 2 /}院校
+                {elseif $examenroll.source == 3 /}机构
+                {elseif $examenroll.source == 4 /}企业
+                {elseif $examenroll.source == 5 /}学校
+                {elseif $examenroll.source == 6 /}机关事业单位
+                {elseif $examenroll.source == 7 /}社会
+                {else /}其他
+                {/if}
+            </td>
+        </tr>
+        <tr>
+
+            <td>现场审核地点:</td>
+            <td>
+                {$examenroll.audit_site?$examenroll.audit_site:''}
+            </td>
+        </tr>
+        <tr>
+            <td>参加考试日程:</td>
+            <td colspan="2">
+                {$examenroll.exam_time?$examenroll.exam_time:''}
+            </td>
+            <td>参加考试地点:</td>
+            <td>
+                {$examenroll.exam_site?$examenroll.exam_site:''}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="5">
+                <button class="layui-btn" id="addorganize" lay-submit lay-filter="formSubmit">确认并立即修改</button>
+            </td>
+        </tr>
+
+    </table>
+</form>
+</body>
+{/block}
+{/extend}
+{block name="script"}
+
+<script>
+    layui.use('element', function(){
+        var element = layui.element;
+    });
+
+    layui.use(['form', 'layer','jquery'], function () {
+        var form = layui.form;
+        var $ = layui.jquery;
+        //form表单验证
+        form.verify({
+            exam_plan_id: function (value) {
+                if (value == "") {
+                    return "鉴定名称必填";
+                }
+            },
+            work_id: function (value) {
+                if (value == "") {
+                    return "报考职业工种必填";
+                }
+            },
+            work_direction_id: function (value) {
+                if (value == "") {
+                    return "职业方向必填";
+                }
+            },
+            work_level_subject_level: function (value) {
+                if (value == "") {
+                    return "鉴定级别必填";
+                }
+            },
+//            work_type_id: function (value) {
+//                if (value == "") {
+//                    return "职业类别必填";
+//                }
+//            },
+            exam_type: function (value) {
+                if (value == "") {
+                    return "考试类型必填";
+                }
+            },
+            checkPost: function (value){
+                if(!$("#checkPost").is(":checked")){
+                    return "诚信条款必选";
+                }
+            }
+        });
+
+
+        //根据鉴定名称获取工种
+        form.on('select(exam_plan_id)', function(data){
+            var exam_plan_id = data.value;
+            $.ajax({
+                url:urladdr.examSelbyid,
+                type:'post',
+                dataType:'json',
+                data:{
+                    exam_plan_id:exam_plan_id,
+                },
+                success:function (data) {
+                    if (data.code==1){
+                        $("#work_id").html("");
+                        $("#work_direction_id").html("");
+                        $("#work_type_id").html("");
+                        $("#work_level_subject_level").html("");
+                        $("#exam_time").html("");
+                        $("#audit_site").html("");
+                        $("#exam_site").html("");
+                        var work_id = document.getElementById ("work_id");
+                        var work_type_id = document.getElementById ("work_type_id");
+                        var exam_time = document.getElementById ("exam_time");
+                        for(var i in data.data[0]) {
+                            var opt = document.createElement("option");
+                            opt.value = data.data[0][i]['wid'];
+                            opt.innerText = data.data[0][i]['code'] +"   "+ data.data[0][i]['name'];
+                            work_id.appendChild (opt);
+                            form.render('select');
+                        };
+                        //返回鉴定类别
+                        var optworktype = document.createElement("option");
+                        optworktype.value = data.data[1]['work_type'];
+                        optworktype.innerText = data.data[1]['work_type_name'];
+                        work_type_id.appendChild (optworktype);
+                        form.render('select');
+                        //返回考试时间
+                        // exam_time.innerText = data.data[1]['exam_time'];
+                        // exam_time.appendChild (exam_time);
+                    }else{
+                        $("#work_id").html("");
+                        $("#work_direction_id").html("");
+                        $("#work_type_id").html("");
+                        $("#work_level_subject_level").html("");
+                        $("#subject_id").html("");
+                        $("#audit_site").html("");
+                        $("#exam_site").html("");
+                        form.render('select');
+                        layer.msg(data.msg)
+                    }
+                }
+            });
+            //防止页面跳转
+            return false;
+        });
+
+        //获取职业方向和级别
+        form.on('select(work_id)', function(data){
+            var work_id = data.value;
+            var exam_plan_id = $("#exam_plan_id").val();
+            $.ajax({
+                url:urladdr.selDirecLevel,
+                type:'post',
+                dataType:'json',
+                data:{
+                    work_id:work_id,
+                    alltype_id:exam_plan_id,
+                },
+                success:function (data) {
+                    if (data.code==1){
+                        $("#work_direction_id").html("");
+                        $("#work_level_subject_level").html("");
+                        $("#subject_id").html("");
+                        var work_direction_id = document.getElementById ("work_direction_id");
+                        var work_level_subject_level = document.getElementById ("work_level_subject_level");
+                        var subject_id = document.getElementById ("subject_id");
+                        for(var i in data.data[0]) {
+                            var opt = document.createElement("option");
+                            opt.value = data.data[0][i]['id'];
+                            opt.innerText = data.data[0][i]['name'];
+                            work_direction_id.appendChild (opt);
+                            form.render('select');
+                        }
+                        for(var i in data.data[1]) {
+                            var optLevel = document.createElement("option");
+                            optLevel.value = data.data[1][i]['work_level'];
+                            optLevel.innerText = data.data[1][i]['work_level'];
+                            work_level_subject_level.appendChild (optLevel);
+                            form.render('select');
+                        }
+                        var optSubject = document.createElement("option");
+                        optSubject.innerText = data.data[2];
+                        // subject_id.appendChild (optSubject);
+                        // form.render('select');
+
+                    }else{
+                        $("#work_direction_id").html("");
+                        $("#work_level_subject_level").html("");
+                        $("#subject_id").html("");
+                        form.render('select');
+                        layer.msg(data.msg)
+                    }
+                }
+            });
+            //防止页面跳转
+            return false;
+        });
+
+        //获取现场审核地点 参加考试地点
+        form.on('select(work_level_subject_level)', function(data){
+            var exam_plan_id = $("#exam_plan_id").val();
+            var work_type_id = $("#work_type_id").val();
+            var work_level_subject_level = $("#work_level_subject_level").val();
+            $.ajax({
+                url:urladdr.selAuditExamSite,
+                type:'post',
+                dataType:'json',
+                data:{
+                    exam_plan_id:exam_plan_id,
+                    work_type_id:work_type_id,
+                    work_level_subject_level:work_level_subject_level,
+                },
+                success:function (data) {
+                    if (data.code==1){
+                        $("#audit_site").html("");
+                        $("#exam_site").html("");
+                        var audit_site = document.getElementById ("audit_site");
+                        var exam_site = document.getElementById ("exam_site");
+                        for(var i in data.data[0]) {
+                            var opt = document.createElement("option");
+                            opt.value = data.data[0][i]['name'];
+                            opt.innerText = data.data[0][i]['name'];
+                            audit_site.appendChild (opt);
+                            form.render('select');
+                        }
+                        for(var i in data.data[1]) {
+                            var optLevel = document.createElement("option");
+                            optLevel.value = data.data[1][i]['name'];
+                            optLevel.innerText = data.data[1][i]['name'];
+                            exam_site.appendChild (optLevel);
+                            form.render('select');
+                        }
+                    }else{
+                        $("#audit_site").html("");
+                        $("#exam_site").html("");
+                        form.render('select');
+                        layer.msg(data.msg)
+                    }
+                }
+            });
+            //防止页面跳转
+            return false;
+        });
+
+
+        //添加表单监听事件
+        form.on('submit(formSubmit)', function (data) {
+            data=data.field;
+            $.ajax({
+                url:urladdr.updateExamEnroll,
+                type:'post',
+                data:data,
+                dataType:'json',
+                success:function (data) {
+                    if (data.code==1){
+                        layer.msg(data.msg,{
+                            icon: 1,//提示的样式
+                            time:  2000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                            end: function () {
+                                //当你在iframe页面关闭自身时
+                                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                parent.layer.close(index); //再执行关闭
+                                parent.location.reload();
+                            }
+                        });
+                    }else{
+                        layer.msg(data.msg);
+                    }
+                }
+            });
+            //防止页面跳转
+            return false;
+        });
+
+    });
+
+
+</script>
+{/block}

@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css">
+    <style>
+        .setvolume {
+            width: 40px;
+            float: right;
+            margin-top: -8px;
+        }
+        .setvolume_font {
+            float: left;
+            margin-top: 9px;
+            margin-left: -31px;
+        }
+        .setvolume_font2 {
+            float: right;
+            margin-top: -30px;
+            margin-right: -14px;
+        }
+        .setvolume_title {
+            height: 41px;
+        }
+        .spancol {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+{if condition="isset($errorInfo)"}
+<div class="layui-col-md12">
+    <div class="layui-card">
+
+        <div class="layui-card-body">
+            <blockquote class="layui-elem-quote">
+                警告:同一试卷不可添加不同工种、方向、级别！
+            </blockquote>
+        </div>
+    </div>
+</div>
+    {volist name="errorInfo" id="data"}
+        <span class="layui-badge" style="padding-left: 14px;">！工种:{$data.work_name}&nbsp;&nbsp;级别:{$data.direction_name}&nbsp;&nbsp;方向:{$data->level_id}</span><br>
+    {/volist}
+{else /}
+    <blockquote class="layui-elem-quote">
+    <h2>总题数：( <span class="spancol">{$topicCount}</span> )道题&nbsp;&nbsp;&nbsp;&nbsp;当前总分：( <span class="spancol points">0</span> )分</h2><br>
+</blockquote>
+    <form class="layui-form" action="" id="addform">
+    <input type="hidden" name="paper_id" value="{$topicId}">
+    <input type="hidden" id="total_score" name="total_score" value="">
+        {volist name="workLevelDirection" id="data"}
+        <input type="hidden"  name="work_id" value="{$data.work_id}">
+        <input type="hidden"  name="level_id" value="{$data.level_id}">
+        <input type="hidden"  name="work_direction_id" value="{$data.direction_id}">
+        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;margin-left: 221px;">
+            <legend>
+                工种:{$data.work_name}、级别:{$data.direction_name}、方向:{$data->level_id}
+            </legend>
+        </fieldset>
+        {/volist}
+    <div class="layui-form-item">
+        <label class="layui-form-label">组卷命名</label>
+        <div class="layui-input-block">
+            <input type="text" name="paper_name" id="paper_name" required  lay-verify="required" placeholder="请输入组卷名" lay-verify="required" class="layui-input">
+        </div><br>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label"></label>
+        <div class="layui-input-block">
+            <blockquote class="layui-elem-quote">
+                {volist name="topicEachCount" id="vo"}
+                {switch name="$vo.type" }
+                {case value="单选题" }
+                <h4 class="setvolume_title">单选题：( <span style="color: red">{$vo.count}</span> ) 道
+                    <div class="setvolume">
+                        <span class="setvolume_font">每题</span>
+                        <input type="text" name="single" lay-verify="required" placeholder="0" class="layui-input score">
+                        <span class="setvolume_font2">分</span>
+                    </div>
+                </h4>
+                {/case}
+                {case value="多选题"}
+                <h4 class="setvolume_title">多选题：( <span style="color: red">{$vo.count}</span> ) 道
+                    <div class="setvolume">
+                        <span class="setvolume_font">每题</span>
+                        <input type="text" name="more" lay-verify="required" placeholder="0" class="layui-input score">
+                        <span class="setvolume_font2">分</span>
+                    </div>
+                </h4>
+                {/case}
+                {case value="判断题"}
+                <h4 class="setvolume_title">判断题：( <span style="color: red">{$vo.count}</span> ) 道
+                    <div class="setvolume">
+                        <span class="setvolume_font">每题</span>
+                        <input type="text" name="judge" lay-verify="required" placeholder="0" class="layui-input score">
+                        <span class="setvolume_font2">分</span>
+                    </div>
+                </h4>
+                {/case}
+
+                {/switch}
+                {/volist}
+            </blockquote>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button type="submit" class="layui-btn" lay-submit lay-filter="formSubmit">生成试卷</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+{/if}
+
+</body>
+</html>
+{load href="__PUBLIC__/layui/layui.js"/}
+{load href="__PUBLIC__/layui/lay/modules/code.js"/}
+{load href="__PUBLIC__/js/jquery.min.js"}
+<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+<script>
+    layui.use(['form', 'layedit', 'laydate'], function(){
+        var form = layui.form
+            ,layer = layui.layer
+            ,layedit = layui.layedit
+            ,laydate = layui.laydate;
+    });
+
+    layui.use('element', function(){
+        var element = layui.element;
+    });
+    layui.use(['form', 'layer','jquery'], function () {
+        var form = layui.form;
+        var $ = layui.jquery;
+
+        //计算总分数
+        $(".score").change(function(){
+            var num = 0;
+            $(".score").each(function () {
+                var score = $(this).val();
+                if (!isNaN(score) && score) {
+                    var resultString = $(this).parents().siblings('span')[0].innerText;
+                    var resultNumber = parseInt(resultString) * score;
+                    num += parseInt(resultNumber);
+                }
+            })
+            $('.points').html(num);
+            $("#total_score").val(num);
+            return false;
+        });
+
+        //添加表单监听事件
+        form.on('submit(formSubmit)', function (data) {
+            data=data.field;
+            $.ajax({
+                url:'/api/LearningTopicOfficial/setvolumeAdd',
+                type:'post',
+                data:data,
+                dataType:'json',
+                success:function (data) {
+                    if (data.status==1){
+                        document.cookie="langCookie=";//销毁cookie
+                        layer.msg(data.msg,{
+                            icon: 1,//提示的样式
+                            time:  2000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                            end: function () {
+                                //当你在iframe页面关闭自身时
+                                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                parent.layer.close(index); //再执行关闭
+                                parent.location.reload();
+                            }
+                        });
+                    }else{
+                        layer.msg(data.msg);
+                    }
+                }
+            });
+            //防止页面跳转
+            return false;
+        });
+    });
+
+</script>

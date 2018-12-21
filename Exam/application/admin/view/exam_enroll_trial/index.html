@@ -1,0 +1,339 @@
+{extend name="common@layout/layout" /}
+{block name="title"}{if $organize_id == 1}组织审核{else}考生审核{/if}{/block}
+{block name="css"}
+<style>
+    .layui-form-label {
+        width: 70px !important;
+        padding: 9px 15px 10px 0 !important;
+    }
+    .layui-inline {
+        margin-right: 0 !important;
+    }
+    .title {
+        display: block;
+        width: 50px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+</style>
+{/block}
+{block name='crumbs'}
+<span class="layui-breadcrumb">
+  <a href="/admin" class="county">
+    <i class="layui-icon layui-icon-home"></i>
+    &nbsp;首页
+  </a>
+    {if $organize_id == 0 }
+    <a href="/admin/ExamEnrollTrial/personal"><cite>个人报名审核</cite></a>
+  <a><cite>考生审核</cite></a>
+    {else}
+    <a href="/admin/ExamEnrollTrial/organize"><cite>组织报名审核</cite></a>
+      <a href="/admin/ExamEnrollTrial/organizeEnroll?exam_plan_id={$exam_plan_id}"><cite>组织报名列表</cite></a>
+  <a><cite>组织审核</cite></a>
+    {/if}
+
+</span>
+{/block}
+{block name="content"}
+
+        <div class="layui-form-item"  style="padding-top: 15px;height: auto;">
+                <form action="/admin/ExamEnrollTrial/{if $organize_id == 0}personalEnroll{else}organizeTrial{/if}"  class="layui-form" method="post">
+                <div class="layui-inline">
+                    <label class="layui-form-label">姓名</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="exam_enroll_name" id="exam_enroll_nameSea" sub="{$map['exam_enroll_name']}" value="{$map['exam_enroll_name']}" placeholder="请输入" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                    <input type="hidden" value="{$organize_id}" name="organize_id">
+                <div class="layui-inline">
+                    <label class="layui-form-label">证件号</label>
+                    <div class="layui-input-block">
+                        <input type="hidden" name="exam_plan_id" value="{$exam_plan_id}">
+                        <input type="text" name="id_card" id="id_cardSea" sub="{$map['id_card']}" value="{$map['id_card']}" placeholder="请输入" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">审核状态</label>
+                    <div class="layui-input-block">
+                        <select name="status" id="statusSea" lay-search>
+                            <option value="">全部</option>
+                            {volist name="enroll" id="vo"}
+                            <option value="{$key}" {if $map['status']== $key} selected {/if} >{$vo}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <input type="submit" class="layui-btn layuiadmin-btn-order" value="搜索" id="searchBtn">
+                </div>
+
+            </form>
+            <div class="layui-card-body layui-form">
+            <select name="" lay-filter="batchAudit" id="batchAudit">
+                <option value="">批量操作</option>
+                <option value="1">审核通过</option>
+                <option value="2">审核不通过</option>
+            </select>
+            </div>
+        </div>
+
+            <table class="layui-table layui-form">
+                <thead>
+                <tr>
+                    <th width="50px"><input type="checkbox" name="close" lay-skin="primary" id="c_all"  lay-filter="switchTest"></th>
+                    <th width="50px">姓名</th>
+                    <th width="150px">证件号</th>
+                    <th width="150px">工种</th>
+                    <th width="150px">方向</th>
+                    <th width="100px">等级</th>
+                    <th width="50px">状态</th>
+                    <th width="200px">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {volist name="arrTrial" id="vo"}
+                <tr>
+                    <td>{if ($vo['status']!=15 && $vo['status']!=10 )}<span style="font-size: 23px;">☒</span>{else}
+                        <input type="checkbox" name="batchTrial[]" lay-skin="primary" lay-filter="c_one" class="batchTrial" value="{$vo.id}">{/if}</td>
+                    <td><a class="title" href="#" title="{$vo['exam_enroll_name']}">{$vo['exam_enroll_name']}</a></td>
+                    <td>{$vo.id_card}</td>
+                    <td>{$vo.work_name}</td>
+                    <td>{$vo.work_direction_name}</td>
+                    <td>{$vo->work_level_subject_level}</td>
+                    <td>
+                        {$vo->status}
+                    </td>
+                    <td>
+                        <button exam_enroll_id="{$vo['id']}" class="layui-btn layui-btn-xs {if ($vo['status']!=15 && $vo['status']!=10 )} layui-btn-disabled {else}reviewone{/if}">
+                            <i class="layui-icon">审核</i>
+                        </button>
+                        <button exam_enroll_id="{$vo['id']}" class="layui-btn layui-btn-xs details">
+                            <i class="layui-icon">详情</i>
+                        </button>
+                        {if $vo.audit_way=='线上审核'}
+                        <input type="hidden" name="hiddenid" id="hiddenid" value="{$vo.id}" >
+                        <input type="hidden" name="exam_enroll_name" id="exam_enroll_name" value="{$vo.exam_enroll_name}" >
+                        <input type="hidden" name="work_name" id="work_name" value="{$vo.work_name}" >
+                        <input type="hidden" name="work_direction_name" id="work_direction_name" value="{$vo.work_direction_name}" >
+                        <input type="hidden" name="work_level_subject_level" id="work_level_subject_level" value="{$vo.work_level_subject_level}" >
+                        <button class="layui-btn layui-btn-xs" lay-submit lay-filter="examFile">审核材料</button>
+                        {/if}
+                    </td>
+                </tr>
+                {/volist}
+
+                </tbody>
+            </table>
+        <div class="layui-form-item">
+            <div class="layui-fluid tp-pages">
+                {$arrTrial->render()}
+            </div>
+        </div>
+{/block}
+{/extend}
+{block name="script"}
+<script>
+    layui.use(['form', 'layer','jquery'], function () {
+        var form = layui.form;
+        var $ = layui.jquery;
+        //材料
+        form.on('submit(examFile)', function (data) {
+            var id = $("#hiddenid").val();
+            var exam_enroll_name = $("#exam_enroll_name").val();
+            var work_name = $("#work_name").val();
+            var work_direction_name = $("#work_direction_name").val();
+            var work_level_subject_level = $("#work_level_subject_level").val();
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['90%', '90%'], //宽高
+                title: "查看审核材料",
+                content: "/admin/ExamEnrollTrial/examFile?id="+id+"&exam_enroll_name="+exam_enroll_name+'&work_name='+work_name+'&work_direction_name='+work_direction_name+'&work_level_subject_level='+work_level_subject_level,  //调到新增页面
+                yes: function(index, layero){
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+            //防止页面跳转
+            return false;
+        });
+        $(".reviewone").click(function () {
+            var id = $(this).attr("exam_enroll_id");
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['1000px', '90%'], //宽高
+                title: "审核报名",
+                content: urladdr.trialExamTrial+"?id="+id,  //调到页面
+                yes: function(index, layero){
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+        $(".edit").click(function () {
+            var id =$(this).attr("exam_enroll_id");
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['1000px', '900px'], //宽高
+                title: "修改报名信息",
+                content: urladdr.editExamTrial+"?id="+id,  //调到修改页面
+                yes: function(index, layero){
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+
+        $(".pager li a").click(function () {
+            var bar_code = $("#bar_codeSea").attr('sub');
+            if (bar_code == '') {
+
+            } else {
+                var a = $(this).attr("href");
+                var url = a + "&bar_code=" + bar_code;
+                $(this).attr("href", url);
+            }
+        });
+
+        $(".details").click(function () {
+            var id = $(this).attr("exam_enroll_id");
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['1000px', '90%'], //宽高
+                title: "报名详情",
+                content: urladdr.detailsExamEnrollTrial+"?id="+id,  //调到详情页面
+                yes: function(index, layero){
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+
+        form.on('select(batchAudit)', function(data){
+            var batchAudit = data.value;
+            if (!$("input[type='checkbox']").is(":checked")) {
+                layer.msg("请先选择要审核的报名数据");
+                return false;
+            }
+            var arr = new Array();
+            $("input:checkbox[name='batchTrial[]']:checked").each(function(i){
+                arr[i] = $(this).val();
+            });
+            var batchTrial = arr.join(",");//将数组合并成字符串
+            if(batchAudit == 1)
+            {
+                layer.open({
+                    title: ['温馨提示'],
+                    content: '<div style="color:#767676">确定要批量审核通过吗？</div>',
+                    btn: ['确定', '取消'],
+                    shadeClose: true,
+                    //回调函数
+                    yes: function(index, layero){
+                        $.ajax({
+                            url:urladdr.batchAddReviewLog,
+                            type:'post',
+                            data:{id:batchTrial},
+                            dataType:'json',
+                            success:function (data) {
+                                if (data.code==1){
+                                    layer.msg(data.msg,{
+                                        icon: 1,//提示的样式
+                                        time:  1000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                                        end: function () {
+                                            //当你在iframe页面关闭自身时
+                                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                            parent.layer.close(index); //再执行关闭
+                                            parent.location.reload();
+                                        }
+                                    });
+                                }else{
+                                    layer.msg(data.msg);
+                                }
+                            }
+                        });
+                        //防止页面跳转
+                        return false;
+                    }
+                });
+            }else if(batchAudit == 2)
+            {
+                layer.open({
+                    title: ['温馨提示'],
+                    content: '<div style="color:#767676">确定要批量审核不通过吗？</div>',
+                    btn: ['确定', '取消'],
+                    shadeClose: true,
+                    //回调函数
+                    yes: function(index, layero){
+                        layer.open({
+                            type: 2,
+                            skin: 'layui-layer-rim', //加上边框
+                            area: ['600px', '600px'], //宽高
+                            title: "填写不通过原因",
+                            content: urladdr.reasonReviewLog+"?id="+batchTrial,  //调到审核原因填写页面
+                            yes: function(index, layero){
+                                //do something
+                                layer.close(index); //如果设定了yes回调，需进行手工关闭
+                            }
+                        });
+                        //防止页面跳转
+                        return false;
+                    }
+                });
+            }
+
+            //防止页面跳转
+            return false;
+        });
+        //反选
+        form.on('checkbox(switchTest)', function(data){
+            if(this.checked){
+                var a = data.elem.checked;
+                if (a == true) {
+                    $(".batchTrial").prop("checked", true);
+                    form.render('checkbox');
+                } else {
+                    $(".batchTrial").prop("checked", false);
+                    form.render('checkbox');
+                }
+            }else{
+                var item = $(".batchTrial");
+                item.each(function () {
+                    if ($(this).prop("checked")) {
+                        $(this).prop("checked", false);
+                    } else {
+                        $(this).prop("checked", true);
+                    }
+                });
+                form.render('checkbox');
+            }
+
+        });
+        //有一个未选中 取消全选
+        form.on('checkbox(c_one)', function (data) {
+            var item = $(".batchTrial");
+            for (var i = 0; i < item.length; i++) {
+                if (item[i].checked == false) {
+                    $("#c_all").prop("checked", false);
+                    form.render('checkbox');
+                    break;
+                }
+            }
+            //如果都勾选了  勾上全选
+            var  all=item.length;
+            for (var i = 0; i < item.length; i++) {
+                if (item[i].checked == true) {
+                    all--;
+                }
+            }
+            if(all==0){
+                $("#c_all").prop("checked", true);
+                form.render('checkbox');}
+        });
+    })
+</script>
+{/block}

@@ -1,0 +1,63 @@
+{extend name="common@layout/nonelayout" /}
+
+{block name="content"}
+<div class="layui-tab-content">
+    <form class="layui-form">
+        <input type="hidden" name="id" id="id" value="{notempty name='res'}{$res.id}{/notempty}"/>
+        <table border="1" class="layui-table">
+            <colgroup>
+                <col width="50">
+                <col width="100">
+                <col width="50">
+                <col width="100">
+            </colgroup>
+            <tr>
+                <th width="100">方向名称:</th>
+                <td colspan="3">
+                    <input type="text" name="name" value="{notempty name='res'}{$res.name}{/notempty}" required
+                           lay-verify="required|workname"
+                           placeholder="工种名称" autocomplete="off" class="layui-input">
+                </td>
+            </tr>
+
+            <tr>
+                <th>所属工种名称:</th>
+                <td colspan="3">
+                    <select name="work_id" id="work_id" lay-filter="type" lay-verify="required">
+                        {volist name='works' id='vo'}
+                        <option {notempty name='res' }{$res.work.name==$vo.name?
+                        'selected':'';}{/notempty} value="{$vo.id}">{$vo.name}</option>
+                        {/volist}
+                    </select>
+                </td>
+            </tr>
+        </table>
+        <button class="layui-btn" style="float:right;margin-top: 20px;" id="" lay-submit lay-filter="formSubmit">确认提交
+        </button>
+    </form>
+</div>
+{/block}
+
+{block name='script'}
+<script>
+    layui.use('form', function () {
+        var form = layui.form, $ = layui.jquery;
+        //监听提交
+        form.on('submit(formSubmit)', function (data) {
+            var formData = data.field;
+
+            $.post(urladdr.doEditWorkDir, formData, function (data) {
+                if (data.code > 0) {
+                    layer.msg(data.msg, {icon: 1, time: 1000}, function () {
+                        layer.close(layer.index);
+                        window.parent.location.reload();
+                    });
+                } else {
+                    layer.msg(data.msg, {icon: 5});
+                }
+            });
+            return false;
+        });
+    });
+</script>
+{/block}

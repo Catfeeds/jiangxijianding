@@ -1,0 +1,93 @@
+{extend name="common@layout/layout" /}
+{block name="title"}{/block}
+{block name="css"}{/block}
+{block name='crumbs'}
+<span class="layui-breadcrumb" lay-separator="">
+  <a href="/admin" class="county">
+    <i class="layui-icon layui-icon-home"></i>
+    &nbsp;首页
+  </a>
+  <a href="/admin/DiplomaAuditing/applyList"><cite>鉴定计划列表</cite></a>
+  <a><cite>待申请列表</cite></a>
+</span>
+{/block}
+{block name="content"}
+<div class="layui-form-item">
+    <div class="layui-inline" style="float: right;">
+        <button class="layui-btn" exam_plan_id="{$exam_plan_id}" id="addCertificate">一键申请</button>
+    </div>
+</div>
+<table class="layui-table">
+    <thead>
+    <tr>
+        <th width="40px">编号</th>
+        <th width="200px">证件号</th>
+        <th width="50px">姓名</th>
+        <th width="100px">工种名称</th>
+        <th width="100px">级别</th>
+        <th width="50px">状态</th>
+    </tr>
+    </thead>
+    <tbody>
+    {volist name="arrGrade" id="vo"}
+    <tr>
+        <td id="id">{$i}</td>
+        <td>{$vo.id_card}</td>
+        <td>{$vo['username']}</td>
+        <td>{$vo['work_name']}</td>
+        <td>{$vo->level}</td>
+        <td>{:config("ExamOrderText.pay_state")[$vo->pay_state]}</td>
+    </tr>
+    {/volist}
+    </tbody>
+</table>
+<div class="layui-form-item">
+    <div class="layui-fluid tp-pages">
+        {$arrGrade->render()}
+    </div>
+</div>
+{/block}
+{/extend}
+{block name="script"}
+<script>
+    layui.use(['form', 'layer','jquery'], function () {
+        var form = layui.form;
+        var $ = layui.jquery;
+        $("#addCertificate").click(function () {
+            var id =$(this).attr("exam_plan_id");
+            layer.open({
+                title: ['温馨提示'],
+                content: '<div style="color:#767676">确定要一键申请证书吗？</div>',
+                btn: ['确定', '取消'],
+                shadeClose: true,
+                //回调函数
+                yes: function(index, layero){
+                    $.ajax({
+                        url:urladdr.addLogCertificate,
+                        type:'post',
+                        dataType:'json',
+                        data:{exam_plan_id:id},
+                        //判断注册状态
+                        success:function (data) {
+                            console.log(data)
+                            // if (data.code==1){
+                            //     layer.msg(data.msg, {
+                            //         icon: 1,//提示的样式
+                            //         time: 1000, //1秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                            //         end: function () {
+                            //             location.reload();
+                            //         }
+                            //     })
+                            // }else{
+                            //     layer.msg(data.msg)
+                            // }
+                        }
+                    });
+                    //防止页面跳转
+                    return false;
+                }
+            });
+        });
+    });
+</script>
+{/block}

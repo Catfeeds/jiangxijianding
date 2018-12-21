@@ -1,0 +1,101 @@
+{extend name="common@layout/layout" /}
+{block name='title'}县鉴定中心管理{/block}
+
+{block name='crumbs'}
+<span class="layui-breadcrumb" lay-separator="">
+    <a href="/admin" class="county">
+    <i class="layui-icon layui-icon-home"></i>
+    &nbsp;首页
+    </a>
+    {eq name='flag' value='true'}<a href="{:url('county/cityList')}">市列表</a>{/eq}
+    <a><cite>县管理</cite></a>
+</span>
+{/block}
+{block name='content'}
+<hr>
+<h1><b>{$cityName}</b></h1>
+<div class="layui-form layui-card-header" style="padding-top: 15px;height: auto;">
+    <form action="{:request()->baseurl()}" method="post">
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">名称</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="name" autocomplete="off" placeholder="请输入"
+                           value="{$Think.session.search.name}" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">负责人</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="linkman" autocomplete="off" placeholder="请输入"
+                           value="{$Think.session.search.linkman}" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">电话</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="phone" autocomplete="off" placeholder="请输入"
+                           value="{$Think.session.search.phone}" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <button class="layui-btn layuiadmin-btn-useradmin" lay-submit>
+                    <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+<table class="layui-table" lay-even>
+    <tr>
+        <td></td>
+        <td>名称</td>
+        <td>邮编</td>
+        <td>负责人</td>
+        <td>负责人电话</td>
+        <td>创建时间</td>
+        <td>状态</td>
+        <td width='58'>操作</td>
+    </tr>
+    {volist name='list' id='vo'}
+    <tr>
+        <td>{$i}</td>
+        <td>{$vo.name}<b>{notempty name='$vo.county_type'}<b style="color:red;">（{$vo.county_type}）{/notempty}</b></td>
+        <td>{$vo.zip_code}</td>
+        <td>{$vo.linkman}</td>
+        <td>{$vo.phone}</td>
+        <td>{:date('Y/m/d',strtotime($vo.create_time))}</td>
+        <td>{$vo.status?'<span style="font-weight: 700;color: green;">启用</span>':'<span
+                style="font-weight: 700;color: red;">禁用</span>'}
+        </td>
+        <td>
+            <button data-value="{$vo.id}" class="layui-btn layui-btn-xs city-edit">查看详情</button>
+        </td>
+    </tr>
+    {/volist}
+</table>
+{/block}
+
+{block name='script'}
+<script>
+    layui.use(['form', 'layer', 'jquery'], function () {
+        var $ = layui.jquery;
+
+        $(".city-edit").click(function () {
+            var id = $(this).data('value');
+            layer.open({
+                type: 2,
+                anim: 1,
+                skin: 'layui-layer-molv',
+                area: ['60%', '80%'], //宽高
+                title: "县管理",
+                content: urladdr.editCounty + id,  //调到详情页面
+                yes: function (index, layero) {
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+    });
+</script>
+{/block}

@@ -1,0 +1,230 @@
+{extend name="cms@layout/layout" /}
+{block name="title"}管理中心{/block}
+{block name="content"}
+
+
+{block name="css"}
+<link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css">
+{/block}
+{block name="content"}
+<body >
+<header ><h1>修改导航栏</h1></header>
+    <form class="layui-form" >
+        <div class="layui-form-item">
+            <label class="layui-form-label"><h2>首页</h2></label>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">选择框</label>
+            <div class="layui-input-block">
+                <select name="id[]" id="only_1" lay-filter="1"  lay-verify="required">
+                    <option value="0"></option>
+                    {volist name='data' id='v'}
+                    <option value="{$v.id}">{$v.title}</option>
+                    {/volist}
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">选择框</label>
+            <div class="layui-input-block">
+                <select name="id[]" id="only_2" lay-verify="required">
+                    <option value="0"></option>
+                    {volist name='data' id='v'}
+                    <option value="{$v.id}">{$v.title}</option>
+                    {/volist}
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">选择框</label>
+            <div class="layui-input-block">
+                <select name="id[]" id="only_3" lay-verify="required">
+                    <option value="0"></option>
+                    {volist name='data' id='v'}
+                    <option value="{$v.id}">{$v.title}</option>
+                    {/volist}
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">选择框</label>
+            <div class="layui-input-block">
+                <select name="id[]" id="only_4" lay-verify="required">
+                    <option value="0"></option>
+                    {volist name='data' id='v'}
+                    <option value="{$v.id}">{$v.title}</option>
+                    {/volist}
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">选择框</label>
+            <div class="layui-input-block">
+                <select name="id[]" id="only_5" lay-verify="required">
+                    <option value="0"></option>
+                    {volist name='data' id='v'}
+                    <option value="{$v.id}">{$v.title}</option>
+                    {/volist}
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">选择框</label>
+            <div class="layui-input-block">
+                <select name="id[]" id="only_6" lay-verify="required">
+                    <option value="0"></option>
+                    {volist name='data' id='v'}
+                    <option value="{$v.id}">{$v.title}</option>
+                    {/volist}
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="sub">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                <button class="layui-btn layui-btn-lg yulan" >
+                    <a href="">查看</a>
+                </button>
+            </div>
+        </div>
+
+    </form>
+
+</body>
+{/block}
+
+{block name="script"}
+
+<script type="text/javascript">
+
+    layui.use(['form', 'layer','jquery'], function () {
+        var form  = layui.form;
+        var $  = layui.jquery;
+
+        form.on('select()',function(data)
+        {
+            var arr =[] ;
+            var arr2 = [];
+
+            var his = $(this);
+            if(parseInt($('#only_1').val())==0)
+            {
+                arr2.push('only_1');
+            }else
+                {
+                    arr.push(parseInt($('#only_1').val()));
+                }
+            if(parseInt($('#only_2').val())==0)
+            {
+                arr2.push('only_2');
+            }else
+            {
+                arr.push(parseInt($('#only_2').val()));
+            }
+            if(parseInt($('#only_3').val())==0)
+            {
+                arr2.push('only_3');
+            }else
+            {
+                arr.push(parseInt($('#only_3').val()));
+            }
+            if(parseInt($('#only_4').val())==0)
+            {
+                arr2.push('only_4');
+            }else
+            {
+                arr.push(parseInt($('#only_4').val()));
+            }
+            if(parseInt($('#only_5').val())==0)
+            {
+                arr2.push('only_5');
+            }else
+            {
+                arr.push(parseInt($('#only_5').val()));
+
+            }
+            if(parseInt($('#only_6').val())==0)
+            {
+                arr2.push('only_6');
+            }else
+            {
+                arr.push(parseInt($('#only_6').val()));
+
+            }
+            arr = JSON.stringify(arr);
+              console.log(arr);
+         $.ajax({
+             url:"select",
+             type:'post',
+             data:{data:arr},
+             dataType:'json',
+             success:function(res)
+             {
+                 var html='';
+                  html +='<option value="0"></option>'
+                 for(var i=0;i<res.data.length;i++)
+                 {
+                    html+='<option value="'+res.data[i].id+'">'+res.data[i].title+'</option>'
+                 }
+                  var id = his.attr('id');
+                 for(var j=0;j<arr2.length;j++)
+                 {
+                     $('#'+arr2[j]).html('');
+                     $('#'+arr2[j]).html(html);
+                     form.render();
+                 }
+                 return false;
+             }
+         })
+
+        })
+        //添加表单监听事件
+        form.on('submit(sub)',function (data) {
+            data = data.field;
+            // console.log(data);
+            $.post("/cms/change/add",data,function (data) {
+
+                if (data.code == 1){
+                    layer.msg(data.msg, {
+                        icon: 1,//提示的样式
+                        time: 2000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                        end: function () {
+                            //当你在iframe页面关闭自身时
+                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                            parent.layer.close(index); //再执行关闭
+                            parent.location.reload();
+                        }
+                    })
+                }else{
+                    layer.msg(data.msg);
+                }
+            })
+            //防止页面跳转
+            return false;
+        });
+    });
+    layui.use(['form', 'layer','jquery'], function () {
+        var form  = layui.form;
+        var $  = layui.jquery;
+        $(".yulan").click(function () {
+            // data = data.field;
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['100%', '90%'], //宽高
+                title: "轮播图预览",
+                content: "/cms/change/set",  //调到新增页面
+                yes: function(index, layero){
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+            return false;
+        });
+    });
+
+</script>
+{/block}

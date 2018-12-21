@@ -1,0 +1,120 @@
+{extend name="common@layout/layout" /}
+{block name="title"}督导员管理{/block}
+{block name='crumbs'}
+<span class="layui-breadcrumb" lay-separator="">
+  <a href="/admin" class="county">
+    <i class="layui-icon layui-icon-home"></i>&nbsp;首页
+  </a>
+    <a href="{:url('index')}"><cite>督导员管理</cite></a>
+    <a><cite>添加督导员</cite></a>
+</span>
+{/block}
+
+{block name="content"}
+<div class="layui-tab-content">
+    <span class="layui-badge">单条</span> <span style="font-size: 18px;">添加督导员</span>
+    <form class="layui-form" style="width:75%;">
+        <table border="1" class="layui-table">
+            <colgroup>
+                <col width="50">
+                <col width="100">
+                <col width="50">
+                <col width="100">
+            </colgroup>
+            <tr>
+                <th width="100">手机号码:</th>
+                <td colspan="3">
+                    <input type="text" name="phone" value="" required
+                           lay-verify="phone" placeholder="手机号码" autocomplete="off" class="layui-input">
+                </td>
+            </tr>
+            <tr>
+                <th width="100">姓名:</th>
+                <td colspan="3">
+                    <input type="text" name="name" value="" required
+                           lay-verify="required" placeholder="姓名" autocomplete="off" class="layui-input">
+                </td>
+            </tr>
+            <tr>
+                <th width="100">证件号:</th>
+                <td colspan="3">
+                    <input type="text" name="id_number" value=""
+                           required
+                           lay-verify="required" placeholder="证件号" autocomplete="off" class="layui-input">
+                </td>
+            </tr>
+
+            <tr>
+                <th width="100">状态:</th>
+                <td colspan="3">
+                    <input type="radio" name="status" value="1" title="启用" checked>
+                    <input type="radio" name="status" value="0" title="禁用">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1"></td>
+                <td colspan="3">
+                    <button class="layui-btn layui-col-md3" style="float:right;" id="" lay-submit
+                            lay-filter="formSubmit">确认添加
+                    </button>
+                </td>
+            </tr>
+
+        </table>
+    </form>
+
+    <hr class="layui-bg-green">
+
+    <span class="layui-badge">批量</span> <span style="font-size: 18px;">添加督导员</span>
+    <br><br>
+    <a href="/static/execl/批量导入督导员.xlsx" type="button" class="layui-btn">
+        <i class="layui-icon">&#xe601;</i>下载表格模板
+    </a>
+    <button type="button" class="layui-btn" id="import">
+        <i class="layui-icon">&#xe67c;</i>上传表格
+    </button>
+</div>
+{/block}
+
+{block name="script"}
+<script>
+    layui.use(['form', 'upload'], function () {
+        var form = layui.form, $ = layui.jquery, upload = layui.upload;
+        //监听提交
+        form.on('submit(formSubmit)', function (data) {
+            var formData = data.field, button = $(this);
+            button.addClass('layui-btn-disabled').attr('disabled', true);
+            $.post(urladdr.addInstructor, formData, function (data) {
+                if (data.code > 0) {
+                    layer.msg(data.msg, {icon: 1, time: 1000}, function () {
+                        layer.close(layer.index);
+                        $(location).attr('href', '/admin/Instructor');
+                    });
+                } else {
+                    layer.msg(data.msg, {icon: 5}, function () {
+                        button.removeClass('layui-btn-disabled').removeAttr('disabled');
+                    });
+                }
+            });
+            return false;
+        });
+
+        //执行实例
+        var uploadInst = upload.render({
+            elem: '#import' //绑定元素
+            , url: '/api/instructor/import' //上传接口
+            , accept: 'file'
+            , done: function (data) {
+                if (data.code > 0) {
+                    layer.msg(data.msg, {icon: 1, time: 1000}, function () {
+                        $(location).attr('href', '/admin/Instructor');
+                    });
+                } else {
+                    layer.msg(data.msg, {icon: 5});
+                }
+            }
+        });
+
+    });
+</script>
+{/block}

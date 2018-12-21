@@ -1,0 +1,211 @@
+{extend name="common@layout/nonelayout" /}
+{block name="css"}
+<style>
+    .lhj-content{
+        width: 23%;
+        float: left;
+        padding:10px 0 10px 10px;
+    }
+    .lhj-content button{
+        width: 100%;
+    }
+    .lhj-content a{
+        width: 100%;
+    }
+</style>
+{/block}
+{block name="content"}
+<body>
+<form class="layui-form">
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">申请标题</label>
+        <div class="layui-input-inline">
+            <div class="layui-form-mid layui-word-aux">
+                <!--<span style="color: skyblue">-->
+                {volist name="arrWork" length='1' id="vo"}
+                    {$vo.title}
+                {/volist}
+                <!--</span>-->
+            </div>
+        </div>
+
+        <label class="layui-form-label">参加人数</label>
+        <div class="layui-input-inline">
+            <div class="layui-form-mid layui-word-aux">
+                <!--<span style="color: skyblue">-->
+                {volist name="arrWork" length='1' id="vo"}
+                {$vo.exam_num}
+                {/volist}
+                <!--</span>-->
+            </div>
+        </div>
+
+        <label class="layui-form-label">考试时间</label>
+        <div class="layui-input-inline">
+            <div class="layui-form-mid layui-word-aux">
+                <!--<span style="color: skyblue">-->
+                {volist name="arrWork" length='1' id="vo"}
+                {$vo.exam_time}
+                {/volist}
+                <!--</span>-->
+            </div>
+        </div>
+    </div>
+
+
+    <!--<div class="layui-form-item">-->
+    <table border="1" class="layui-table" width="100px" >
+        <tr>
+            <td>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">工种名称</label>
+                </div>
+            </td>
+            <td>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">工种级别</label>
+                </div>
+            </td>
+        </tr>
+        {volist name="arrWork" id="vo"}
+        <tr>
+            <td>
+                {$vo['work_name']}
+            </td>
+            <td>
+                <!--<span class="layui-bg-orange">-->
+                {volist name="vo.level" id="v"}
+                {:config('EnrollStatusText.work_level_subject_level')[$v]}
+                {/volist}
+                <!--</span>-->
+            </td>
+            {/volist}
+        </tr>
+
+    </table>
+    <div class="lhj-content">
+
+    <a href="{volist name='arrWork' length='1' id='vo'}{$vo.appendix}{/volist}" class="layui-btn layui-btn-sm" download="{volist name='arrWork' length='1' id='vo'}{$vo.appendix}{/volist}" target="_blank">下载</a>
+    </div>
+    <div class="lhj-content">
+    <button name="detail" listid="{volist name='arrWork' length='1' id='vo'}{$vo.appendix}{/volist}" class="layui-btn layui-btn-sm preview">
+        预览pdf
+    </button>
+    </div>
+
+    <div class="lhj-content">
+
+    <button listid='{$vo.id}' listStatus="{$vo.status}" class="layui-btn layui-btn-sm {if ($vo.status>2)} layui-btn-disabled {else} review {/if}" {if ($vo.status>2)} style='background-color: #ff5722' {/if} >
+        {switch name="$vo['status']"}
+        {case value="1"}一审通过{/case}
+        {case value="2"}二审通过{/case}
+        {default /}其他
+        {/switch}
+    </button>
+    </div>
+    <div class="lhj-content">
+
+    <button listid='{$vo.id}' listStatus="{$vo.status}" class="layui-btn layui-btn-sm {if ($vo.status>2)} layui-btn-disabled {else} nonreview {/if}" {if ($vo.status>2)} style='background-color: #ff5722' {/if} >
+        {switch name="$vo['status']"}
+        {case value="1"}一审不通过{/case}
+        {case value="2"}二审不通过{/case}
+        {default /}其他
+        {/switch}
+    </button>
+    </div>
+</form>
+</body>
+{/block}
+{/extend}
+{block name="script"}
+<script>
+    layui.use(['layer','jquery'],function() {
+        var $ = jQuery = layui.$;
+        $(".preview").click(function () {
+            var listid = $(this).attr("listid");
+            parent.layer.open({
+                type: 2,
+                title: false,
+                area: ['95%', '95%'],
+                shade: 0.8,
+                shadeClose: true,
+                content:listid
+            });
+            return false;
+        });
+
+
+        $('.review').click(function(){
+            var id = $(this).attr('listid');
+            var listStatus = $(this).attr('listStatus');
+            // alert(1);die;
+            layer.open({
+                title: ['温馨提示'],
+                content: '<div style="color:#767676">您确定审核通过吗？提交后不可撤销！</div>',
+                btn: ['确定', '取消'],
+                shadeClose: true,
+                yes: function(index, layero){
+                    $.ajax({
+                        url:urladdr.review,
+                        type:'post',
+                        dataType:'json',
+                        data:{
+                            id:id,
+                            listStatus:listStatus
+                        },
+                        //判断注册状态
+                        success:function (data) {
+                            // console.log(data);
+                            if (data.code==1){
+                                layer.msg(data.msg, {
+                                    icon: 1,//提示的样式
+                                    time: 1000, //1秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                                    end: function () {
+                                        // location.reload();
+                                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                        parent.layer.close(index); //再执行关闭
+                                        parent.location.reload();
+                                    }
+                                })
+                            }else{
+                                layer.msg(data.msg)
+                            }
+                        }
+                    });
+                    //防止页面跳转
+                    return false;
+                }
+            });
+            return false;
+        });
+        $('.nonreview').click(function(){
+            var id = $(this).attr('listid');
+            var listStatus = $(this).attr('listStatus');
+            layer.open({
+                title: ['温馨提示'],
+                content: '<div style="color:#767676">您确定审核不通过吗？提交后不可撤销！</div>',
+                btn: ['确定', '取消'],
+                shadeClose: true,
+                yes: function(index, layero){
+                    layer.open({
+                        type: 2,
+                        skin: 'layui-layer-rim', //加上边框
+                        area: ['1000px', '90%'], //宽高
+                        title: "填写原因",
+                        content: urladdr.becauseExamApply+"?id="+id+"&listStatus="+listStatus,  //调到原因页面
+                        yes: function(index, layero){
+                            //do something
+                            layer.close(index); //如果设定了yes回调，需进行手工关闭
+                        }
+                    });
+                    //防止页面跳转
+                    return false;
+                }
+            });
+            return false;
+        });
+
+    });
+</script>
+{/block}

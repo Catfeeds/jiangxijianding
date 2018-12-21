@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>{block name="title"}标题{/block}</title>
+    <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css">
+    {load href="__STATIC__/css/common/page.css"/}
+    {block name="css"}{/block}
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">
+            <img src="__STATIC__/img/logo.png" width="50" alt="">
+        </div>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+        <ul class="layui-nav layui-layout-left">
+            <li class="layui-nav-item"><a href="/admin/index/index">控制台</a></li>
+        </ul>
+        <ul class="layui-nav layui-layout-right">
+
+            <li class="layui-nav-item">
+                <a href="">个人中心<span class="layui-badge-dot"></span></a>
+            </li>
+            <li class="layui-nav-item">
+                <a href="">{$Think.session.adminuser.username}</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="javascript:;" id="updatePwd">修改密码</a></dd>
+                    <dd><a href="javascript:;" id="userInfo">基本信息</a></dd>
+                    <dd><a href="javascript:;" id="checkOut">退出</a></dd>
+                </dl>
+            </li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree jx-left-nav" lay-filter="test">
+                {volist name='menuData' id='vo'}
+                {notempty name='$vo.son'}
+                <li class="layui-nav-item">
+                    <a class="" href="{$vo.url == '#' ? 'javascript:void(0);':'/'.$vo.url}">{if $vo.id==104 && !empty($count)}<span style="background-color: #b32727" >{$vo.title}+{$count}</span> {else} {$vo.title}{/if}</a>
+                    <dl class="layui-nav-child">
+                        {volist name='$vo.son' id='voo'}
+                        <dd><a class="check"
+                               href="{$voo.url == '#' ? 'javascript:void(0);':'/'.$voo.url}">{$voo.title}</a></dd>
+                        {/volist}
+                    </dl>
+                </li>
+                {else}
+                <li class="layui-nav-item"><a class="check" href='{$vo.url == ' #' ? 'javascript:void(0);':'/'.$vo.url}'>{$vo.title}</a></li>
+                {/notempty}
+                {/volist}
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body" style="background: #f2f2f2;">
+        <!-- 内容主体区域 -->
+        <div class="layui-tab-content">
+            <div class="layui-card" >
+                {block name='crumbs'}{/block}
+                {block name='content'}{/block}
+            </div>
+        </div>
+        <!--<div style="padding: 15px;">内容主体区域</div>-->
+    </div>
+
+    <div class="layui-footer">
+        <!-- 底部固定区域 -->
+        © www.etlchina.net - 博奥教育
+    </div>
+</div>
+</body>
+</html>
+{load href="__PUBLIC__/js/urladdr/urladdr.js"/}
+{load href="__PUBLIC__/layui/layui.js"/}
+{load href="__PUBLIC__/layui/lay/modules/code.js"/}
+{load href="__PUBLIC__/js/admin/layout.js"}
+{load href="__PUBLIC__/js/jquery.min.js"}
+{load href="__PUBLIC__/js/jquery.cookie.js"}
+<script type="text/javascript">
+    //点亮当前
+
+    layui.use(['layer', 'element', 'form', 'jquery'], function () {
+        var element = layui.element, $ = layui.jquery, form = layui.form;
+        $("a[href='"+document.location.pathname+document.location.search+"']").css('background','#009688').parents("li").find("a:first").click();
+        $("#updatePwd").click(function () {
+            layer.open({
+                type: 2,
+                area: ['500px', '500px'], //宽高
+                title: "修改密码",
+                content: "/admin/index/updatepage",  //调到新增页面
+                yes: function (index, layero) {
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+        $("#userInfo").click(function () {
+            layer.open({
+                type: 2,
+                area: ['900px', '60%'], //宽高
+                title: "基本信息",
+                content: "/admin/index/infopage",  //详细信息页面 修改详细信息
+                yes: function (index, layero) {
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+        $("#checkOut").click(function () {
+            layer.open({
+                title: ['温馨提示'],
+                content: '<div style="color:#767676">确定要退出当前账号吗？</div>',
+                btn: ['确定', '取消'],
+                shadeClose: true,
+                //回调函数
+                yes: function (index, layero) {
+                    $.ajax({
+                        url: '/api/admin/loginOut',
+                        dataType: 'json',
+                        //判断注册状态
+                        success: function (data) {
+                            if (data == 1) {
+                                layer.msg("退出成功", {
+                                    icon: 1,//提示的样式
+                                    time: 1000, //1秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                                    end: function () {
+                                        window.location.href = '/cms/index/admin';
+                                    }
+                                })
+                            } else {
+                                layer.msg(data)
+                            }
+                        }
+                    });
+                    //防止页面跳转
+                    return false;
+                },
+                btn2: function (index, layero) {
+                    layer.close(index);
+                },
+                cancel: function (index, layero) { //按右上角“X”按钮
+                    layer.close(index);
+                }
+            });
+        });
+    });
+</script>
+{block name="script"}{/block}

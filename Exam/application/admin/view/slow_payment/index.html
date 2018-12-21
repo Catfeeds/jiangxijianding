@@ -1,0 +1,156 @@
+{extend name="common@layout/layout" /}
+{block name="title"}
+{switch name="$toexamine"}
+{case value="1"}缓缴费初审{/case}
+{case value="2"}缓缴费复审{/case}
+{case value="3"}缓缴费终审{/case}
+{default /}其他
+{/switch}
+{/block}
+{block name="css"}
+<style>
+    .layui-form-label {
+        width: 70px !important;
+        padding: 9px 15px 10px 0 !important;
+    }
+    .layui-inline {
+        margin-right: 0 !important;
+    }
+    .title {
+        display: block;
+        width: 200px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+</style>
+{/block}
+{block name='crumbs'}
+<span class="layui-breadcrumb">
+  <a href="/admin" class="county">
+    <i class="layui-icon layui-icon-home"></i>
+    &nbsp;首页
+  </a>
+  <a><cite>缓缴费管理</cite></a>
+  <a><cite>{switch name="$toexamine"}
+            {case value="1"}初审{/case}
+            {case value="2"}复审{/case}
+            {case value="3"}终审{/case}
+            {default /}其他
+            {/switch}</cite></a>
+</span>
+{/block}
+{block name="content"}
+
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+            <div class="layui-form-item">
+                <br/>
+
+                <form action="/admin/SlowPayment/index" method="post">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">订单号</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="order_num" id="order_numSea" sub="{$map['order_num']}" value="{$map['order_num']}" placeholder="请输入" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <input type="submit" class="layui-btn layuiadmin-btn-order" value="搜索" id="searchBtn">
+                    </div>
+                </form>
+
+            </div>
+        </div>
+        <br/>
+        <br/>
+            <table class="layui-table" id="table">
+                <thead>
+                <tr>
+                    <td>ID</td>
+                    <th>订单号</th>
+                    <th>鉴定名称</th>
+                    <th>订单价格</th>
+                    <th>缴费状态</th>
+                    <th width="200px">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {volist name="arrSlowPayment" id="vo"}
+                <tr>
+                    <td>{$i}</td>
+                    <td>{$vo.order_num}</td>
+                    <td><a  class="title" href="#" title="{$vo['exam_plan_name']}">{$vo['exam_plan_name']}</a></td>
+                    <td>{$vo.total_money}</td>
+                    <td>{$vo->pay_state}</td>
+                <td>
+                    <button listid="{$vo.order_num}" class="layui-btn layui-btn-sm {if ($vo['pay_state']==5)} review {else} layui-btn-disabled {/if}">
+                        {switch name="$vo['log_status']"}
+                        {case value=""}初审{/case}
+                        {case value="1"}复审{/case}
+                        {case value="3"}终审{/case}
+                        {default /}其他
+                        {/switch}
+                    </button>
+                    <button listid="{$vo.order_num}" class="layui-btn layui-btn-sm detail">
+                        详情
+                    </button>
+                </td>
+                </tr>
+                {/volist}
+
+                </tbody>
+            </table>
+            <div class="layui-form-item">
+                <div class="layui-fluid tp-pages">
+                    {$arrSlowPayment->render()}
+                </div>
+            </div>
+{/block}
+{/extend}
+{block name="script"}
+<script>
+    layui.use(['layer','jquery'],function(){
+        var $ = jQuery = layui.$;
+
+        $(".pager li a").click(function () {
+            var order_num = $("#order_numSea").attr('sub');
+            if (order_num == '') {
+
+            } else {
+                var a = $(this).attr("href");
+                var url = a + "&order_num=" + order_num;
+                $(this).attr("href", url);
+            }
+        });
+
+        $('.detail').click(function(){
+            var order_num = $(this).attr('listid');
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['70%', '90%'], //宽高
+                title: "订单详情",
+                content: urladdr.detailSlowPayment+"?order_num="+order_num,  //调到详情
+                yes: function(index, layero){
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+        $('.review').click(function(){
+            var order_num = $(this).attr('listid');
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['70%', '90%'], //宽高
+                title: "审核缓缴费",
+                content: urladdr.reviewSlowPayment+"?order_num="+order_num,  //调到详情
+                yes: function(index, layero){
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+
+    });
+</script>
+{/block}

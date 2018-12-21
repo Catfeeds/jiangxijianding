@@ -1,0 +1,183 @@
+
+{block name="css"}
+<link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css">
+{/block}
+{block name="content"}
+<body >
+<div  class="layui-body" style="left: 30px;">
+    <header ></header>
+    <form class="layui-form" >
+        <div class="layui-form-item">
+            <label class="layui-form-label">类型<span style="color:red">*</span></label>
+            <div class="layui-input-block">
+                <input type="radio" name="type" value="0" title="常见问题" checked class="type" lay-filter="type" {if !empty($info)} {eq name="info.type" value="0"} checked {/eq}{else} checked {/if}>
+                {if empty($info)}
+                <input type="radio" name="type" value="1" title="用户协议" class="type" lay-filter="type">
+                {else}<input type="hidden" name="id" value="{$info.id}">
+                {/if}
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">标题<span style="color:red">*</span></label>
+            <div class="layui-input-block">
+                <input type="text" name="title" id="title" required lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input" {if !empty($info)} value="{$info.title}" {else} {/if}>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">是否发布<span style="color:red">*</span></label>
+            <div class="layui-input-block">
+                <input type="radio" name="status" value="1" title="是" {if !empty($info)} {eq name="info.status" value="1"} checked {/eq}{else} {/if}>
+                <input type="radio" name="status" value="0" title="否"  {if !empty($info)} {eq name="info.status" value="0"} checked {/eq}{else} checked {/if}>
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text" id="yong1">
+            <label class="layui-form-label">内容<span style="color:red">*</span></label>
+            <div class="layui-input-block">
+                <textarea name="content" placeholder="请输入内容" id="content1" rows="15" cols="30" class="layui-textarea">{$info?$info.content:''}</textarea>
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text" id="yong2" style="display: none;">
+            <label class="layui-form-label">内容<span style="color:red">*</span></label>
+            <div class="layui-input-block">
+                <textarea id="demo" style="display: none;">{$data?$data.content:''}</textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                {if empty($info)}
+                <button class="layui-btn" lay-submit lay-filter="sub">立即提交</button>
+                {else}
+                <button class="layui-btn" lay-submit lay-filter="subbb">立即提交</button>
+                {/if}
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+
+    </form>
+</div>
+</body>
+{/block}
+
+{block name="script"}
+<script src="__PUBLIC__/js/jquery.min.js"></script>
+<script src="__PUBLIC__/layui/layui.all.js"></script>
+
+<script type="text/javascript">
+    layui.use(['form', 'layer','jquery','layedit'], function () {
+        var form  = layui.form;
+        var $  = layui.jquery;
+        var layedit = layui.layedit;
+        //建立编辑器
+        var index = layedit.build('demo',{
+            height:500 ,
+           tool:[
+               'strong' //加粗
+               ,'italic' //斜体
+               ,'underline' //下划线
+               ,'del' //删除线
+
+               ,'|' //分割线
+
+               ,'left' //左对齐
+               ,'center' //居中对齐
+               ,'right' //右对齐
+               ,'link' //超链接
+               ,'unlink' //清除链接
+               ,'face' //表情
+               ,'help' //帮助
+           ]
+        });
+       form.on('radio(type)',function(data){
+          var type = data.value;
+          if(type == 0)
+          {
+              $('#yong1').css('display','block');
+              $('#yong2').css('display','none');
+              $('#title').val('');
+          }else {
+              $('#yong1').css('display','none');
+              $('#yong2').css('display','block');
+              $('#title').val('用户协议');
+          }
+       });
+        var active = {
+            content:function()
+            {
+                return layedit.getContent(this);
+            }
+        };
+        //添加表单监听事件
+        form.on('submit(sub)',function (data) {
+            data = data.field;
+             var content1 = $('#content1').val();
+           // var content2 = $('content2').val();
+
+            if(data.type == 0)
+            {
+                data.pid = 1;
+                if(content1=='')
+                {
+                    layer.msg('内容不能为空');
+                    return false;
+                }
+               data.content = content1;
+            }else {
+                data.pid = 0;
+               var content = active['content'].call(index);
+               if(content == '')
+               {
+                   layer.msg('内容不能为空');
+                   return false;
+               }
+               data.content = content;
+            }
+            var button = $(this);
+            button.addClass('layui-btn-disabled').attr('disabled',true);
+            $.post("/api/CmsAppAbout/add",data,function (data) {
+                if (data.code == 1){
+                    layer.msg(data.msg, {
+                               icon: 1,//提示的样式
+                               time: 2000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                               end: function () {
+                                   //当你在iframe页面关闭自身时
+                                   var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                 parent.layer.close(index); //再执行关闭
+                                   parent.location.reload();
+                               }
+                           })
+                       }else {
+                           layer.msg(data.msg);
+                    button.removeClass('layui-btn-disabled').removeAttr('disabled');
+                       }
+            });
+            //防止页面跳转
+            return false;
+        });
+        form.on('submit(subbb)',function(data)
+        {
+            data = data.field;
+            $.post("/api/CmsAppAbout/update",data,function(data){
+                if(data.code==1)
+                {
+                    layer.msg(data.msg,{
+                        icon:1,
+                        time:2000,
+                        end:function(){
+                            var indexof = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(indexof);
+                            parent.location.reload();
+                        }
+                    })
+                }else {
+                    layer.msg(data.msg);
+                }
+            });
+            return false;
+
+        });
+
+
+    });
+
+</script>
+{/block}

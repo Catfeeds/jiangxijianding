@@ -1,0 +1,117 @@
+{extend name="/layout/layout"}
+{block name="css"}{/block}
+
+{block name="content"}
+
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+            <div class="layui-form-item">
+                <form action="/organize/certificate/passlist" method="post">
+                    <button class="layui-btn" id="batchOrganize" onclick="window.history.back(-1);">
+                    返回
+                </button>
+                <a href="/organize/Certificate/export?plan_id={$plan_id}" class="layui-btn">导出编号</a>
+                   
+                </form>
+            </div>
+        </div>
+        <div class="layui-card-body">
+            <table class="layui-table">
+                <colgroup>
+                    <col width="100">
+                    <col width="150">
+                    <col width="200">
+                    <col>
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>姓名</th>
+                    <th>准考证号</th>
+                    <th>证书编号</th>
+                    <th>鉴定工种</th>
+                    <td>鉴定级别</td>
+                    <td>鉴定方向</td>   
+                </tr>
+                </thead>
+                <tbody>
+                {volist name="apply" id="vo" key='n'}
+                <tr>
+                    <td id="id">{$vo['username']}</td>
+                    <td>{$vo['admission_ticket']}</td>
+                    <td>{$vo['certificate_no']}</td>
+                    <td>{$vo['work']}</td>
+                    <td>{$vo->current_level}</td>
+                    <td>{$vo['direction']}</td>
+                </tr>
+                {/volist}
+    
+                </tbody>
+            </table>
+        </div>
+        <div class="layui-fluid tp-pages">
+            {$apply->render()}
+        </div>
+    </div>
+</div>
+
+
+</body>
+{/block}
+{/extend}
+{block name="script"}
+<script type="text/javascript">
+    layui.use('element', function(){
+        var element = layui.element;
+    });
+
+    layui.use(['form', 'layer','jquery'], function () {
+        var form  = layui.form;
+        var $  = layui.jquery;
+
+
+        $('.apply').click(function(){
+            var cert = $(this).attr('cert');
+            var plan = $('#plan').val();
+
+            var content='';
+            if(cert==1)
+            {
+                content='自取';
+            }else{
+                content='邮寄';
+            }
+            layer.open({
+                title: ['温馨提示'],
+                content: '<div style="color:#767676">您确定选择'+content+'吗？确认领取方式后不可再更改</div>',
+                btn: ['确定', '取消'],
+                shadeClose: true,
+                //回调函数
+                yes: function(index, layero){
+
+                    layer.open({
+                        type: 2,
+                        skin: 'layui-layer-rim', //加上边框
+                        area: ['35%', '60%'], //宽高
+                        title: "领取确认",
+                        content: "/organize/certificate/receiveType?cert="+cert+'&plan='+plan,  //调到页面
+                        yes: function(index, layero){
+                            layer.close(index); //如果设定了yes回调，需进行手工关闭
+                        }
+                    });
+                    //防止页面跳转
+                    return false;
+                },
+
+            });
+
+        })
+
+
+    });
+
+
+</script>
+{/block}

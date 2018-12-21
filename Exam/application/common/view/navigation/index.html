@@ -1,0 +1,14 @@
+<span class="layui-breadcrumb" lay-separator="">
+    <i class="layui-icon layui-icon-home"></i>
+        <a href="/admin" class="county">
+            首页
+        </a>
+</span>
+{volist name='Navigation' id='vo'}
+<span class="layui-breadcrumb" lay-separator="">
+    <i class="layui-icon">-</i>
+        <a href="{$vo['url']}" class="county">
+            &nbsp;      {$vo['title']}
+        </a>
+</span>
+{/volist}

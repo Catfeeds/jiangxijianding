@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css">
+
+    <title>修改密码</title>
+</head>
+<body>
+<form class="layui-form" action="">
+    <div class="layui-form-item">
+        <label class="layui-form-label">旧密码</label>
+        <div class="layui-input-inline">
+            <input type="password"  id="oldpwd" name="oldpwd" required  lay-verify="required" placeholder="请输入旧密码" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">新密码</label>
+        <div class="layui-input-inline">
+            <input type="password" id="newpwd" name="newpwd" required lay-verify="required" placeholder="请输入新密码" autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux">密码为6-12位数字_字母</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">确认密码</label>
+        <div class="layui-input-inline">
+            <input type="password" id="conpwd" name="conpwd" required lay-verify="required" placeholder="请输入确认密码" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="sub">修改</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+</body>
+</html>
+
+<script src="__PUBLIC__/layui/layui.js"></script>
+<script type="text/javascript">
+    layui.use(['form', 'layer','jquery'], function () {
+        var form  = layui.form;
+        var $  = layui.jquery;
+        //添加表单监听事件
+        form.on('submit(sub)',function () {
+            var  newpwd = $('#newpwd').val();
+            var  conpwd = $('#conpwd').val();
+            var  oldpwd = $('#oldpwd').val();
+            if(oldpwd == newpwd){
+                layer.msg("新密码与旧密码一致", {
+                    icon: 5,
+                    anim: 6
+                });
+                return false;
+            }
+            if (conpwd !== newpwd) {
+                layer.msg("两次密码输入不一致", {
+                    icon: 5,
+                    anim: 6
+                });
+                return false;
+            }
+
+            $.ajax({
+                url:'/api/admin/updatepage',
+                type:'post',
+                data:{
+                    oldpwd:oldpwd,
+                    newpwd:newpwd,
+                    conpwd:conpwd,
+                },
+                dataType:'json',
+                success:function (data) {
+                    if (data.status==1){
+                        layer.msg(data.msg, {
+                            icon: 1,//提示的样式
+                            time: 2000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                            end: function () {
+                                //当你在iframe页面关闭自身时
+                                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                parent.layer.close(index); //再执行关闭
+                            }
+                        })
+                    }else{
+                        layer.msg(data.msg)
+                    }
+                }
+            });
+            //防止页面跳转
+            return false;
+        });
+    });
+
+
+
+
+</script>

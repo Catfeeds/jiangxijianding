@@ -1,0 +1,44 @@
+{extend name="/layout/nonelayout"}
+{block name="css"}
+{/block}
+{block name="content"}
+<body>
+<form class="layui-form">
+
+    <table border="1" class="layui-table" width="5%" >
+        <tr>
+            <td>
+
+                    理论分数
+            </td>
+            <td>
+                {$detail['theory_score']}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                
+                    实操分数
+                
+            </td>
+            <td>
+                {$detail['watch_score']}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                
+                    综合分数
+                
+            </td>
+            <td>
+              {$detail['synthesize_score']}
+            </td>
+        </tr>
+    </table>
+
+</form>
+</body>
+{/block}
+{/extend}
+{block name="script"}{/block}

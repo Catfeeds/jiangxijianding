@@ -1,0 +1,94 @@
+{extend name="/layout/nonelayout"}
+{block name="css"}
+{/block}
+{block name="content"}
+<body>
+
+<form class="layui-form">
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label"></label>
+        <input type="hidden" value="{$count['people']}" name="people">
+        <input type="hidden" value="{$count['price']}" name="price">
+        <input type="hidden" value="{$plan_id}" name="plan_id">
+    </div>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label"></label>
+        <div class="layui-input-block">
+            <span class="layui">此次申请交费共{$count['people']}人,共需支付{$count['price']}元</span>
+        </div>
+    </div>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">请输入申请原因</label>
+        <div class="layui-input-block">
+          <textarea name="remark" placeholder="字数不得少于5个,最多150个" lay-verify="required" minlength="5" maxlength="150" id="remark" class="layui-textarea"></textarea>
+        </div>
+    </div>
+
+     <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label"></label>
+        <div class="layui-inline">
+        <button class="layui-btn"  lay-filter="Submission" id="submit">提交</button>
+        </div>
+    </div>
+</form>
+</body>
+{/block}
+{/extend}
+{block name="script"}
+<script type="text/javascript">
+     layui.use('laydate', function(){
+        var laydate = layui.laydate;
+        var myDate = new Date();//获取系统当前时间
+
+    });
+
+    layui.use(['form', 'layer','jquery'], function () {
+        var form = layui.form;
+        var $ = layui.jquery;
+
+        $('#submit').click(function(){
+            var people = $('input[name=people]').val();
+            var price  = $('input[name=price]').val();
+            var plan_id = $('input[name=plan_id]').val();
+            var remark = $('#remark').val();
+            if(remark.length <5 || remark.length>150 || remark == '字数不得少于5个,最多150个')
+            {
+                return false;
+            }
+            $.ajax({
+                url:'/api/ExamEnroll/apply',
+                type:'post',
+                dataType:'json',
+                data:{
+                    people:people,
+                    price:price,
+                    plan_id:plan_id,
+                    remark:remark
+                },
+                //判断注册状态
+                success:function (data) {
+                        if (data.code==1){
+                        layer.msg(data.msg,{
+                            icon: 1,//提示的样式
+                            time:  2000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                            end: function () {
+                                //当你在iframe页面关闭自身时
+                                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                parent.layer.close(index); //再执行关闭
+                                parent.location.reload();
+                            }
+                        });
+                    }else{
+                        layer.msg(data.msg);
+                    }
+                }
+            }); 
+            return false;
+
+        })
+
+
+
+    })
+</script>
+{/block}

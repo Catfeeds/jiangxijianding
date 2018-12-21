@@ -1,0 +1,634 @@
+<style>
+	.stars {
+		width: 20px;
+		height: 20px;
+		display: inline-block;
+		vertical-align: middle;
+		text-align: center;
+		line-height: 32px;
+		font-size: 25px;
+		color: #f00;
+	}
+
+	.id_zhengmian_box i{line-height: 100px;text-align: center;font-size: 44px;color: #fff;}
+	.materials_table{display: none}
+</style>
+<form class="layui-form">
+	<table border="1" class="layui-table" width="100px" >
+		<tr>
+			<td>个人信息 </td>
+			<td colspan="4">请检查个人信息，无误后提交审查  <span class="stars">*</span>为必填</td>
+		</tr>
+		<!--<tr>-->
+			<!--<td>原级别</td>-->
+			<!--<td colspan="2">-->
+				<!--<select  name="current_level" id="current_level" class="type" lay-filter="current_level" lay-verify="required|current_level">-->
+					<!--<option value="">请选择</option>-->
+					<!--<option value="1"> 1</option>-->
+					<!--<option value="2"> 2</option>-->
+					<!--<option value="3"> 3</option>-->
+					<!--<option value="4"> 4</option>-->
+					<!--<option value="5"> 5</option>-->
+				<!--</select>-->
+			<!--</td>-->
+			<!--<td>原职业(工种)</td>-->
+			<!--<td>-->
+				<!--<input type="text" name="work" class="layui-input">-->
+			<!--</td>-->
+		<!--</tr>-->
+		<!--<tr>-->
+			<!--<td>原证书编号</td>-->
+			<!--<td>-->
+				<!--<input type="text" name="certificate_no" class="layui-input">-->
+			<!--</td>-->
+		<!--</tr>-->
+		<tr>
+			<input type="hidden" name="exam_type" class="exam_type" lay-filter="exam_type" lay-verify="required|exam_type" value="1" title="新考">
+			<td><span class="stars">*</span>鉴定计划:</td>
+			<td colspan="2">
+				<select  name="exam_plan_id" id="exam_plan_id" class="type" lay-filter="exam_plan_id" lay-verify="required|exam_plan_id">
+					<option value="{$arrExamPlan.id}"> {$arrExamPlan.title}</option>
+				</select>
+			</td>
+			<td><span class="stars">*</span>鉴定类别:</td>
+			<td>
+			     <!--<span name="work_type_id" id="work_type_id" lay-filter="work_type_id" lay-verify="required"></span>-->
+				<!--<select  name="work_type_id" class="type" id="work_type_id" lay-filter="work_type_id" lay-verify="required">-->
+					<!--<option value=""></option>-->
+				<!--</select>-->
+				<label data-value="" id="work_type_id" lay-filter="work_type_id"></label>
+				<!--<label name="work_type_id" class="type" id="work_type_id" lay-filter="work_type_id" lay-verify="required"></label>-->
+			</td>
+		</tr>
+		<tr>
+			<td><span class="stars">*</span>报考职业(工种):</td>
+			<td colspan="2">
+				<select  name="work_id" id="work_id" lay-filter="work_id" lay-verify="required|work_id" >
+					<option value="">请选择 </option>
+					<option value=""> </option>
+				</select>
+			</td>
+			<td class="direction"><span class="stars">*</span>报考职业方向:</td>
+			<td class="direction">
+				<select  name="work_direction_id" class="type" id="work_direction_id" lay-filter="work_direction_id" lay-verify="work_direction_id">
+					<option value="">请选择 </option>
+					<option value=""> </option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td class="worklevel"><span class="stars">*</span>鉴定级别:</td>
+			<td colspan="2" class="worklevel">
+				<select  name="work_level_subject_level" class="type" id="work_level_subject_level" lay-filter="work_level_subject_level" lay-verify="work_level_subject_level">
+					<option value="">请选择 </option>
+					<option value=""> </option>
+				</select>
+			</td>
+			<td>参加考试日程:</td>
+			<td><span id="exam_time"></span></td>
+			<!--<td>考试科目:</td>-->
+			<!--<td colspan="2">-->
+			<!--<select  name="subject_id" class="type" id="subject_id" lay-filter="subject_id" lay-verify="required|subject_id">-->
+			<!--<option value=""> </option>-->
+			<!--</select>-->
+			<!--</td>-->
+
+		</tr>
+		<!--<tr>-->
+		<!--<td>原证书编号:</td>-->
+		<!--<td colspan="2">-->
+		<!--</td>-->
+		<!--<td>原证书级别:</td>-->
+		<!--<td colspan="2">-->
+		<!--</td>-->
+		<!--</tr>-->
+		<tr>
+			<td><span class="stars">*</span>审核方式:</td>
+			<td colspan="2">
+				<input type="radio" name="audit_way" class="audit_way" lay-filter="audit_way" lay-verify="required|audit_way" value="0" title="线下审核">
+				<input type="radio" name="audit_way" class="audit_way" lay-filter="audit_way" lay-verify="required|audit_way" value="1" title="线上审核">
+			</td>
+			<!--<td>考试类型:</td>-->
+			<!--<td>-->
+				<!--&lt;!&ndash;<select  name="exam_type" class="type" lay-filter="exam_type" lay-verify="required|exam_type">&ndash;&gt;-->
+					<!--&lt;!&ndash;<option value="1" >新考</option>&ndash;&gt;-->
+					<!--&lt;!&ndash;<option value="2" >补考</option>&ndash;&gt;-->
+				<!--&lt;!&ndash;</select>&ndash;&gt;-->
+				<!--<input type="radio" name="exam_type" class="exam_type" lay-filter="exam_type" lay-verify="required|exam_type" value="1" title="新考">-->
+				<!--<input type="radio" name="exam_type" class="exam_type" lay-filter="exam_type" lay-verify="required|exam_type" value="2" title="补考">-->
+			<!--</td>-->
+		</tr>
+		<tr>
+			<td class="company_table" ><span class="stars">*</span>现场审核地点:</td>
+			<td colspan="2" class="company_table">
+				<select  name="audit_site" class="type" id="audit_site" lay-filter="audit_site" lay-verify="audit_site">
+					<option value="">请选择 </option>
+					<option value=""> </option>
+				</select>
+			</td>
+
+		</tr>
+		<tr>
+			<td><span class="stars">*</span>参加考试地点:</td>
+			<td colspan="2">
+				<select  name="exam_site" class="type" id="exam_site" lay-filter="exam_site" lay-verify="required|exam_site">
+					<option value="">请选择</option>
+					<option value=""></option>
+				</select>
+			</td>
+
+		</tr>
+		<tr class="materials_table" >
+			<td><span class="stars">*</span>上传资料:</td>
+			<td style="text-align: center">
+				<div class="photo2 shangchuan" >
+					<input type="hidden" name="exam_enroll_id" id="exam_enroll_id" value="{$exam?$exam:'' }">
+					<img src="/static/img/zheng.png" class="" data-value="1" style="width:150px;max-width:150px;height: 100px; " >
+					</br>身份证正面
+					<input type="hidden" name="zheng" id="zheng" class="img_url" value="" lay-filter="zheng" lay-verify="zheng" >
+				</div>
+			</td>
+			<td style="text-align: center">
+				<span class="shili "></span>
+				<div class="photo2 shangchuan" data-width="150px">
+					<img src="/static/img/fan.png" class="" data-value="4" style="width:150px;max-width:150px;height: 100px; "></br>身份证反面</img>
+					<input type="hidden"  name="fan" id="fan" class="img_url" value="" lay-filter="fan" lay-verify="fan">
+				</div>
+			</td>
+			<td style="text-align: center">
+				<span class="shili "></span>
+				<div class="photo2 shangchuan">
+					<img src="/static/img/xueli.png" class="" data-value="2" style="width:150px;max-width:150px;height: 100px; "></br>学历</img>
+					<input type="hidden"  name="xueli" id="xueli" class="img_url" value="" lay-filter="xueli" lay-verify="xueli">
+				</div>
+			</td>
+			<td style="text-align: center">
+				<span class="shili "></span>
+				<div class="photo2 others layui-upload shangchuan">
+					<img src="/static/img/addbuddha.jpg" class="" data-value="3" style="width:150px;max-width:150px;height: 100px; "></br>其他</img>
+					<input type="hidden" name="cert"  id="test2" class="img_url" value="" lay-filter="cert" lay-verify="cert" >
+				</div>
+
+				<!--<div class="layui-upload">-->
+					<!--<button type="button" class="layui-btn" id="test2">多图片上传</button>-->
+					<!--<blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">-->
+						<!--预览图：-->
+						<!--<div class="layui-upload-list"  id="demo2"></div>-->
+					<!--</blockquote>-->
+					<!--<input type="hidden"  name="qita" id="qita" class="img_url" value="" lay-filter="qita" lay-verify="qita">-->
+				<!--</div>-->
+			</td>
+		</tr>
+		<tr>
+			<td>备注:</td>
+			<td colspan="4">
+				<textarea name="remark" placeholder="请输入内容" class="layui-textarea"> </textarea>
+			</td>
+		</tr>
+		<tr>
+            <td><span class="stars">*</span>诚信声明:</td>
+			<td colspan="4" >
+				<input  type="checkbox" name="checkPost" id="checkPost" value=""  lay-skin="primary"  lay-filter="required|checkPost" lay-verify="checkPost">&nbsp;&nbsp;{:config('ExamEnrollStatus.cooper')}
+			</td>
+		</tr>
+		<tr style="text-align: center;">
+			<td colspan="5">
+				<button class="layui-btn" id="addorganize" lay-submit lay-filter="formSubmit">确认报名</button>
+			</td>
+		</tr>
+	</table>
+</form>
+{load href="__PUBLIC__/layui/css/layui.css"/}
+<script src="__PUBLIC__/layui/assets/jquery-1.12.4.js"></script>
+<script src="__PUBLIC__/layui/layui.js"></script>
+<script>
+	layui.use('element', function(){
+		var element = layui.element;
+	});
+
+
+	$auditwayid = $("input[name=audit_way]:checked").val();
+	layui.use(['form', 'layer','upload','jquery'], function () {
+		var form = layui.form;
+		var $ = layui.jquery;
+		var upload = layui.upload
+		//form表单验证
+		form.verify({
+			exam_plan_id: function (value) {
+				if (value == "") {
+					return "请选择鉴定名称";
+				}
+			},
+			work_id: function (value) {
+				if (value == "") {
+					return "请选择报考职业工种";
+				}
+			},
+			work_direction_id: function (value) {
+				if($(".direction").is(":visible") !== false){
+					if (value == "") {
+						return "请选择职业方向";
+					}
+				}
+			},
+			work_level_subject_level: function (value) {
+				if($(".worklevel").is(":visible") !== false) {
+					if (value == "") {
+						return "请选择鉴定级别";
+					}
+				}
+			},
+            work_type_id: function (value) {
+                if (value == "") {
+                    return "职业类别必填";
+                }
+            },
+//			exam_type: function (value) {
+//				if (value == "") {
+//					return "请选择考试类型";
+//				}
+//			},
+			audit_way: function (value) {
+				if(!$("input[name=audit_way]:checked").val()){
+					return "请选择审核方式";
+				}
+			},
+			audit_site: function (value) {
+				if($("input[name=audit_way]:checked").val() == 0) {
+					if (value == "") {
+						return "请选择现场审核地点";
+					}
+				}
+			},
+
+			zheng: function (value) {
+				if($("input[name=audit_way]:checked").val() == 1) {
+					if ($("#zheng").val() == '') {
+						return "请上传身份证正面";
+					}
+				}
+			},
+			fan: function (value) {
+				if($("input[name=audit_way]:checked").val() == 1) {
+					if ($("#fan").val() == '') {
+						return "请上传身份证反面";
+					}
+				}
+			},
+			xueli: function (value) {
+				if($("input[name=audit_way]:checked").val() == 1) {
+					if ($("#xueli").val() == '') {
+						return "请上传学历证书";
+					}
+				}
+			},
+
+			checkPost: function (value){
+				if(!$("#checkPost").is(":checked")){
+					return "请确认诚信条款";
+				}
+			}
+		});
+
+		exam_plan();
+		//根据鉴定名称获取工种
+		function exam_plan() {
+			var exam_plan_id = $("#exam_plan_id").val();
+			$.ajax({
+				url:'/api/ExamPlan/examSelbyid',
+				type:'post',
+				dataType:'json',
+				data:{
+					exam_plan_id:exam_plan_id,
+				},
+				success:function (data) {
+					if (data.code==1){
+						var work_id = document.getElementById ("work_id");
+						var work_type_id = document.getElementById ("work_type_id");
+						var exam_time = document.getElementById ("exam_time");
+						var html ="<option value=''>请选择</option>";
+						for (var i=0;i<data.data[0].length;i++){
+							html += '<option  value="'+data.data[0][i]['wid']+'">'+data.data[0][i]['code'] +"   "+ data.data[0][i]['name']+'</option>';
+						};
+						$('#work_id').html(html);
+						form.render();
+						//返回鉴定类别
+						work_type_id.value =  data.data[1]['work_type'];
+						work_type_id.innerText = data.data[1]['work_type_name'];
+						exam_time.innerText = data.data[1]['exam_time'];
+					}else{
+						$("#work_id").html("");
+						$("#work_direction_id").html("");
+						$("#work_type_id").html("");
+						$("#work_level_subject_level").html("");
+//                        $("#subject_id").html("");
+						form.render();
+						layer.msg(data.msg)
+					}
+				}
+			});
+			//防止页面跳转
+			return false;
+		}
+
+		//获取职业方向和级别
+		form.on('select(work_id)', function(data){
+			var work_id = data.value;
+			var exam_plan_id = $("#exam_plan_id").val();
+			$.ajax({
+				url:'/api/Work/selDirecLevel',
+				type:'post',
+				dataType:'json',
+				data:{
+					work_id:work_id,
+					alltype_id:exam_plan_id,
+				},
+				success:function (data) {
+					if (data.code==1){
+						var htmldir ="<option value=''>请选择</option>";
+						var htmllevel ="<option value=''>请选择</option>";
+						var htmlsub ="<option value=''>请选择</option>";
+						if(data.data[0].length<1){
+							$('.direction').css('visibility','hidden');
+							form.render();
+						}else{
+							$('.direction').css('visibility','inherit');
+							for (var i=0;i<data.data[0].length;i++){
+								htmldir += '<option  value="'+data.data[0][i]['id']+'">'+data.data[0][i]['name']+'</option>';
+							}
+							$('#work_direction_id').html(htmldir);
+							form.render();
+						}
+						if(data.data[1].length<1){
+							$('.worklevel').css('display','none');
+							form.render();
+						}else {
+							$('.worklevel').css('display','');
+							for (var i = 0; i < data.data[1].length; i++) {
+								htmllevel += '<option  value="' + data.data[1][i]['work_level'] + '">' + data.data[1][i]['level_text'] + '</option>';
+							}
+							$('#work_level_subject_level').html(htmllevel);
+							form.render();
+						}
+
+						htmlsub += '<option>'+data.data[2]+'</option>';
+						$('#subject_id').html(htmlsub);
+						form.render();
+
+					}else{
+						$("#work_direction_id").html("");
+						$("#work_level_subject_level").html("");
+
+//                        $("#subject_id").html("");
+						form.render();
+						layer.msg(data.msg)
+					}
+				}
+			});
+			//防止页面跳转
+			return false;
+		});
+
+		//获取现场审核地点 参加考试地点
+		form.on('select(work_level_subject_level)', function(data){
+			var exam_plan_id = $("#exam_plan_id").val();
+			var work_type_id = $("#work_type_id").val();
+			var work_level_subject_level = $("#work_level_subject_level").val();
+			$.ajax({
+				url:'/api/ExamPlan/selAuditExamSite',
+				type:'post',
+				dataType:'json',
+				data:{
+					exam_plan_id:exam_plan_id,
+					work_type_id:work_type_id,
+					work_level_subject_level:work_level_subject_level,
+				},
+				success:function (data) {
+					if (data.code==1){
+						var htmlaudit ="<option value=''>请选择</option>";
+						var htmlsite ="<option value=''>请选择</option>";
+						for(var i in data.data[0]) {
+							htmlaudit += '<option  value="'+data.data[0][i]['name']+'">'+data.data[0][i]['name']+'</option>';
+						}
+						$('#audit_site').html(htmlaudit);
+						form.render();
+
+						for(var i in data.data[1]) {
+							htmlsite += '<option site_id="'+data.data[1][i]['id']+'" value="'+data.data[1][i]['name']+'">'+data.data[1][i]['name']+'</option>';
+						}
+						$('#exam_site').html(htmlsite);
+						form.render();
+
+					}else{
+						$("#audit_site").html("");
+						$("#exam_site").html("");
+						form.render();
+						layer.msg(data.msg)
+					}
+				}
+			});
+			//防止页面跳转
+			return false;
+		});
+
+		//添加表单监听事件
+		form.on('submit(formSubmit)', function (data) {
+			data=data.field;
+			data.site_id = $("#exam_site").find("option:selected").attr("site_id");
+			$.ajax({
+				url:'/api/ExamEnroll/add',
+				type:'post',
+				data:data,
+				dataType:'json',
+				success:function (data) {
+					if (data.code==1){
+						layer.msg(data.msg,{
+							icon: 1,//提示的样式
+							time:  2000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+							end: function () {
+								$.get("{:url('/examinee/Center/workinfo')}", function(data) {
+									parent.layer.closeAll();
+									parent.$("#iframeContent").html(data); //初始化加载界面
+								});
+							},
+						});
+					}else{
+						layer.msg(data.msg,{icon:5});
+					}
+				}
+			});
+			//防止页面跳转
+			return false;
+		});
+
+		//执行实例
+		var uploadInst = upload.render({
+			elem: '.shangchuan', //绑定元素
+			url: '/api/UserInfo/upload', //上传接口
+			exts: "jpg",
+
+			done: function(res) {
+				//上传完毕回调
+				if (res == -1) {
+					layer.msg(res.msg);
+				} else {
+					this.item.find('img').attr('src',res);
+					this.item.find('img').val(res);
+					this.item.children('input.img_url').val(res);
+					layer.closeAll('loading');
+				}
+			},
+			error: function() {
+				//请求异常回调
+				layer.close("上传失败，请检查网络后重试");
+			}
+		});
+
+
+		form.on('radio(audit_way)',function (data) {
+			if(data.value==1){
+				$(".company_table").hide();
+				$(".materials_table").show();
+//				$("#audit_site").empty();
+			}else{
+				$(".company_table").show();
+				$(".materials_table").hide();
+			}
+		});
+
+
+		$(".others").click(function () {
+			$('.displayfile').show();
+		})
+		$('.displayfile').hide();
+
+//		form.on('radio(exam_type)',function (data) {
+//			if(data.value==2){
+//				$examid = $('#exam_plan_id').val();
+//				if( !$examid ){
+//					layer.msg('请选择鉴定计划');
+//				}else{
+//					layer.open({
+//						type: 2,
+//						skin: 'layui-layer-rim', //加上边框
+//						area: ['90%', '90%'], //宽高
+//						title: "补考信息",
+//						content: "/examinee/Center/makeupexam?examid="+$examid,  //调到新增页面
+//						yes: function(index, layero){
+//							//do something
+//							layer.close(index); //如果设定了yes回调，需进行手工关闭
+//						}
+//					});
+//				}
+//
+//			}
+//		});
+
+
+		//多文件列表示例
+		var demoListView = $('#demoList')
+				, uploadListIns = upload.render({
+			elem: '#testList'
+			, url: '/api/ExamEnrollFile/yourUrl'
+			, accept: 'file'
+			, data: {exam_enroll_id:exam_enroll_id}   //可放扩展数据  key-value
+			, multiple: true
+			, auto: false
+			, bindAction: '#testListAction'
+			, choose: function (obj) {
+				var files = this.files = obj.pushFile(); //将每次选择的文件追加到文件队列
+				//读取本地文件
+				obj.preview(function (index, file, result) {
+					var tr = $(['<tr id="upload-' + index + '">'
+						, '<td>' + file.name + '</td>'
+						, '<td>' + (file.size / 1014).toFixed(1) + 'kb</td>'
+						, '<td>等待上传</td>'
+						, '<td>'
+						, '<button class="layui-btn layui-btn-mini demo-reload layui-hide">重传</button>'
+						, '<button class="layui-btn layui-btn-mini layui-btn-danger demo-delete">删除</button>'
+						, '</td>'
+						, '</tr>'].join(''));
+					//单个重传
+					tr.find('.demo-reload').on('click', function () {
+						obj.upload(index, file);
+					});
+					//删除
+					tr.find('.demo-delete').on('click', function () {
+						delete files[index]; //删除对应的文件
+						tr.remove();
+						uploadListIns.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
+					});
+					demoListView.append(tr);
+				});
+			}
+			, done: function (res, index, upload) {
+				if (res.code == 1){
+					//上传成功
+					var tr = demoListView.find('tr#upload-' + index)
+							, tds = tr.children();
+					tds.eq(2).html('<span style="color: #5FB878;">上传成功</span>');
+					tds.eq(3).html(''); //清空操作
+					return delete this.files[index]; //删除文件队列已经上传成功的文件
+				} else{
+					layer.msg(res.msg);
+				}
+			} //code为后台传回来的数据，具体多少自己定，
+			//后台只能传回json格式数据，不然会走error函数；
+			, error: function (res,index, upload) {
+				layer.msg(res.msg);
+			}
+		});
+
+	});
+
+	var upurl = "{:url('/api/ExamEnrollFile/uploads')}"; //上传图片提交地址
+	layui.use(['layer','upload'], function(){
+		var layer = layui.layer;
+		var upload = layui.upload;
+		upload.render({ //上传图片
+			elem: '#upload_img_icon',
+			url: upurl,
+			multiple: true, //是否允许多文件上传。设置 true即可开启。不支持ie8/9
+			auto:true,//自动上传
+			before: function(obj) {
+				layer.msg('图片上传中...', {
+					icon: 16,
+					shade: 0.01,
+					time: 0
+				})
+			},
+			done: function(res) {
+				layer.close(layer.msg('上传成功！'));//下面是把上传以后的图片显示出来
+				var html='<div class="img"  style="float: left">'+
+						'<i class="layui-icon del_img" style="position: relative;right: -1.5rem;top: -0.45rem;">&#x1006;</i>'+
+						'<img class="wz_img" src="'+res.data+'" alt="" style="width: 1.5rem;height:1.5rem;margin:0.26rem 0 0.26rem 0rem;">'+
+						'</div>';
+				$('.need-img').append(html);
+//                $('.upload-img-box').append(
+//                    '<dd class="upload-icon-img"> <div class="upload-pre-item" style="width:120px;height:100px;float:left;margin-left:15px;"> <i onclick="deleteImg($(this))" class="layui-icon">X</i>                    <img src="' + res.data + '" class="img" style="width:100%;">  <input type="hidden" class="asd" name="case_images[]" value="' + res.data + '" /> </div></dd>');
+			}
+			,error: function(){
+				layer.msg('上传错误！');
+			}
+		});
+
+		//多图片上传
+		upload.render({
+			elem: '#test2'
+			,url: '/api/ExamEnrollFile/yourUrl'
+			,multiple: true
+			,before: function(obj){
+				//预读本地文件示例，不支持ie8
+				obj.preview(function(index, file, result){
+					$('#demo2').append('<img src="'+ result +'" alt="'+ file.name +'" class="layui-upload-img">')
+				});
+			}
+			,done: function(res,index){
+				$('#qita').append('<input type="hidden" value="'+res.savename+'"  name="qita[]" id="'+index+'" class="layui-upload-img">')
+			}
+		});
+	});
+
+
+
+</script>

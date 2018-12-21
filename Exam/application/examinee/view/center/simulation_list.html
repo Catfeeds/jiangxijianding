@@ -1,0 +1,72 @@
+<div>
+    <div class="header_title"><span>模拟考试</span> </div>
+    <div class="baoming_main">
+        <table class="layui-table myorder_table" lay-skin="line">
+            <colgroup>
+                <col>
+                <col>
+                <col>
+                <col width="200">
+            </colgroup>
+            <thead>
+            <tr>
+                <th>试题标题</th>
+                <th>得分</th>
+                <th>考试时间</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {volist name="$simulationList" id="obj"}
+            {volist name="$obj" id="vo"}
+            {if condition="$vo.flag"}
+            <tr>
+                <td>{$vo.learning_paper_history_name}</td>
+                <td>{$vo.learning_paper_history_score}</td>
+                <td>{$vo->learning_paper_history_start_time}</td>
+                <td class="double_btn">
+                    <div class="blue_btn ajax-linkk" rel="{:url('/examinee/center/simulationDetail')}?id={$vo.id}&learning_paper_history_id={$vo.learning_paper_history_id}&name={$vo.learning_topic_paper_name}">继续考试</div>
+                </td>
+            </tr>
+            {else/}
+            <tr>
+                <td>{$vo.learning_topic_paper_name}</td>
+                <td>--</td>
+                <td>--</td>
+                <td class="double_btn">
+                    <div class="blue_btn ajax-linkk" rel="{:url('/examinee/center/simulationDetail')}?id={$vo.id}&learning_paper_history_id={$vo.learning_paper_history_id}&name={$vo.learning_topic_paper_name}">开始考试</div>
+                </td>
+            </tr>
+            {/if}
+            {/volist}
+            {/volist}
+
+            </tbody>
+        </table>
+    </div>
+</div>
+<script type="text/javascript">
+    layui.use(['form', 'laypage','laydate'], function() {
+        var form = layui.form,
+            $ = layui.jquery;
+        form.render();
+        var laydate = layui.laydate;
+        $ = layui.jquery;
+        $('.layui-layer-shade').hide();
+        form.render();
+
+        var laypage = layui.laypage;
+
+    });
+    $(".ajax-linkk").each(function() {
+        $(this).click(function() {
+            var diZhi = $(this).attr("rel");
+            htmlobj = $.ajax({
+                url: diZhi,
+                async: false
+            });
+            $(".ajax-Box").html(htmlobj.responseText);
+        });
+    });
+</script>

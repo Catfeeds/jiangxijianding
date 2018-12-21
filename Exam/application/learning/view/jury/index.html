@@ -1,0 +1,197 @@
+{extend name="layout"}
+{block name="title"}课件管理{/block}
+
+{block name="content"}
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+            <form action="/learning/audit/index" method="post">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">姓名</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="name" value="{$search.name|default=''}" placeholder="请输入" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-inline">
+                        <label class="layui-form-label">证件号</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="certificate" value="{$search.certificate|default=''}" placeholder="请输入" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-inline">审核状态</div>
+                    <div class="layui-inline">
+                        <select name="state" lay-filter="LAY-user-adminrole-type">
+                            <option value=''>全部状态</option>
+                            <option {notempty name="search.state"} {if condition="$search.state == 1"} selected="selected" {/if} {/notempty} value="1">未审核</option>
+                            <option {notempty name="search.state"} {if condition="$search.state == 2"} selected="selected" {/if} {/notempty} value="2">已通过</option>
+                            <option {notempty name="search.state"} {if condition="$search.state == 3"} selected="selected" {/if} {/notempty} value="3">没通过</option>
+                        </select>
+                    </div>
+
+                    <div class="layui-inline">
+                        <button class="layui-btn layui-btn-primary reset">重置</button>
+                        <button class="layui-btn" lay-submit>搜索</button>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+        <div class="layui-upload-list">
+        <table class="layui-table">
+            <thead>
+            <tr><th width="5%">ID</th>
+                <th>用户名</th>
+                <th>姓名</th>
+                <th>身份证号</th>
+                <th>学习进度</th>
+                <th>状态</th>
+                <th>创建时间</th>
+                <th>操作</th>
+            </tr></thead>
+            <tbody id="demoList">
+            {volist name="data" id="vo"}
+            <tr>
+                <td>{$i}</td>
+                <td>{$vo.name}</td>
+                <td>{$vo.certificate}</td>
+                <td>{$vo.plan}%</td>
+                <td>
+                    {if condition="$vo.state==1"}
+                    未审核
+                    {elseif condition="$vo.state==2"}
+                    审核通过
+                    {elseif condition="$vo.state==3"}
+                    审核不通过
+                    {/if}
+
+                </td>
+                <td>{$vo.create_time}</td>
+                <td>
+
+                    <button data-value="{$vo.id}" data-type="2" class="layui-btn layui-btn-xs demo-state">通过</button>
+                    <button data-value="{$vo.id}" data-type="3" class="layui-btn layui-btn-xs demo-state">不通过</button>
+
+                    <button data-value="{$vo.id}" class="layui-btn layui-btn-xs layui-btn-danger demo-delete">删除</button>
+                </td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+        {if condition="count($data)<=0"}
+        <div style="margin: 0 auto;width: 120px;font-size: 20px;">
+            <div class="layui-form-mid layui-word-aux">暂无数据！</div>
+            {else/}
+            <div class="layui-fluid tp-pages">
+                {$data->render()}
+            </div>
+            {/if}
+
+        </div>
+    </div>
+    </div>
+</div>
+{/block}
+
+
+{block name="script"}
+<script type="text/javascript">
+    layui.use(['form', 'layer','jquery'], function () {
+
+        var form  = layui.form, $  = layui.jquery;
+        $(".demo-state").click(function () {
+            var id = $(this).data('value');
+            var state = $(this).data('type');
+
+            layer.open({
+                title: ['温馨提示'],
+                content: '<div style="color:#767676">确定要改变当前数据状态吗？</div>',
+                btn: ['确定', '取消'],
+                shadeClose: true,
+                yes: function(index, layero){
+                    $.ajax({
+                        url:'/api/LearningAudit/state',
+                        type:'post',
+                        dataType:'json',
+                        data:{
+                            id:id,
+                            state:state,
+                        },
+                        success:function (data) {
+                            if (data.status==1){
+                                layer.msg(data.msg, {
+                                    icon: 1,
+                                    time: 1000,
+                                    end: function () {
+                                        location.reload();
+                                    }
+                                })
+                            }else{
+                                layer.msg(data.msg)
+                            }
+                        }
+                    });
+                    return false;
+                },
+                btn2: function(index, layero){
+                    layer.close(index);
+                },
+                cancel: function(index,layero){
+                    layer.close(index);
+                },
+
+            });
+        });
+
+        $(".demo-delete").click(function () {
+            var id = $(this).data('value');
+            layer.open({
+                title: ['温馨提示'],
+                content: '<div style="color:#767676">确定要删除当前数据吗？</div>',
+                btn: ['确定', '取消'],
+                shadeClose: true,
+                yes: function(index, layero){
+                    $.ajax({
+                        url:'/api/learningAudit/delete',
+                        type:'post',
+                        dataType:'json',
+                        data:{
+                            id:id,
+                        },
+                        success:function (data) {
+                            if (data.status==1){
+                                layer.msg(data.msg, {
+                                    icon: 1,
+                                    time: 1000,
+                                    end: function () {
+                                        location.reload();
+                                    }
+                                })
+                            }else{
+                                layer.msg(data.msg)
+                            }
+                        }
+                    });
+                    return false;
+                },
+                btn2: function(index, layero){
+                    layer.close(index);
+                },
+                cancel: function(index,layero){
+                    layer.close(index);
+                },
+
+            });
+        });
+        $(".reset").click(function () {
+            $.each($('form input'),function (index,item) {
+                $(item).val('');
+            });
+            return false;
+        });
+    });
+
+</script>
+{/block}

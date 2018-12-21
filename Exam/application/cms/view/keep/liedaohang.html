@@ -1,0 +1,323 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta http-equiv="Content-Language" content="zh-CN">
+		<link rel="stylesheet" type="text/css" href="/static/layui/css/layui.css" />
+		<link rel="stylesheet" type="text/css" href="/static/layui/css/main.css" />
+		<link rel="stylesheet" type="text/css" href="/static/css/cms1.0.css" />
+
+		<script src="/static/js/jquery.min.js"></script>
+		<script src="/static/js/SuperSlide.2.1.1.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/static/js/cms.js" type="text/javascript" charset="utf-8"></script>
+
+	</head>
+	<title>江西鉴定首页</title>
+	<div class="header_top">
+		<div class="layui-container">
+			<div class="layui-col-xs6 jd_header_left"><span id="tt"></span><span id="week"></span><span id="showDate"></span></div>
+			<div class="layui-col-xs6 jd_header_right">
+				<a onclick="SetHome(this,window.location)" style="cursor:pointer;" >设为首页 </a>
+				<a onclick="addFavorite(window.location,document.title)" href="javascript:void(0)">加入收藏</a>
+
+			</div>
+		</div>
+	</div>
+	<body>
+
+		<div class="banner"><img src="/static/img/cms1.0/banner.png" /></div>
+		<style type="text/css">
+			* {
+				margin: 0;
+				padding: 0;
+				list-style: none;
+			}
+			
+			body {
+				background: #fff;
+				font: normal 14px/22px 宋体;
+			}
+			
+			img {
+				border: 0;
+			}
+			
+			a {
+				text-decoration: none;
+				color: #333;
+			}
+			
+			a:hover {
+				color: #FF8400;
+			}
+			
+			.js {
+				width: 90%;
+				margin: 10px auto 0 auto;
+			}
+			
+			.js p {
+				padding: 5px 0;
+				font-weight: bold;
+				overflow: hidden;
+			}
+			
+			.js p span {
+				float: right;
+			}
+			
+			.js p span a {
+				color: #f00;
+				text-decoration: underline;
+			}
+			
+			.js textarea {
+				height: 50px;
+				width: 98%;
+				padding: 5px;
+				border: 1px solid #ccc;
+				border-top: 2px solid #aaa;
+				border-left: 2px solid #aaa;
+			}
+			
+			.clearfix:after {
+				content: ".";
+				display: block;
+				height: 0;
+				clear: both;
+				visibility: hidden;
+			}
+			
+			.navBar {
+				position: relative;
+				z-index: 1;
+				color: #fff;
+				background: url("/static/img/cms1.0/nav.png");
+				background-size: 100% 100%;
+				width: 100%;
+				height: 60px;
+			}
+			
+			.nav {
+				width: 1200px;
+				margin: 0 auto;
+				font-family: "\5B8B\4F53", Arial, Helvetica, sans-serif;
+			}
+			
+			.nav h3 {
+				font-size: 100%;
+				font-weight: normal;
+				font-size: 20px;
+			}
+			
+			.nav .m {
+				position: relative;
+				float: left;
+				width: 120px;
+				margin: 0 20px;
+				display: inline;
+				text-align: center;
+			}
+			
+			.nav h3 a {
+				zoom: 1;
+				height: 48px;
+				line-height: 48px;
+				padding: 6px 0;
+				display: block;
+				color: #fff;
+				position: relative;
+				z-index: 9;
+				cursor: pointer;
+			}
+			.nav .sub li a:hover
+			{
+				color: #1284bc;
+			}
+			.nav .sub {
+				display: none;
+				width: 88px;
+				padding: 10px 15px;
+				position: absolute;
+				left: 1px;
+				top: 60px;
+				padding-top: 5px;
+				background: #fff;
+				float: left;
+				line-height: 30px;
+				border-bottom-left-radius: 4px;
+				border-bottom-right-radius: 4px;
+				box-shadow: 0px 0px 13px 3px rgba(0,0,0,.1);
+			}
+			.nav .sub li {
+				text-align: center;
+				padding: 2px 0px;
+			}
+			.nav .sub li{
+				border-bottom: 1px solid #B0B0B0;
+			}
+			.nav .sub li:last-child{
+				border-bottom: 0px solid #fff;
+			}
+			.nav .sub li a {
+				color: #666;
+				display: block;
+				zoom: 1;
+				font-size: 16px;
+			}
+
+			
+			.nav .sub dl {
+				display: inline-block;
+				*display: inline;
+				zoom: 1;
+				vertical-align: top;
+				padding: 15px 29px;
+				line-height: 26px;
+			}
+			
+			.nav .sub dl a:hover {
+				color: #c00;
+			}
+			
+			.nav .sub dl dt a {
+				color: #000;
+			}
+			
+			.nav .sub dl dd a {
+				color: #999;
+				padding-left: 7px;
+
+			}
+			.nav li{
+				float: none;
+				line-height: 30px;
+				margin: 0;
+			}
+			
+			.nav span {
+				float: left;
+				line-height: 70px;
+				color: white;
+				font-weight: 100;
+				font-size: 22px;
+			}
+
+			.nav .m h3 i {
+				display: inline-block;
+				*display: inline;
+				zoom: 1;
+				width: 7px;
+				height: 4px;
+				/*background: url("/static/img/icn.png")  no-repeat;*/
+				overflow: hidden;
+				margin: -2px 0 0 5px;
+				vertical-align: middle;
+			}
+			.nav li:hover .jbthis{
+				background: linear-gradient(white, #E4F1F7);
+				color: #0E8ECD;
+			}
+			.nav li:hover .sanj{
+				background: url("/static/img/lanicn.png")  no-repeat;
+
+			}
+		</style>
+
+		<div class="navBar">
+			<ul class="nav clearfix">
+				<li id="m1" class="m">
+					<h3><a target="_blank" href="/">首页</a></h3> </li>
+
+								<li id="m2" class="m">
+					<h3><a class="jbthis">政策法规<i class="sanj"></i></a></h3>
+					<ul class="sub">
+												<li>
+							<a target="_blank" href="/cms/index/category?id=5">法律法规</a>
+						</li>
+					   						<li>
+							<a target="_blank" href="/cms/index/category?id=8">要闻动态</a>
+						</li>
+					   					</ul>
+				</li>
+
+								<li id="m2" class="m">
+					<h3><a class="jbthis">十分广泛<i class="sanj"></i></a></h3>
+					<ul class="sub">
+												<li>
+							<a target="_blank" href="/cms/index/category?id=26">图片文章</a>
+						</li>
+					   						<li>
+							<a target="_blank" href="/cms/index/category?id=37">鉴定公告</a>
+						</li>
+					   					</ul>
+				</li>
+
+								<li id="m2" class="m">
+					<h3><a class="jbthis">鉴定安排<i class="sanj"></i></a></h3>
+					<ul class="sub">
+												<li>
+							<a target="_blank" href="/cms/index/category?id=1">考试计划</a>
+						</li>
+					   						<li>
+							<a target="_blank" href="/cms/index/category?id=9">鉴定动态</a>
+						</li>
+					   					</ul>
+				</li>
+
+								<li id="m2" class="m">
+					<h3><a class="jbthis">政务公开<i class="sanj"></i></a></h3>
+					<ul class="sub">
+												<li>
+							<a target="_blank" href="/cms/index/category?id=2">通知公告</a>
+						</li>
+					   						<li>
+							<a target="_blank" href="/cms/index/category?id=3">中心概况</a>
+						</li>
+					   						<li>
+							<a target="_blank" href="/cms/index/category?id=4">办事指南</a>
+						</li>
+					   					</ul>
+				</li>
+
+								<li id="m2" class="m">
+					<h3><a class="jbthis">鉴定服务<i class="sanj"></i></a></h3>
+					<ul class="sub">
+												<li>
+							<a target="_blank" href="/cms/index/category?id=19">技能竞赛</a>
+						</li>
+					   					</ul>
+				</li>
+
+								<li id="m2" class="m">
+					<h3><a class="jbthis">资讯中心<i class="sanj"></i></a></h3>
+					<ul class="sub">
+												<li>
+							<a target="_blank" href="/cms/index/category?id=10">部省信息</a>
+						</li>
+					   						<li>
+							<a target="_blank" href="/cms/index/category?id=11">市县信息</a>
+						</li>
+					   						<li>
+							<a target="_blank" href="/cms/index/category?id=13">支部动态</a>
+						</li>
+					   					</ul>
+				</li>
+
+							</ul>
+		</div>
+		
+
+
+<script type="text/javascript">
+	jQuery(".nav").slide({
+		type: "menu",
+		titCell: ".m",
+		targetCell: ".sub",
+		effect: "slideDown",
+		delayTime: 300,
+		triggerTime: 0,
+		returnDefault: true
+	});
+</script>

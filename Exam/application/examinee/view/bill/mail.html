@@ -1,0 +1,54 @@
+{extend name="nonelayout"}
+{block name="css"}
+{/block}
+{block name='content'}
+<div style="width: 400px;margin-top: 20px;">
+    <div class="YouJi_main">
+        <h2 class="tanchuang_title">邮寄地址确认</h2>
+        <div class="youji_main">
+            <p><img src="__PUBLIC__/front/img/map.png"/></p>
+            <p class="graycolor">地址</p>
+            <p>{$userinfo.address}</p>
+            <p class="fengexian"></p>
+            <p><img src="__PUBLIC__/front/img/phone.png"/></p>
+            <p class="graycolor">电话</p>
+            <p>{$userinfo.mobile}</p>
+
+        </div>
+        <p class="graycolor" style="text-align: center;">温馨提示：邮费到付</p>
+        <div class="double_btn double_qxyj">
+            <div class="dayin_btn payment margin_right_15 formit" data-value="{$id}">确定</div>
+            <div class="gray_btn payment cancel">取消</div>
+        </div>
+    </div>
+</div>
+{/block}
+{block name='script'}
+<script type="text/javascript">
+    layui.use(['form', 'layer','jquery','element'], function () {
+        var $ = layui.jquery, layer = layui.layer;
+        $(".formit").on('click',function () {
+            id = $(this).data('value');
+            $.post('/api/Invoice/invoiceMail', {'id': id}, function (data) {
+                layer.msg(data.msg, {icon: data.code}, function () {
+                    //当你在iframe页面关闭自身时
+                    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                    parent.layer.close(index); //再执行关闭
+                    parent.location.reload();
+                });
+            });
+            return false;
+        })
+    });
+
+    $('.cancel').on('click',function () {
+        //当你在iframe页面关闭自身时
+        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+        parent.layer.close(index); //再执行关闭
+        parent.location.reload();
+    })
+
+</script>
+{/block}
+
+

@@ -1,0 +1,313 @@
+<style>
+    .gaiz{
+        position: absolute;right: 150px;bottom: 10px;
+    }
+    .txm_img{width: 160px;margin: auto;}
+    .txm_img img{max-width: 160px !important;
+        height:100px;}
+</style>
+<style type="text/css" media=print>
+  .noprint{display : none}
+  .tdcenter{ text-align:center;}
+</style>
+<style media="print">
+    @page {
+        size: auto;
+        margin: 0mm;
+    }
+</style>
+<body style="margin-left: 50px;margin-right: 50px">
+<!--<!–startprint1–>-->
+<!--打印内容开始-->
+<div id=sty>
+    <h1><span  class="title" style="text-align: center;display:block; margin-top: 23px;" data-value="{$title}报名表"></span></h1>
+    {if $examenroll.audit_way == '线上审核'}
+    <button class="layui-btn auditZi" data-value="{$examenroll.id}"><p class="noprint">查看上传审核资料</p></button>
+    {/if}
+    <!--<div style="text-align: center">{$examenroll.title}</div>-->
+<table class="layui-table" width="100px" style=" border:1px solid #000000;">
+    <tr class="noprint">
+        <td >操作提示 </td>
+        <td colspan="4">您已经提交报名，请检查所填信息，无误后可打印报名表</td>
+    </tr>
+    <tr>
+        <input type="hidden" name="hiddenid" id="hiddenid" value="{$examenroll.id}" >
+        <td class="tdcenter" width="100px">
+            {if $logininfo.id_type == 1}身份证
+            {elseif $logininfo.id_type == 2}护照
+            {elseif $logininfo.id_type == 3}军官证
+            {elseif $logininfo.id_type == 4}港澳台证
+            {else /}其他
+            {/if}
+        </td>
+        <td colspan="3">{$logininfo.userpid?$logininfo.userpid:''}</td>
+        <td rowspan="6" style="text-align: center">
+            <img src="{$logininfo.avatar?$logininfo.avatar:''}"></br></br>
+           <div class="txm_img"> <img src="{:url('examinee/center/barcode_create',array('content'=>$examenroll.bar_code))}"> </div>
+        </td>
+    </tr>
+    <tr>
+        <td class="tdcenter">姓名:</td>
+        <td>{$logininfo.username?$logininfo.username:''}</td>
+        <td class="tdcenter">性别:</td>
+        <td>{$logininfo.gender?$logininfo.gender:''}</td>
+    </tr>
+    <tr>
+        <td class="tdcenter">出生日期: </td>
+        <td>{$logininfo.birthday?$logininfo.birthday:''}</td>
+        <td class="tdcenter">文化程度:</td>
+        <td>
+            {switch name="$logininfo.education" }
+            {case value="1"}博士{/case}
+            {case value="2"}硕士{/case}
+            {case value="3"}研究生{/case}
+            {case value="4"}专科{/case}
+            {case value="5"}本科{/case}
+            {case value="6"}高职{/case}
+            {case value="7"}中专{/case}
+            {case value="8"}技校{/case}
+            {case value="9"}高中{/case}
+            {case value="10"}初中{/case}
+            {case value="11"}小学{/case}
+            {/switch}
+        </td>
+    </tr>
+    <tr>
+        <td class="tdcenter">考生来源:</td>
+        <td>
+            {if condition="$examenroll.source eq 7"}  社会
+            {elseif condition="$examenroll.source eq 4"/}企业
+            {elseif condition="$examenroll.source eq 5"/}学校
+            {elseif condition="$examenroll.source eq 6"/}机关事业单位
+            {else/}其他
+            {/if}
+        </td>
+        <td class="tdcenter">籍贯:</td>
+        <td>
+            {$logininfo.native_place}
+        </td>
+    </tr>
+    <tr>
+        <td class="tdcenter">所在单位:</td>
+        <td colspan="3">
+            {$logininfo.company?$logininfo.company:''}
+        </td>
+    </tr>
+    <tr>
+        <td class="tdcenter">联系电话:</td>
+        <td >{$logininfo.mobile?$logininfo.mobile:''}</td>
+        <td class="tdcenter">邮箱:</td>
+        <td>{$logininfo.email?$logininfo.email:''}</td>
+    </tr>
+    <tr>
+        <td class="tdcenter">报考职业(工种):</td>
+        <td colspan="2" id="workname" data-value="{$examenroll.wid}">{$examenroll.workname}</td>
+        {if $examenroll.directionname!==''&&$examenroll.directionname!==null}
+        <td class="tdcenter">报考职业方向:</td>
+        <td >{$examenroll.directionname}</td>
+        {/if}
+    </tr>
+    <tr>
+        {if $examenroll->work_level_subject_level!==''}
+        <td class="tdcenter">鉴定级别:</td>
+        <td colspan="2">{$examenroll->work_level_subject_level?$examenroll->work_level_subject_level:''}</td>
+        <td class="tdcenter">考试类型:</td>
+        <td colspan="2">
+            {if condition="$examenroll.exam_type eq 1"}  新考
+            {else /}补考
+            {/if}
+        </td>
+        {else/}
+        <td class="tdcenter">考试类型:</td>
+        <td colspan="4">
+            {if condition="$examenroll.exam_type eq 1"}  新考
+            {else /}补考
+            {/if}
+        </td>
+        {/if}
+    </tr>
+    <tr>
+        {if $subjectName.subjectName!==''}
+        <td class="tdcenter">考试科目:</td>
+        <td colspan="4">{$subjectName.subjectName}</td>
+        {/if}
+    </tr>
+    <tr>
+        {if $examenroll.audit_way == '线下审核'}
+        <td class="tdcenter">现场审核地点:</td>
+        <td colspan="2">
+            {$examenroll.audit_site?$examenroll.audit_site:''}
+        </td>
+        <td class="tdcenter">参加考试日程:</td>
+        <td  >
+            {$examenroll.exam_time?$examenroll.exam_time:''}
+        </td>
+        {else/}
+        <td class="tdcenter">参加考试日程:</td>
+        <td  colspan="4">
+            {$examenroll.exam_time?$examenroll.exam_time:''}
+        </td>
+        {/if}
+
+    </tr>
+    <tr>
+        <td class="tdcenter">参加考试地点:</td>
+        <td colspan="2">
+            {$examenroll.exam_site?$examenroll.exam_site:''}
+        </td>
+        <td class="tdcenter">审核方式:</td>
+        <td>
+            {$examenroll.audit_way?$examenroll.audit_way:''}
+        </td>
+    </tr>
+    <tr style="height: 115px;">
+        <td class="tdcenter">诚信声明:</td>
+        <td colspan="4">
+            &nbsp;&nbsp;&nbsp;本人保证上述填写信息和报考时所提供的学历证、身份证等证件真实有效,如因填写有误
+            或提供的证件不实而造成的后果,本人愿意承担一切责任。
+            </br></br>
+            <div class="gaiz"><p>本人签名:</p></div>
+        </td>
+    </tr>
+    <tr style="height: 115px;">
+        <td class="tdcenter">所在单位</br>意见:</td>
+        <td colspan="4">
+            <div class="gaiz">
+                <p>( 单位盖章 )</p>
+                <p>年&nbsp;&nbsp;&nbsp;&nbsp;月&nbsp;&nbsp;&nbsp;&nbsp;日</p>
+            </div>
+        </td>
+    </tr>
+    <tr style="height: 115px;">
+        <td class="tdcenter">主管审查</br>单位意见:</td>
+        <td colspan="4" >
+            <div class="gaiz">
+                <p>( 单位盖章 )</p>
+                <p>年&nbsp;&nbsp;&nbsp;&nbsp;月&nbsp;&nbsp;&nbsp;&nbsp;日</p>
+            </div>
+        </td>
+    </tr>
+
+</table>
+</div>
+<!--打印内容结束-->
+<!--<!–endprint1–>-->
+{if (in_array($examenroll.status,config('ExamEnrollStatus.apply_print_current_green')))}
+<!--<button class="layui-btn" onclick=pre(1)><p class="noprint">打印报名表</p></button>-->
+{else /}
+<div style="text-align: center"><button class="layui-btn"  onclick=preview(1)><p class="noprint">打印报名表</p></button></div>
+{/if}
+</body>
+
+<link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css">
+<script src="__PUBLIC__/layui/assets/jquery-1.12.4.js"></script>
+<script src="__PUBLIC__/layui/layui.js"></script>
+
+    <script language="javascript">
+    layui.use(['form', 'layer','jquery'], function () {
+        $('.title').html($('.title').data('value'));
+    });
+
+    function preview(oper) {
+         // 打印html并去掉页眉页脚
+        if (!!window.ActiveXObject || "ActiveXObject" in window) {
+            remove_ie_header_and_footer();
+        }
+//        try{
+//            print.portrait   =  false    ;//横向打印
+//        }catch(e){
+//            //alert("不支持此方法");
+//        }
+
+        var tata=document.execCommand("print");/* window.print(); 调用打印的功能*/
+        var $id= $("#hiddenid").val();
+        if(tata){  //点击取消后执行的操作
+            $.get("/examinee/Center/examdetail?id="+$id, function(data) {
+                parent.$("#iframeContent").html(data); //初始化加载界面
+                parent.layer.closeAll();
+            });
+            layui.use(['form', 'layer','jquery','element'], function () {
+                var form = layui.form;
+                var $ = layui.jquery;
+                var element = layui.element;
+
+
+                //添加表单监听事件
+                    $.ajax({
+                        url:'/api/ExamEnroll/printApplyStatus?status='+15,
+                        data:{id:$id},
+                        dataType:'json',
+                        success:function (data) {
+                            if (data.code==1) {
+                                layer.msg(data.msg,{
+                                    icon: 1,//提示的样式
+                                    time:  2000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                                    end: function () {
+                                        $.get("/examinee/Center/examdetail?id="+$id, function(data) {
+                                            parent.$("#iframeContent").html(data); //初始化加载界面
+                                            parent.layer.closeAll();
+                                        });
+                                    },
+                                });
+                            }else{
+                                $.get("/examinee/Center/examdetail?id="+$id, function(data) {
+                                    parent.$("#iframeContent").html(data); //初始化加载界面
+                                    parent.layer.closeAll();
+                                });
+                            }
+                        }
+                    });
+                    //防止页面跳转
+                    return false;
+                });
+        }else{
+            $.get("/examinee/Center/examdetail?id="+$id, function(data) {
+                parent.$("#iframeContent").html(data); //初始化加载界面
+                parent.layer.closeAll();
+            });
+        }
+    }
+    function pre(oper) {
+        var tataa = document.execCommand("print");
+        /* window.print(); 调用打印的功能*/
+        if (tataa) {
+            $.get("/examinee/Center/examdetail?id="+$id, function(data) {
+                parent.$("#iframeContent").html(data); //初始化加载界面
+                parent.layer.closeAll();
+            });
+        }else{
+            $.get("/examinee/Center/examdetail?id="+$id, function(data) {
+                parent.$("#iframeContent").html(data); //初始化加载界面
+                parent.layer.closeAll();
+            });
+        }
+    }
+
+
+    function remove_ie_header_and_footer() {
+        var hkey_root, hkey_path, hkey_key;
+        hkey_path = "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\PageSetup\\";
+        try {
+            var RegWsh = new ActiveXObject("WScript.Shell");
+            RegWsh.RegWrite(hkey_path + "header", "");
+            RegWsh.RegWrite(hkey_path + "footer", "");
+        } catch (e) {}
+    }
+
+    //查看上传审核资料
+    $(".auditZi").click(function () {
+        var id = $(this).data('value');
+        layer.open({
+            type: 2,
+            skin: 'layui-layer-rim', //加上边框
+            area: ['80%', '80%'], //宽高
+            title: "查看上传审核资料",
+            content: "/examinee/center/fileUpload?id="+id,  //调到新增页面
+            yes: function(index, layero){
+                //do something
+                layer.close(index); //如果设定了yes回调，需进行手工关闭
+            }
+        });
+    });
+
+</script>

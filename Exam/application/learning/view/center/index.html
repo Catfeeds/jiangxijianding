@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		{load href="__STATIC__/center/css/lay.css"/}
+		{load href="__STATIC__/center/css/all.css"/}
+		{load href="__STATIC__/center/css/iconfont.css"/}
+		<title>登录</title>
+	</head>
+
+	<body class="login">
+		<div class="header_top">
+			<div class="layui-container">
+				<div class="layui-col-xs6 jd_header_left"><img src="img/personalCenterlogo.png" /></div>
+				<div class="layui-col-xs6 jd_header_right">
+					<a class="ajax-linkk" rel="RetrievePassword.html"><span><i class="layui-icon layui-icon-password xiumi_icon"></i>修改密码</span></a>
+					<a href=""><span><i class="layui-icon layui-icon-auz antui_icon"></i>安全退出</span></a>
+				</div>
+			</div>
+		</div>
+		<div class="personalCenterbanner"><img src="img/personalCenter.png" /></div>
+
+		<div class="content">
+			<div class="geren_content">
+				<div class="geren">
+					<div class="headPortrait"><img src="img/timg.jpg" /></div>
+					<p>张思齐</p>
+					<div class="zhengshu_double">
+						<div>
+							<span>3</span>
+							<p>证书</p>
+						</div>
+						<div class="daikaoshi_one">
+							<span>1</span>
+							<p>待考试</p>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="layui-jxjdmain">
+				<div class="layui-col-xs2 layui-col-md2 jiangxi-container-left">
+
+					<!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+					<ul class="jxjd_nav">
+						<li class="jxjd_nav-item jxjd-this">
+							<a target="BaoMingXuZhi.html "><i class="iconfont icon-navicon-wgxzsz"></i>报名须知</a>
+						</li>
+						<li class="jxjd_nav-item">
+							<a target="GeRenXinXi.html"><i class="iconfont icon-gerenzhongxinkaobei"></i>个人信息</a>
+						</li>
+						<li class="jxjd_nav-item">
+							<a target="TianXieBaoMing--竞赛.html"><i class="iconfont icon-tianxie"></i>填写报名</a>
+						</li>
+						<li class="jxjd_nav-item">
+							<a target="WoDeBaoMing.html"><i class="iconfont icon-sign"></i>我的报名</a>
+						</li>
+						<li class="jxjd_nav-item">
+							<a target="LunWenShangChuan.html"><i class="iconfont icon-icon--"></i>论文上传</a>
+						</li>
+						<li class="jxjd_nav-item">
+							<a target="FaPiaoGuanLi.html"><i class="iconfont icon-fapiao"></i>发票管理</a>
+						</li>
+						
+						<li class=" style_item">
+							<i class="layui-icon layui-icon-read"></i>在线学习<i class="layui-icon zhuan layui-icon-right"></i>
+						</li>
+						<ol class="study_list_main">
+                            <a class="ajax-linkk" rel="{:url('/learning/center/randomTopic')}">
+                                <li class="study_list">在线答题</li>
+                            </a>
+							<a class="ajax-linkk" rel="{:url('/learning/center/randomTopic')}">
+								<li class="study_list">学时记录</li>
+							</a>
+                            <a class="ajax-linkk" rel="{:url('/learning/center/testTopic')}">
+                                <li class="study_list">模拟考试</li>
+                            </a>
+							<!--<a class="ajax-linkk" rel="{:url('/learning/center/learningMedia')}">-->
+								<!--<li class="study_list">学习资料</li>-->
+							<!--</a>-->
+                            <a class="ajax-linkk" rel="{:url('/learning/center/userHistory')}">
+                                <li class="study_list">学习记录</li>
+                            </a>
+                            <a class="ajax-linkk" rel="{:url('/learning/center/auditLearning')}">
+                                <li class="study_list">学习资料</li>
+                            </a>
+						</ol>
+						<li class="jxjd_nav-item">
+							<a target="WoDeChengJi.html"><i class="iconfont icon-chengjiguanli"></i>我的成绩</a>
+						</li>
+						<li class="jxjd_nav-item">
+							<a target="WoDeZhengShu.html"><i class="iconfont icon-SSLshuzizhengshu"></i>我的证书</a>
+						</li>
+
+					</ul>
+
+				</div>
+				<div class="layui-col-xs10 layui-col-md10 jiangxi-container-right">
+
+					<div class="ajax-Box" id="iframeContent"></div>
+				</div>
+			</div>
+		</div>
+		<footer class="footer">
+			<img class="quanwei" src="img/quanwei.png" />
+			<p>主办单位：江西省职业技能鉴定指导中心 技术支持：博奥教育科技有限公司</p>
+			<p>网上支持（职业资格问答） 　　您是第 9027267 位访问者</p>
+		</footer>
+	</body>
+
+</html>
+{load href="__STATIC__/center/js/jquery-1.7.2.min.js"/}
+{load href="__STATIC__/center/js/layui.js"/}
+{load href="__STATIC__/center/js/layui.all.js"/}
+<script>
+	//JavaScript代码区域
+	layui.use(['layer', 'form', 'element'], function() {
+		var layer = layui.layer,
+			form = layui.form,
+			element = layui.element
+
+		//……
+		//你的代码都应该写在这里面
+		$(function() {
+			$.get("BaoMingXuZhi.html", function(data) {
+				$("#iframeContent").html(data); //初始化加载界面  
+			});
+
+			$('.jxjd_nav-item').click(function() { //点击li加载界面  
+				var current = $(this),
+					target = current.find('a').attr('target'); // 找到链接a中的targer的值  
+				$.get(target, function(data) {
+					$("#iframeContent").html(data);
+				});
+			});
+
+		});
+		$(".ajax-linkk").each(function() {
+			$(this).click(function() {
+				var diZhi = $(this).attr("rel");
+				htmlobj = $.ajax({
+					url: diZhi,
+					async: false
+				});
+				$(".ajax-Box").html(htmlobj.responseText);
+			});
+		});
+		$('.jxjd_nav-item').bind('click', function() {
+			$('.jxjd-this').removeClass('jxjd-this');
+			$(this).addClass('jxjd-this');
+			$(".study_list_main").hide(50);
+			$(".zhuan").removeClass('iconzhuan');
+		});
+	});
+	$(document).ready(function() {
+		$(".style_item").click(function() {
+			$(".study_list_main").slideToggle();
+			$('.jxjd-this').removeClass('jxjd-this');
+			$(this).addClass('jxjd-this');
+			$(".zhuan").toggleClass('iconzhuan');
+			
+		});
+	});
+	$('.study_list').bind('click', function() {
+			$('.redcolor').removeClass('redcolor');
+			$(this).addClass('redcolor');
+		});
+</script>

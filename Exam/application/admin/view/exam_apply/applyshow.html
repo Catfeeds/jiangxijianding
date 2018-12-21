@@ -1,0 +1,122 @@
+{extend name="common@layout/layout" /}
+{block name="title"}
+{switch name="$toexamine"}
+{case value="1"}专场计划初审{/case}
+{case value="2"}专场计划终审{/case}
+{default /}其他
+{/switch}
+{/block}
+{block name="css"}
+<style>
+  .title {
+    display: block;
+    width: 200px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+</style>
+{/block}
+{block name='crumbs'}
+<span class="layui-breadcrumb">
+  <a href="/admin" class="county">
+    <i class="layui-icon layui-icon-home"></i>
+    &nbsp;首页
+  </a>
+  <a><cite>专场计划管理</cite></a>
+  <a><cite>{switch name="$toexamine"}
+            {case value="1"}初审{/case}
+            {case value="2"}终审{/case}
+            {default /}其他
+            {/switch}</cite></a>
+</span>
+{/block}
+{block name="content"}
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class="layui-card-body">
+      <table class="layui-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>申请标题</th>
+            <th>参考人数</th>
+            <th>考试时间</th>
+            <th>审核状态</th>
+      	    <th width="250px;">操作</th>
+          </tr>
+        </thead>
+        {volist name="applyList" id="vo"}
+        <tr>
+          <th>{$i}</th>
+          <th><a  class="title" href="#" title="{$vo['title']}">{$vo['title']}</a></th>
+          <th>{$vo.exam_num}</th>
+          <th>{$vo.exam_time}</th>
+          <th>{switch name="$vo['status']"}
+            {case value="1"}待审核{/case}
+            {case value="2"}一审通过{/case}
+            {case value="3"}二审通过{/case}
+            {case value="4"}一审未通过{/case}
+            {case value="5"}二审未通过{/case}
+            {default /}其他
+            {/switch}</th>
+          <th>
+
+            <button name="detail" listid='{$vo.id}' class="layui-btn layui-btn-sm detil">
+                审核
+            </button>
+          </th>
+          
+        </tr>
+        {/volist}
+      </table>
+    </div>
+    <div class="layui-form-item">
+    <div class="layui-fluid layui-form-item tp-pages">
+        {$applyList->render();}
+    </div></div>
+  </div>
+{/block}
+{/extend}
+{block name="script"}
+<script>
+//Demo
+layui.use('form', function(){
+  var form = layui.form;
+  
+  //监听提交
+  form.on('submit(formDemo)', function(data){
+    layer.msg(JSON.stringify(data.field));
+    return false;
+  });
+});
+
+layui.use('laydate', function(){
+  var laydate = layui.laydate;
+  
+  //执行一个laydate实例
+  laydate.render({
+    elem: '#examtime' //指定元素
+  });
+});
+
+layui.use(['layer','jquery'],function(){
+  var $ = jQuery = layui.$;
+
+    $('button[name=detail]').click(function(){
+        var id = $(this).attr('listid');
+        layer.open({
+            type: 2,
+            skin: 'layui-layer-rim', //加上边框
+            area: ['60%', '80%'], //宽高
+            title: "专场计划详情",
+            content: urladdr.applydetail+"?id="+id,  //调到专场计划详情
+            yes: function(index, layero){
+                //do something
+                layer.close(index); //如果设定了yes回调，需进行手工关闭
+            }
+        });
+    });
+});
+</script>
+{/block}

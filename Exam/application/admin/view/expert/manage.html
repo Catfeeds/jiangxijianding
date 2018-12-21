@@ -1,0 +1,60 @@
+{extend name="common@layout/nonelayout" /}
+
+{block name="content"}
+<div class="layui-tab-content">
+
+    <table border="1" class="layui-table">
+        <tr>
+            <th></th>
+            <th>工种代码</th>
+            <th>工种名称</th>
+            <th>工种等级</th>
+            <th>阅卷</th>
+            <th>论文</th>
+            <th>答辩</th>
+            <th>命题</th>
+            <th>状态</th>
+            <th>创建时间</th>
+            <th>操作</th>
+        </tr>
+        {volist name='list' id='vo'}
+        <tr>
+            <td>{$i}</td>
+            <td>{$vo.code}</td>
+            <td>{$vo.name}</td>
+            <td>{:config('EnrollStatusText.work_level_subject_level')[$vo->work_level_id]}</td>
+            <td>{$vo.is_check?'<b style="color: green;">是</b>':'<b style="color: red;">否</b>';}</td>
+            <td>{$vo.is_thesis?'<b style="color: green;">是</b>':'<b style="color: red;">否</b>';}</td>
+            <td>{$vo.is_debate?'<b style="color: green;">是</b>':'<b style="color: red;">否</b>';}</td>
+            <td>{$vo.is_question?'<b style="color: green;">是</b>':'<b style="color: red;">否</b>';}</td>
+            <td>{$vo.status?'<b style="color: green;">启用</b>':'<b style="color: red">禁用</b>';}</td>
+            <td>{$vo.create_time}</td>
+            <td>
+                <button data-value="{$vo.id}" class="layui-btn layui-btn-xs edit-manage">修改</button>
+            </td>
+        </tr>
+        {/volist}
+
+    </table>
+</div>
+{/block}
+
+{block name='script'}
+<script>
+    layui.use(['form', 'laydate'], function () {
+        var form = layui.form, $ = layui.jquery;
+        //修改
+        $(".edit-manage").click(function () {
+            var id = $(this).data('value');
+            layer.open({
+                type: 2,
+                anim: 1,
+                skin: 'layui-layer-molv',
+                area: ['70%', '90%'],
+                title: "修改专家工种权限",
+                content: urladdr.editExpertManage + id,  //调到新增页面
+            });
+        });
+    });
+</script>
+{/block}

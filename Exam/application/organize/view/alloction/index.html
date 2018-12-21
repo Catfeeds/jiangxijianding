@@ -1,0 +1,125 @@
+{extend name="/layout/layout"}
+{block name="css"}
+{/block}
+{block name="content"}
+
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        
+        <div class="layui-card-body">
+            <div class="layui-form-item"><button class="layui-btn" id="batchOrganize" onclick="window.history.back(-1);">
+                    返回
+                </button></div>
+            <table class="layui-table">
+                <colgroup>
+                    <col width="150">
+                    
+                    <col width="200">
+                    <col>
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>工种</th>
+                    <th>级别</th>
+                    <td>已分配</td>
+                    <th width="30%">分配</th>
+                </tr>
+                </thead>
+                <tbody>
+                {volist name="info" id="vo" key='n'}
+                <tr>
+                    <td>{$vo['name']}</td>
+                    <td>{$vo->work_level_subject_level}</td>
+                    {volist name="data" id='v'}
+                    {if($vo['work_id']==$v['work_id'] && $vo['work_level_subject_level']==$v['level'])}
+                    <td work='{$vo.wid}'  level="{$vo['work_level_subject_level']}"  class="success">{$v['count']}</td>
+                    {/if}
+                    {/volist}
+                    <td></td>
+                    <td>
+                        <button  work='{$vo.wid}' level="{$vo['work_level_subject_level']}"" class="layui-btn layui-btn-sm sub"> <i class="layui-icon">分配考评员</i></button>
+                        <button  work='{$vo.wid}' level="{$vo['work_level_subject_level']}"" class="layui-btn layui-btn-sm select"> <i class="layui-icon">查看申请记录</i></button>
+                    </td>    
+                    </td>    
+                </tr>
+                {/volist}
+                <input type="hidden" value="{$plan_id}" id="plan">
+                </tbody>
+            </table>
+        </div> 
+
+    </div>
+</div>
+
+
+</body>
+{/block}
+{/extend}
+{block name="script"}
+<script type="text/javascript">
+
+    layui.use('element', function(){
+        var element = layui.element;
+    });
+
+    layui.use(['form', 'layer','jquery'], function () {
+        var form  = layui.form;
+        var $  = layui.jquery;
+        var plan = $('#plan').val();
+        $('.sub').click(function(){
+            var work = $(this).attr('work');
+            var level = $(this).attr('level');
+            var workname = $(this).parent().prev().prev().text();
+            var levelname = $(this).parent().prev().text();
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['80%', '90%'], //宽高
+                title: "为"+workname+' '+levelname+"分配考评员",
+                content: "/organize/alloction/allot?work="+work+'&level='+level+'&plan='+plan,  //调到页面
+                yes: function(index, layero){
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        })
+
+        $('.success').click(function(){
+            var work = $(this).attr('work');
+            var level = $(this).attr('level');
+
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['40%', '80%'], //宽高
+                title: "分配成功",
+                content: "/organize/alloction/allotTrue?work="+work+'&level='+level+'&plan='+plan,  //调到页面
+                yes: function(index, layero){
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        })
+
+        $('.select').click(function(){
+            var work = $(this).attr('work');
+            var level = $(this).attr('level');
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['80%', '90%'], //宽高
+                title: "查看申请记录",
+                content: "/organize/alloction/record?work_id="+work+'&level='+level+'&exam_plan_id='+plan,  //调到页面
+                yes: function(index, layero){
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        })
+
+
+
+    });
+
+
+</script>
+{/block}

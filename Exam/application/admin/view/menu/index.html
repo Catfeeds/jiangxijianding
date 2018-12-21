@@ -1,0 +1,114 @@
+{extend name="common@layout/layout" /}
+{block name="title"}权限管理{/block}
+{block name='crumbs'}
+<span class="layui-breadcrumb" lay-separator="">
+  <a href="/admin" class="county">
+    <i class="layui-icon layui-icon-home"></i>
+    &nbsp;首页
+  </a>
+  <a><cite>权限管理</cite></a>
+</span>
+{/block}
+{block name="content"}
+<div style="width: 95%;margin-left: 30px;">
+    <button class="layui-btn addMenu" data-value="0" style="margin: 10px;float: right;">
+        <i class="layui-icon">&#xe654;</i>添加权限
+    </button>
+    <table class="layui-table" lay-even lay-size='sm' lay-skin="nob">
+        <colgroup>
+            <col width="10">
+            <col width=55">
+            <col width="">
+            <col width="">
+            <col width="200">
+        </colgroup>
+        <thead>
+        <tr>
+            <th></th>
+            <th>排序</th>
+            <th>名称</th>
+            <th>地址</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {volist name="data" id="vo"}
+        <tr>
+            <td>{$i}</td>
+            <td>
+                <input data-value="{$vo.id}" type="text" name="sort" value="{$vo.sort}" class="layui-input sort">
+            </td>
+            <td>{$vo._name}</td>
+            <td>{$vo.url}</td>
+            <td>
+                <button data-value="{$vo.id}" class="layui-btn layui-btn-warm layui-btn-xs addMenu">添加子权限</button>
+                <button data-value="{$vo.id}" class="layui-btn layui-btn-xs editMenu">修改</button>
+                <button data-value="{$vo.id}" class="layui-btn layui-btn-danger layui-btn-xs deleteMenu">删除</button>
+            </td>
+        </tr>
+        {/volist}
+        </tbody>
+    </table>
+</div>
+{/block}
+{block name="script"}
+<script>
+
+    layui.use('form', function () {
+        var $ = layui.jquery;
+        //添加子菜单
+        $('.addMenu').on('click', function () {
+            id = $(this).data('value');
+            layer.open({
+                type: 2,
+                anim: 1,
+                skin: 'layui-layer-molv',
+                area: ['500px', '400px'], //宽高
+                title: "添加权限",
+                content: urladdr.addMenu + id,  //调到新增页面
+            });
+        });
+        //删除菜单
+        $('.deleteMenu').on('click', function () {
+            id = $(this).data('value');
+            layer.confirm('是否确认该操作？', {btn: ['确定', '取消'], title: "提示"}, function () {
+                $.post(urladdr.deleteMenu, {'id': id}, function (res) {
+                    if (res.code === 1) {
+                        layer.msg(res.msg, {time: 500, icon: 1}, function () {
+                            location.reload();
+                        });
+                    } else {
+                        layer.msg(res.msg, {icon: 5});
+                    }
+                });
+            });
+        });
+        //修改菜单
+        $('.editMenu').on('click', function () {
+            id = $(this).data('value');
+            layer.open({
+                type: 2,
+                anim: 1,
+                skin: 'layui-layer-molv',
+                area: ['500px', '400px'], //宽高
+                title: "修改菜单",
+                content: urladdr.editMenu + id,  //调到新增页面
+            });
+        });
+        //修改权限
+        $('.sort').on('blur', function () {
+            var id = $(this).data('value'), sort = $(this).val();
+            $.post(urladdr.doeditMenu, {'id': id, 'sort': sort}, function (res) {
+                if (res.code === 1) {
+                    layer.msg(res.msg, {time: 500, icon: 1}, function () {
+                        location.reload();
+                    });
+                } else {
+                    layer.msg(res.msg, {icon: 5});
+                }
+            });
+        });
+    });
+
+</script>
+{/block}

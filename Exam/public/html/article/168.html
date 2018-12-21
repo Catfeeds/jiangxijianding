@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/layui/css/main.css" />
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/layui/css/layui.css" />
+    <style type="text/css">
+        img {
+            border: 0;
+            max-width: 100%;
+        }
+        .zuixin ul li {
+            line-height: 30px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .zuixin ul li span {
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+            background: #C52730;
+            color: white;
+            text-align: center;
+            margin-right: 10px;
+            margin-top: 10px;
+            line-height: 20px;
+        }
+    </style>
+    <title>我省召开《</title>
+</head>
+
+
+<div class="daohang"></div>
+<div class=" xiangqing">
+    <div class="layui-col-xs9">
+
+        <h3 class="baoming_title">
+            <span class="baoming_title_span" >鉴定动态</span>
+            <span class="layui-breadcrumb rightfloat" lay-separator=">">
+				  <a target="_blank" href="/">首页</a>
+				  <a target="_blank" href="/cms/index/category?id=9">鉴定安排</a>
+				  <a><cite>鉴定动态</cite></a>
+				</span>
+        </h3>
+        <div class="xiangqing_header">
+            <h2>我省召开《</h2>
+            <p>来源：本站</p>
+            <p>时间：2018-11-11</p>
+        </div>
+        <div class="baoming_main">
+            <p style="text-align: justify;"><span><span>3月27—28日, 按照人社部要求，江西省职业技能鉴定指导中心在南昌组织召开了《茶艺师国家职业技能标准》初审会。人社部职业技能鉴定中心副巡视员荣庆华到会并讲话，部鉴定中心标准处有关人员出席会议，省鉴定指导中心负责人及标准编制、评审专家等20余人参加了会议。</span></span></p><p style="text-align: justify;"><span><span>会上，荣庆华副巡视员强调，国家职业技能标准是开展职业教育培训和人才技能鉴定评价的基本依据，要高度认识编制标准的重要性，严格按照《国家职业技能标准编制技术规程（2018年版）》编制国家职业技能标准。部鉴定中心标准处有关人员讲解了国家职业技能标准审定要求、审定程序、注意事项等。会议推举中国农科院茶叶研究所副所长鲁成银担任审定专家组组长。省社科院首席研究员余悦汇报了《茶艺师国家职业技能标准（初稿）》编制情况和内容。与会评审专家对“标准”进行逐条审议，充分肯定了初稿，提出了切实可行的修改意见和解决方案，经过热烈讨论和评审，形成了评审意见，圆满完成了《茶艺师国家职业技能标准》初审工作。本次会议结束以后，编制组将进一步修改“标准”相关内容，并形成“标准”征求意见稿报人社部复审。</span></span></p><p style="text-align: center;"><span><span><img title="a.jpg" src="http://jx.nvq.net.cn/siteApp/upload/1081/upload/2018-04-02/2184/78711522639034860.jpg"></span></span></p><p><span><span><br></span></span></p><p style="text-align: center;"><span><span><img title="b.jpg" src="http://jx.nvq.net.cn/siteApp/upload/1081/upload/2018-04-02/2184/3661522639052141.jpg"></span></span></p>
+        </div>
+        
+    </div>
+    <div class="layui-col-xs3 baomingrukou">
+        <h3 class="baoming_title"><span class="baoming_title_span">鉴定动态</span></h3>
+        <div class="baomingrukou_main zuixin">
+            <ul>
+               <li><a target='_blank' href=/html/article/206.html><span>1</span>我省召开《</a></li><li><a target='_blank' href=/html/article/130.html><span>2</span>我省召开《</a></li><li><a target='_blank' href=/html/article/92.html><span>3</span>我省召开《</a></li><li><a target='_blank' href=/html/article/54.html><span>4</span>我省召开《</a></li><li><a target='_blank' href=/html/article/16.html><span>5</span>我省召开《</a></li>
+            </ul>
+        </div>
+
+    </div>
+</div>
+
+<footer class="footer">
+    <img class="quanwei" src="/static/img/cms1.0/quanwei.png"/>
+    <p>主办单位：江西省职业技能鉴定指导中心 技术支持：博奥网络教育科技股份有限公司</p>
+    <p>网上支持（职业资格问答） 　　您是第 9027267 位访问者</p>
+</footer>
+</body>
+
+</html>
+
+<script src="/static/layui/layui.js" type="text/javascript" charset="utf-8"></script>
+<script src="/static/layui/layui.all.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use('jquery', function(){
+        $ = layui.jquery;
+        $.get('daohang.html', function(data) {
+            $(".daohang").html(data);
+        });
+
+    });
+</script>

@@ -1,0 +1,112 @@
+{extend name="common@layout/nonelayout" /}
+
+{block name="content"}
+<div class="layui-tab-content">
+    <form class="layui-form">
+        <input type="hidden" name="id" id="id" value="{notempty name='res'}{$res.id}{/notempty}"/>
+        <table border="1" class="layui-table">
+            <colgroup>
+                <col width="50">
+                <col width="100">
+                <col width="50">
+                <col width="100">
+            </colgroup>
+            <tr>
+                <th width="100">手机号码:</th>
+                <td colspan="3">
+                    <input type="text" name="phone" disabled value="{notempty name='res'}{$res.phone}{/notempty}"
+                           required
+                           lay-verify="phone" placeholder="手机号码" autocomplete="off" class="layui-input">
+                    <input type="hidden" name="id" value="{$res.id}">
+                </td>
+            </tr>
+            <tr>
+                <th width="100">姓名:</th>
+                <td colspan="3">
+                    <input type="text" name="name" disabled value="{notempty name='res'}{$res.name}{/notempty}" required
+                           lay-verify="required" placeholder="姓名" autocomplete="off" class="layui-input">
+                </td>
+            </tr>
+            <tr>
+                <th width="100">证件号:</th>
+                <td colspan="3">
+                    <input type="text" name="id_number" disabled
+                           value="{notempty name='res'}{$res.id_number}{/notempty}"
+                           required
+                           lay-verify="required" placeholder="证件号" autocomplete="off" class="layui-input">
+                </td>
+            </tr>
+            <tr>
+                <th width="100">所属机构:</th>
+                <td colspan="3">
+                    <select lay-search name="organize_id">
+                        {volist name='orglist' id='vo'}
+                        <option value="{$vo.id}" {$vo.id==$res.organize_id?'selected':'disabled';}>{$vo.name}</option>
+                        {/volist}
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th width="100">创建时间:</th>
+                <td colspan="3">
+                    <div class="">
+                        {$res.create_time}
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+                <th width="100">状态:</th>
+                <td colspan="3">
+                    <input type="radio" name="status" value="1" title="启用" {$res.status==1?'checked':'disabled';}>
+                    <input type="radio" name="status" value="0" title="禁用" {$res.status==1?'disabled':'checked'}>
+                </td>
+            </tr>
+        </table>
+
+        <button class="layui-btn layui-btn-warm edit lhj-sub">修改信息</button>
+        <button class="layui-btn submit lhj-sub" style="display:none;" lay-submit lay-filter="formSubmit">确认提交</button>
+    </form>
+</div>
+{/block}
+
+{block name='script'}
+<script>
+    layui.use(['form', 'laydate'], function () {
+        var form = layui.form, $ = layui.jquery, laydate = layui.laydate;
+        $('.edit').on('click', function () {
+            $(this).hide();
+            $('input').removeAttr('disabled');
+            $('option').removeAttr('disabled');
+            form.render();
+            $('.submit').show();
+            return false;
+        });
+        var datevalue = $("#hire_time").data('value');
+        laydate.render({
+            elem: '#hire_time'
+            , type: 'datetime'
+            , format: 'yyyy-MM-dd HH:mm:ss'
+            , value: datevalue
+        });
+        //监听提交
+        form.on('submit(formSubmit)', function (data) {
+            var formData = data.field, button = $(this);
+            button.addClass('layui-btn-disabled').attr('disabled', true);
+            $.post(urladdr.doEditJury, formData, function (data) {
+                if (data.code > 0) {
+                    layer.msg(data.msg, {icon: 1, time: 1000}, function () {
+                        layer.close(layer.index);
+                        window.parent.location.reload();
+                    });
+                } else {
+                    layer.msg(data.msg, {icon: 5}, function () {
+                        button.removeClass('layui-btn-disabled').removeAttr('disabled');
+                    });
+                }
+            });
+            return false;
+        });
+    });
+</script>
+{/block}

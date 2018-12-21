@@ -1,0 +1,126 @@
+
+{block name="css"}
+<link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css">
+{/block}
+{block name="content"}
+<body >
+
+    <header ></header>
+    <form class="layui-form" >
+
+        <style type="text/css">
+            .layui-form-item {
+                margin-left: 18%;
+
+            }
+        </style>
+
+
+        <div class="layui-form-item" style="margin-top: 5%">
+            <label class="layui-form-label">标题<span style="color:red">*</span></label>
+            <div class="layui-input-inline">
+                <input type="hidden" value="{$info.id}" name="id">
+                <input type="text" id="title" value="{$info.name}" name="name" required lay-verify="required" placeholder="请输入名称" autocomplete="off" class="layui-input">
+            </div>
+
+        </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">跳转地址</label>
+                <div class="layui-input-inline">
+                    <input type="text" id="url" value="{$info.url}" name="url" required lay-verify="required" placeholder="请输入名称" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <img src="{$info.log_url}" alt="">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <input type="hidden" id="log_url" name="log_url">
+                    <button type="button" class="layui-btn layui-btn-lg audit" id="testl" >
+                        <i class="layui-icon">&#xe67c</i>上传图片
+                    </button>
+                </div>
+            </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="sub">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+
+    </form>
+
+</body>
+{/block}
+
+{block name="script"}
+<script src="__PUBLIC__/js/jquery.min.js"></script>
+<script src="__PUBLIC__/layui/layui.js"></script>
+
+
+<script type="text/javascript">
+
+    layui.use('upload',function(){
+        var upload = layui.upload;
+        //执行实例
+        var uploadInst = upload.render({
+            elem: '#testl'
+            ,url:'/api/CmsPicture/upload'
+            ,drag:true
+            ,done:function(res,index,upload)
+            {
+                //上传完毕回调
+                if(res.code==1)
+                {layer.msg(res.msg, {
+                    icon: 1,//提示的样式
+                    time: 2000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+
+                })
+                    $('#log_url').attr('value',res.index);
+                  $('img').empty();
+                   $('img').attr('src',res.index);
+
+
+                }else{
+                    layer.msg(res.msg);
+                }
+            }
+        })
+    });
+    layui.use(['form', 'layer','jquery'], function () {
+        var form  = layui.form;
+        var $  = layui.jquery;
+
+        //添加表单监听事件
+        form.on('submit(sub)',function (data) {
+            data = data.field;
+
+            $.post("/api/CmsFuServe/fuSerUpdate",data,function (data) {
+                if (data.code == 1){
+                    layer.msg(data.msg, {
+                        icon: 1,//提示的样式
+                        time: 2000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                        end: function () {
+                            //当你在iframe页面关闭自身时
+                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                            parent.layer.close(index); //再执行关闭
+                            parent.location.reload();
+                        }
+                    })
+                }else{
+                    layer.msg(data.msg);
+                }
+            })
+            //防止页面跳转
+            return false;
+        });
+
+
+    });
+
+
+</script>
+{/block}

@@ -1,0 +1,141 @@
+
+<style type="text/css" media=print>
+    .noprint{display : none}
+    .tdcenter{ text-align:center;}
+</style>
+<style media="print">
+    @page {
+        size: auto;
+        margin: 0mm;
+    }
+</style>
+<body style="margin-left: 50px;margin-right: 50px">
+<!--startprint1-->
+<!--打印内容开始-->
+<div id = "jubu">
+    <div align="center" style="text-align: center;display:block; margin-top: 23px;"><h1>准考证</h1></div>
+<table border="1" class="layui-table" width="100px" >
+    <tr>
+        <td>姓名</td>
+        <td>{$logininfo.username?$logininfo.username:''}</td>
+        <td>性别</td>
+        <td>{$logininfo.gender?$logininfo.gender:''}</td>
+        <td colspan="1" rowspan="4"><img src="{$logininfo.avatar?$logininfo.avatar:''}"> </td>
+    </tr>
+    <tr>
+        <input type="hidden" name="hiddenid" id="hiddenid" value="{$examenroll.id}" >
+        <td>
+            {if $logininfo.id_type == 1}身份证
+            {elseif $logininfo.id_type == 2}护照
+            {elseif $logininfo.id_type == 3}军官证
+            {elseif $logininfo.id_type == 4}港澳台证
+            {else /}其他
+            {/if}
+        </td>
+        <td colspan="3">{$logininfo.userpid?$logininfo.userpid:''}</td>
+    </tr>
+    <tr>
+        <td>
+            准考证号
+        </td>
+        <td colspan="3">{$ticket.card?$ticket.card:''}</td>
+    </tr>
+    <tr>
+        <td>报考职业(工种)</td>
+        <td colspan="3" id="workname" data-value="{$examenroll.wid}">{$examenroll.workname}</td>
+    </tr>
+    <tr>
+        <td>报考职业方向</td>
+        <td colspan="2">{$examenroll.directionname}</td>
+        <td>文化程度</td>
+        <td>
+            {switch name="$logininfo.education" }
+            {case value="1"}博士{/case}
+            {case value="2"}硕士{/case}
+            {case value="3"}研究生{/case}
+            {case value="4"}专科{/case}
+            {case value="5"}本科{/case}
+            {case value="6"}高职{/case}
+            {case value="7"}中专{/case}
+            {case value="8"}技校{/case}
+            {case value="9"}高中{/case}
+            {case value="10"}初中{/case}
+            {case value="11"}小学{/case}
+            {/switch}
+        </td>
+    </tr>
+    <tr>
+        <td>鉴定级别</td>
+        <td colspan="2">{$examenroll->work_level_subject_level?$examenroll->work_level_subject_level:''}</td>
+        <td>考试科目</td>
+        <td>{$subjectName.subjectName ? $subjectName.subjectName:''}</td>
+    </tr>
+    <tr>
+        <td>参加考试日程</td>
+        <td colspan="4">
+            {$examenroll.exam_time?$examenroll.exam_time:''}
+        </td>
+    </tr>
+    <tr>
+        <td>参加考试地点</td>
+        <td colspan="4">
+            {$examenroll.exam_site?$examenroll.exam_site:''}
+        </td>
+    </tr>
+    <tr>
+        <td>证书查询网址</td>
+        <td colspan="2"> </td>
+        <td>查分电话</td>
+        <td > </td>
+    </tr>
+</table>
+</div>
+<!--打印内容结束-->
+<!--endprint1-->
+<div style="text-align: center">
+<button class="layui-btn" id="addorganize"  onclick=preview(1)><span class="noprint" >打印准考证</span></button>
+</div>
+</body>
+
+<link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css">
+<script src="__PUBLIC__/layui/assets/jquery-1.12.4.js"></script>
+<script src="__PUBLIC__/layui/layui.js"></script>
+
+<script language="javascript">
+    function preview(oper) {
+        var tata=document.execCommand("print");/* window.print(); 调用打印的功能*/
+        if(tata){  //点击取消后执行的操作
+            layui.use(['form', 'layer','jquery','element'], function () {
+                var element = layui.element;
+                var form = layui.form;
+                var $ = layui.jquery;
+                var $id= $("#hiddenid").val();
+                //添加表单监听事件
+                $.ajax({
+                    url:'/api/ExamEnroll/printApplyStatus?status='+55,
+                    data:{id:$id},
+                    dataType:'json',
+                    success:function (data) {
+                        if (data.code==1) {
+                            layer.msg(data.msg,{
+                                icon: 1,//提示的样式
+                                time:  2000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                                end: function () {
+                                    $.get("{:url('/examinee/center/indexBill')}", function(data) {
+                                        window.parent.$("#iframeContent").html(data); //初始化加载界面
+                                        //取消遮罩的时候
+                                        $(".layui-layer-shade").hide();
+                                    });
+                                }
+                            });
+                        }else{
+                            layer.msg(data.msg);
+                        }
+                    }
+                });
+                //防止页面跳转
+                return false;
+            });
+        }
+    }
+</script>

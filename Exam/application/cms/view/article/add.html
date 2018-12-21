@@ -1,0 +1,278 @@
+
+{block name="css"}
+<link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css">
+{/block}
+{block name="content"}
+<body >
+<div  class="layui-body" style="left: 30px;">
+    <header></header>
+    <style type="text/css">
+        .layui-form-label
+        {
+            width:136px;
+        }
+        .layui-form-item
+        {
+            width:70%
+        }
+    </style>
+    <form class="layui-form"  >
+        <div class="layui-form-item" style="margin-top: 10px;">
+            <label class="layui-form-label">文章所属栏目 <span style="color:red">*</span></label>
+            <div class="layui-input-inline">
+                <select name="guide_id" lay-verify="required">
+                    <option value="0">请选择</option>
+                    {volist name='data' id='v'}
+                    <option value="{$v.id}">{$v.guide_name}</option>
+                    {/volist}
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">文章标题 <span style="color:red">*</span></label>
+            <div class="layui-input-inline">
+                <input type="text" id="title" name="title" required lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">标题是否需要加红</label>
+                <div class="layui-input-block">
+                    <input type="radio" name="red" value="0" title="否" checked>
+                    <input type="radio" name="red" value="1" title="是" >
+                </div>
+            </div>
+            <div class="layui-form-item">
+            <label class="layui-form-label">文章来源</label>
+            <div class="layui-input-inline">
+                <input type="text" id="source" name="source"  placeholder="请输入来源" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">文章发布时间 <span style="color:red">*</span></label>
+            <div class="layui-input-inline">
+                <input type="text" id="create_time" name="time" required lay-verify="required" placeholder="请选择发布时间" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <!--<div class="layui-form-item">-->
+                <!--<label class="layui-form-label">上传附件</label>-->
+
+                <!--<div class="layui-upload">-->
+                    <!--<button type="button" class="layui-btn layui-btn-normal" id="testList">选择多文件</button>-->
+                    <!--<div class="layui-upload-list">-->
+                        <!--<table class="layui-table">-->
+                            <!--<thead>-->
+                            <!--<tr><th>文件名</th>-->
+                                <!--<th>大小</th>-->
+                                <!--<th>状态</th>-->
+                                <!--<th>操作</th>-->
+                            <!--</tr></thead>-->
+                            <!--<tbody id="demoList"></tbody>-->
+                        <!--</table>-->
+                    <!--</div>-->
+                    <!--<button type="button" class="layui-btn" id="testListAction">开始上传</button>-->
+
+                    <!--<button type="button" class="layui-btn" id="back">返回</button>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--<div id="fujian"></div>-->
+
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label" >文章内容<span style="color:red">*</span></label>
+                <div class="layui-input-block" style="margin-left: 135px;">
+                    <textarea  id="content" name="content" cols="50" rows="15" style="width: 90%;height:300px;margin: 0 auto;" ></textarea>
+                </div></div>
+            <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="sub">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+
+    </form>
+</div>
+</body>
+{/block}
+
+{block name="script"}
+<script src="__PUBLIC__/js/jquery.min.js"></script>
+<script src="__PUBLIC__/layui/layui.all.js"></script>
+<script src="__PUBLIC__/ueditor/ueditor.config.js"></script>
+<script src="__PUBLIC__/ueditor/ueditor.all.js"></script>
+
+
+
+<script type="text/javascript">
+  var ue = UE.getEditor('content');
+  function getCOntent()
+  {
+    var content = UE.getEditor('content').getContent();
+    return content;
+  }
+
+    var id = $("#agendaId").val();
+    // layui.use(['upload','layer'], function() {
+    //
+    //     var html='';
+    //     var $ = layui.jquery
+    //             , upload = layui.upload;
+    //     //多文件列表示例
+    //     var demoListView = $('#demoList')
+    //             , uploadListIns = upload.render({
+    //         elem: '#testList'
+    //         , url: 'fujian'
+    //         , accept: 'file'
+    //         , data: {}   //可放扩展数据  key-value
+    //         , multiple: true
+    //         , auto: false
+    //
+    //         , bindAction: '#testListAction'
+    //         , choose: function (obj) {
+    //             var files = this.files = obj.pushFile(); //将每次选择的文件追加到文件队列
+    //             //读取本地文件
+    //
+    //             obj.preview(function (index, file, result) {
+    //                 var tr = $(['<tr id="upload-' + index + '">'
+    //                     , '<td>' + file.name + '</td>'
+    //                     , '<td>' + (file.size / 1014).toFixed(1) + 'kb</td>'
+    //                     , '<td>等待上传</td>'
+    //                     , '<td>'
+    //                     , '<button class="layui-btn layui-btn-mini demo-reload layui-hide">重传</button>'
+    //                     , '<button class="layui-btn layui-btn-mini layui-btn-danger demo-delete">删除</button>'
+    //                     , '</td>'
+    //                     , '</tr>'].join(''));
+    //
+    //                 //单个重传
+    //                 tr.find('.demo-reload').on('click', function () {
+    //                     obj.upload(index, file);
+    //                 });
+    //                 //删除
+    //                 tr.find('.demo-delete').on('click', function () {
+    //                     delete files[index]; //删除对应的文件
+    //                     tr.remove();
+    //                     uploadListIns.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
+    //                 });
+    //
+    //                 demoListView.append(tr);
+    //             });
+    //         }
+    //
+    //         , done: function (res, index, upload) {
+    //             if (res.code == 1){
+    //                 html += '<input type="hidden" name="fujia_id[]" value="'+res.data+'"'+'id="'+res.data+'">'
+    //                 $("#fujian").html(html);
+    //                 var tr = demoListView.find('tr#upload-' + index)
+    //                         , tds = tr.children();
+    //                 tds.eq(2).html('<span style="color: #5FB878;">上传成功</span>');
+    //                 tds.eq(3).html('<button class="layui-btn layui-btn-mini layui-btn-danger fujian-del" value="'+res.data+'">删除</button>'); //清空操作
+    //                delete this.files[index];
+    //                 tr.find('.fujian-del').on('click',function(){
+    //                     var id = $(this).val();
+    //                     $.ajax({
+    //                             url: "/cms/article/Fujiandelete",
+    //                             data: {'id': id},
+    //                             type: "post",
+    //                             dataType: 'json',
+    //                             success: function (data) {
+    //                                 if (data.code == 1) {
+    //                                     layer.msg(data.msg,{'icon':1},function () {
+    //                                         tr.remove();
+    //                                     });
+    //                                 } else {
+    //                                     layer.msg(data.msg,{'icon':5});
+    //                                 }
+    //                             }
+    //                         });return false;
+    //                 })
+    //             }else
+    //                 {
+    //                     layer.msg(res.msg);
+    //                 }
+    //         }
+    //         , error: function (res,index, upload) {
+    //              layer.msg(res.msg);
+    //         }
+    //
+    //     });
+    //
+    // });
+
+    layui.use(['form','layer','layedit','upload','laydate'],function(){
+        var form = layui.form ,$ = layui.jquery;
+        var laydate = layui.laydate;
+        var upload = layui.upload;
+
+        //执行一个laydate实例
+        laydate.render({elem:'#create_time'});
+
+        //创建一个编辑器
+        //监听开关
+
+        //监听单选按钮
+
+        var uploadInst = upload.render({
+            elem: '#testl'
+            ,url:'/cms/guide/upload'
+            ,drag:true
+            ,done:function(res,index,upload)
+            {
+                if(res.code==1)
+                {layer.msg(res.msg, {
+                    icon: 1,//提示的样式
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                });
+                    $('#url').attr('value',res.index);
+                    $('img').attr('src',res.index);
+
+                }else{
+                    layer.msg(res.msg);
+                }
+            }
+
+        });
+        //监听提交
+        form.on('submit(sub)',function(data){
+
+            var content = getCOntent();
+            data = data.field;
+            data.content = content;
+            var button = $(this);
+
+             if(content=='')
+             {
+                 layer.msg('文章内容不能为空');
+                 return false;
+             }
+            button.addClass('layui-btn-disabled').attr('disabled',true);
+            var fujian = $('#fujian').html();
+            $.ajax({
+                url:'/api/CmsArticle/add',
+                type:'post',
+                data:data,
+                dataType:'json',
+                success:function(res)
+                {
+                    if(res.code==1)
+                    {
+                        layer.msg(res.msg,{
+                            icon:1,
+                            time:2000,
+                            end:function(){
+                                var indexof = parent.layer.getFrameIndex(window.name);
+                                parent.layer.close(indexof);
+                                parent.location.reload();
+                            }
+                        });
+                    }else{
+                        layer.msg(res.msg);
+                        button.removeClass('layui-btn-disabled').removeAttr('disabled');
+                    }
+                }
+            });
+            return false;
+        })
+    });
+
+
+</script>
+{/block}

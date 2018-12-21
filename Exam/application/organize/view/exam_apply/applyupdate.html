@@ -1,0 +1,261 @@
+{extend name="/layout/nonelayout"}
+{block name="css"}
+{/block}
+{block name="content"}
+<body>
+<form class="layui-form">
+
+    <div class="layui-form-item">
+        <label class="layui-form-label" >申请标题</label>
+        <div class="layui-input-block" style="width: 80%">
+            <input type="text" name="title" id="title" placeholder="请输入标题" value="{volist name="arrWork" length='1' id="vo"}{$vo.title}{/volist}"   lay-verify="title" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">预计人数</label>
+        <div class="layui-input-block" style="width: 80%">
+            <input type="text" name="exam_num" id="exam_num" placeholder="请输入数量" value="{volist name="arrWork" length='1' id="vo"}{$vo.exam_num}{/volist}"  lay-verify="title" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">申请原因</label>
+            <div class="layui-input-block" style="width: 80%">
+                <input type="text" class="layui-input" name="reason" id="reason" value="{volist name="arrWork" length='1' id="vo"}{$vo.reason}{/volist}" lay-verify="title" autocomplete="off" placeholder="请填写原因">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">上传附件</label>
+            <div class="layui-input-block" style="width: 40%;">
+                <input type="file" name="pdf" accept="application/pdf" id="pdf">
+            </div>
+             <div class="layui-input-block" style="width: 40%;">
+                <button id="yulan" url="{volist name="arrWork" length='1' id="vo"}{$vo.appendix}{/volist}">预览</button>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">考试时间：</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" value="{volist name="arrWork" length='1' id="vo"}{$vo.exam_time}{/volist}" name="exam_time" id="exam_time" placeholder="请选择时间">
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">工种类型：</label>
+        <div class="layui-input-block" style="width: 80%">
+            <select name="work_type" id="work_type" lay-filter="work_type">
+                <option value="">请选择工种类型</option>
+                {volist name="workType" id="vo"}
+                <option value="{$vo.id}" {volist name="arrWork" length='1' id="v"}{if($v.work_type==$vo.id)} selected {/if}{/volist}>{$vo.name}</option>
+                {/volist}
+            </select>
+        </div>
+    </div>
+
+    <div class="layui-form-item" id="work">
+        <label class="layui-form-label">工种：</label> 
+        {volist name="datas" id='vo'}
+            <div class="layui-input-block">
+                {if(isset($arrWork[$vo.wid]))}
+                    <input type="hidden" value="{$vo.wid}" name="work[]" checked title="{$vo.wname}">
+                    {$vo.wname}：
+                    {volist name="vo.level" id="v"}
+                        <input type="checkbox" {if(in_array($v,$arrWork[$vo.wid]['level']))} checked {/if} value="{$v}" name="level[{$vo.wid}][]" title="{$level[$v]}">
+                    {/volist}  
+                    {else /}
+                    <input type="hidden" value="{$vo.wid}" name="work[]" checked title="{$vo.wname}">
+                    {$vo.wname}：
+                    {volist name="vo.level" id="v"}
+                        <input type="checkbox"  value="{$v}" name="level[{$vo.wid}][]" title="{$level[$v]}">
+                    {/volist}  
+                {/if}   
+
+            </div>
+        {/volist} 
+         <div class="layui-input-block">
+         <div class="layui-form-mid layui-word-aux">若想重新选择工种和级别 请先选择工种类型</div>
+          </div>
+          
+    </div>
+
+    <input type="hidden" name="id" value="{volist name="arrWork" length='1' id="v"}{$v.id}{/volist}">
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" id="addorganize" lay-submit lay-filter="formSubmit">修改</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+{/block}
+{/extend}
+{block name="script"}
+<script>
+
+    pdf.onchange=function(){
+         var read=new FileReader() // 创建FileReader对像;
+         read.readAsDataURL(this.files[0]) // 调用readAsDataURL方法读取文件;
+              read.onload=function(){
+               url=read.result // 拿到读取结果;
+               $('#yulan').attr('url',url);
+               $('#yulan').css('display','block');
+             }
+         }  
+ 
+    layui.use('laydate', function(){
+        var laydate = layui.laydate;
+        var myDate = new Date();//获取系统当前时间
+
+        //日期时间选择器
+        laydate.render({
+            elem: '#exam_time'
+            ,type: 'datetime'
+            ,min: myDate.toLocaleDateString()
+        });
+    });
+
+    layui.use(['form', 'layer','jquery'], function () {
+        var form = layui.form;
+        var $ = layui.jquery;
+
+        $("#yulan").click(function () {
+            var listid = $(this).attr("url");
+            parent.layer.open({
+                type: 2,
+                title: false,
+                area: ['80%', '85%'],
+                shade: 0.8,
+                shadeClose: true,
+                content:listid
+            });
+            return false;
+
+        });
+        //获取工种
+        form.on('select(work_type)', function(data){
+            var work_type = data.value;
+            $.ajax({
+                url:'/api/ExamApply/selbyworktype',
+                type:'post',
+                dataType:'json',
+                data:{
+                    work_type:work_type,
+                },
+                success:function (data) {
+                    if (data.code==1){
+                        $("#work").html("");
+                        $("#level").html("");
+                        //获取 work 标签
+                        var work = document.getElementById ("work");
+                        //创建label div
+                        var label1 = document.createElement("label");
+                        label1.setAttribute('class',"layui-form-label");
+                        var div = document.createElement("div");
+                        //给标签设置属性
+                        label1.innerText = '工种：';
+
+                        //插入标签
+                        work.append(label1);
+                        work.append(div);
+                        for (var i=0;i<data.data.length;i++){
+                            var label = document.createElement("label");
+                            
+                            div.setAttribute('class',"layui-input-block");
+                            var input = document.createElement("input");
+                            label.innerText =  " \n " + data.data[i]['wname'] + " ：";
+                            input.value = data.data[i]['wid'];
+                            input.setAttribute('type',"hidden");
+                            input.setAttribute('name',"work[]");
+                            input.setAttribute('title',data.data[i]['wname']);
+
+                            div.appendChild(label);
+                            div.appendChild(input);
+                            var arr = new Array("高级技师","技师","高级","中级","初级");
+                            for (var j=0;j<data.data[i]['level'].length;j++) {
+                                var inputs = document.createElement("input");
+                                var wlid = data.data[i]['level'][j];
+                                inputs.value = wlid-1;
+                                inputs.setAttribute('type', "checkbox");
+                                inputs.setAttribute('name', "level[" + data.data[i]['wid'] + "][]");
+                                inputs.setAttribute('value', wlid);
+                                inputs.setAttribute('class', "levels");
+                                inputs.setAttribute('title', arr[wlid-1]);
+                                div.appendChild(inputs);
+                            }
+                            form.render();
+                        }
+                    }else{
+                        $("#work").html("");
+                        form.render();
+                        layer.msg(data.msg)
+                    }
+                }
+            });
+            //防止页面跳转
+            return false;
+        });
+
+        //判断是否是整形
+        function isInteger(obj) {
+          return Math.floor(obj) == obj;
+        }
+
+        //添加表单监听事件
+        form.on('submit(formSubmit)', function (data) {
+            data=data.field;
+            if (!$("input[name='title']").val()) {
+                layer.msg("标题必填");
+                return false;
+            }
+
+            if(isInteger($("input[name='exam_num']").val())==false){
+                layer.msg("参考人数错误");
+                return false;
+            }
+            if (!$("input[name='reason']").val()) {
+                layer.msg("申请原因必填");
+                return false;
+            }   
+
+            if (!$("input[name='exam_time']").val()) {
+                layer.msg("考试时间必选");
+                return false;
+            }
+            if (!$("input[type='checkbox']").is(":checked")) {
+                layer.msg("工种和级别必选");
+                return false;
+            }
+            $.ajax({
+                url:'/api/ExamApply/update',
+                type:'post',
+                data:data,
+                dataType:'json',
+                success:function (data) {
+                    if (data.code==1){
+                        layer.msg(data.msg,{
+                            icon: 1,//提示的样式
+                            time:  2000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                            end: function () {
+                                //当你在iframe页面关闭自身时
+                                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                parent.layer.close(index); //再执行关闭
+                                parent.location.reload();
+                            }
+                        });
+                    }else{
+                        layer.msg(data.msg);
+                    }
+                }
+            });
+            //防止页面跳转
+            return false;
+        });
+    });
+
+</script>
+{/block}

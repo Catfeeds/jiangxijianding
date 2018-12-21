@@ -1,0 +1,112 @@
+{extend name="common@layout/nonelayout" /}
+{block name="css"}
+{/block}
+{block name="content"}
+
+<body>
+    {empty name="objWorkJury"}
+    <div>
+        <h3 style="margin: 250px auto;width: 120px;font-size: 20px;">暂无考评人员</h3>
+    </div>
+    {/empty}
+    {notempty name="objWorkJury"}
+    <form class="layui-form">
+
+        <div class="layui-card-body">
+            <table class="layui-table">
+                <thead>
+                <tr>
+                    <th width="50px">ID</th>
+                    <th>证件号</th>
+                    <th width="50px">姓名</th>
+                    <th>手机号</th>
+                    <th width="200px">雇用时间</th>
+                    <th width="200px">雇佣到期时间</th>
+                    <th width="150px">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <input type="hidden" id="exam_plan_id" name="exam_plan_id" value="{$exam_plan_id}">
+                <input type="hidden" id="code" name="code" value="{$code}">
+                <input type="hidden" id="typeArea" name="typeArea" value="{$typeArea}">
+                <input type="hidden" name="address_code" value="{$address_code}">
+                <input type="hidden" id="type" name="type" value="3">
+                {volist name="objWorkJury" id="vo"}
+                <tr>
+                    <input type="hidden" name="name[]" value="{$vo.name}">
+
+                    <td><input type="checkbox" lay-skin="primary" lay-filter="eachChoose" name="jury[]" value="{$vo.id}"></td>
+                    <td>{$vo.id_number}</td>
+                    <td>{$vo.name}</td>
+                    <td>{$vo.phone}</td>
+                    <td>{$vo.hire_time}</td>
+                    <td>{$vo.expire_date}</td>
+                    <td><button jury_id="{$vo['id']}" class="layui-btn layui-btn-sm detil">
+                        详情
+                    </button></td>
+                </tr>
+                {/volist}
+
+                </tbody>
+            </table>
+        </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" id="add" lay-submit lay-filter="formSubmit">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+    {/notempty}
+
+</form>
+</body>
+{/block}
+{/extend}
+{block name="script"}
+
+<script>
+
+    layui.use(['form', 'layer','jquery'], function () {
+        var form = layui.form;
+        var $ = layui.jquery;
+        //添加表单监听事件
+        form.on('submit(formSubmit)', function (data) {
+            data=data.field;
+            if (!$("input[type='checkbox']").is(":checked")) {
+                layer.msg("考评员必选");
+                return false;
+            }
+
+            $.ajax({
+                url:urladdr.examStaffLog,
+                type:'post',
+                data:data,
+                dataType:'json',
+                success:function (data) {
+                    // console.log(data);
+                    if (data.code==1){
+                        layer.msg(data.msg,{
+                            icon: 1,//提示的样式
+                            time:  2000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                            end: function () {
+                                //当你在iframe页面关闭自身时
+                                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                parent.layer.close(index); //再执行关闭
+                                parent.location.reload();
+                            }
+                        });
+                    }else{
+                        layer.msg(data.msg);
+                    }
+                }
+            });
+            //防止页面跳转
+            return false;
+
+        });
+
+
+    });
+</script>
+{/block}

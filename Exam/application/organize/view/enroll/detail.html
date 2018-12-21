@@ -1,0 +1,281 @@
+{extend name="/layout/nonelayout"}
+{block name="css"}
+<style>
+    .layui-form-label{
+        width: 40%;
+    }
+</style>
+{/block}
+{block name="content"}
+<body>
+<form class="layui-form">
+    <table border="1" class="layui-table" width="100px" >
+    <tr>
+        <div class="layui-form-item">
+            <td>
+                <label class="layui-form-label">用户名：</label>
+                <div class="layui-input-inline">
+                    <div class="layui-form-mid layui-word-aux">
+                         {$arrPlanUser.username}
+                    </div>
+                </div>
+            </td>
+            <td>
+                {if($arrPlanUser.reason != '')}
+                 <label class="layui-form-label">原因：</label>
+                <div class="layui-input-inline">
+                    <div class="layui-form-mid layui-word-aux">
+                         {$arrPlanUser.reason}
+                    </div>
+                </div>
+                {/if}
+            </td>       
+        </div>
+    </tr>
+    <tr>
+    <div class="layui-form-item">
+        <td>
+             <label class="layui-form-label">注册类型：</label>
+            <div class="layui-input-inline">
+                <div class="layui-form-mid layui-word-aux">
+                    {switch name="$arrPlanUser.reg_type"}
+                    {case value="0"}个人{/case}
+                    {default /}非个人
+                    {/switch}
+                </div>
+            </div>
+        </td>
+        <td>
+            <label class="layui-form-label">证件类型：</label>
+            <div class="layui-input-inline">
+                <div class="layui-form-mid layui-word-aux">
+                    {switch name="$arrPlanUser.id_type"}
+                    {case value="1"}身份证{/case}
+                    {case value="2"}护照{/case}
+                    {case value="3"}军官证{/case}
+                    {case value="4"}港澳台证{/case}
+                    {default /}其他
+                    {/switch}
+                </div>
+            </div>
+        </td>
+        <td>  
+            <label class="layui-form-label">证件号：</label>
+            <div class="layui-input-inline">
+                <div class="layui-form-mid layui-word-aux">
+                    {$arrPlanUser.id_card}
+                </div>
+            </div>
+        </td>  
+       
+    </div>
+    </tr>
+    <tr>
+        <div class="layui-form-item">
+            <td>
+                <label class="layui-form-label">考试类型：</label>
+                <div class="layui-input-inline">
+                    <div class="layui-form-mid layui-word-aux">
+                        {$arrPlanUser.exam_type==1?'新考':'补考'}
+                    </div>
+                </div>
+            </td>
+            <td>
+                <label class="layui-form-label">考生来源：</label>
+                <div class="layui-input-inline">
+
+                    <div class="layui-form-mid layui-word-aux">
+                        {switch name="$arrPlanUser.source"}
+                        {case value="1"}鉴定所{/case}
+                        {case value="2"}院校{/case}
+                        {case value="3"}机构{/case}
+                        {case value="-1"}其他{/case}
+                        {default /}其他
+                        {/switch}
+                    </div>
+                </div>
+            </td>
+        </div>
+    </tr>
+    <tr>
+    <div class="layui-form-item">
+        <td>
+            <label class="layui-form-label">审核地点：</label>
+            <div class="layui-input-inline">
+                <div class="layui-form-mid layui-word-aux">
+                    {$arrPlanUser.audit_site}
+                </div>
+            </div>
+        </td>
+        <td>
+            <label class="layui-form-label">鉴定地点：</label>
+            <div class="layui-input-inline">
+
+                <div class="layui-form-mid layui-word-aux">
+                    {$arrPlanUser.exam_site}
+                </div>
+            </div>
+        </td>
+    </div>
+    </tr>
+    <tr>
+        <div class="layui-form-item">
+            <td>
+                <label class="layui-form-label">报名工种：</label>
+                <div class="layui-input-inline">
+                    <div class="layui-form-mid layui-word-aux">
+                        {$arrPlanUser.work_name}
+                    </div>
+                </div>
+            </td>
+            <td>
+                <label class="layui-form-label">报名方向：</label>
+                <div class="layui-input-inline">
+
+                    <div class="layui-form-mid layui-word-aux">
+                        {$arrPlanUser.work_direction_name}
+                    </div>
+                </div>
+            </td>
+            <td>
+                <label class="layui-form-label">报名级别：</label>
+                <div class="layui-input-inline">
+
+                    <div class="layui-form-mid layui-word-aux">
+                        {$arrPlanUser->work_level_subject_level}
+                    </div>
+                </div>
+            </td>
+        </div>
+    </tr>
+
+    <table border="1" class="layui-table" width="100px" >
+        <h3 style="text-align: center">鉴定计划详情</h3>
+        <tr>
+            <td>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">报名时间</label>
+                </div>
+            </td>
+            <td>
+                {volist name="arrWork" length='1' id="vo"}
+                {$vo.enroll_starttime}
+                {/volist} 到
+                {volist name="arrWork" length='1' id="vo"}
+                {$vo.enroll_endtime}
+                {/volist}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" >审核截止时间</label>
+                </div>
+            </td>
+            <td>
+                {volist name="arrWork" length='1' id="vo"}
+                {$vo.audit_endtime}
+                {/volist}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">缴费截止时间</label>
+                </div>
+            </td>
+            <td>
+                {volist name="arrWork" length='1' id="vo"}
+                {$vo.pay_endtime}
+                {/volist}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">打印准考证时间</label>
+                </div>
+            </td>
+            <td>
+                {volist name="arrWork" length='1' id="vo"}
+                {$vo.print_starttime}
+                {/volist} 到
+                {volist name="arrWork" length='1' id="vo"}
+                {$vo.print_endtime}
+                {/volist}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">考试时间</label>
+                </div>
+            </td>
+            <td>
+                {volist name="arrWork" length='1' id="vo"}
+                {$vo.exam_time}
+                {/volist}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">工种类型</label>
+                </div>
+            </td>
+            
+            <td>
+
+                {volist name="arrWork" id="vo"}
+                {$vo.typename;break;}
+                {/volist}
+            </td>
+            
+
+        </tr>
+       
+        
+        <tr>
+            <td>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">工种名称</label>
+                </div>
+            </td> 
+            <td>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">工种方向</label>
+                </div>
+            </td> 
+            <td>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">工种级别</label>
+                </div>
+            </td>
+        </tr>
+        {volist name="arrWork" id="vo"}
+        <tr>
+            <td>
+                {$vo.workname}
+            </td>
+            <td>
+                {volist name="vo.wdname" id="v"}
+                {$v}
+                <br>
+                {/volist}
+            </td>
+            <td>
+                <!--<span class="layui-bg-orange">-->
+                {volist name="vo.level" id="v"}
+                {$arr[$v]}
+                {/volist}
+                <!--</span>-->
+            </td>
+        {/volist}
+        </tr>
+    </table>
+
+</form>
+</body>
+{/block}
+{/extend}
+{block name="script"}{/block}

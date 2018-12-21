@@ -1,0 +1,154 @@
+{extend name="common@layout/layout" /}
+{block name='title'}科室管理{/block}
+
+{block name='css'}
+<style>
+    .lhj-content a {
+        width: 100%;
+    }
+</style>
+{/block}
+{block name='crumbs'}
+<span class="layui-breadcrumb" lay-separator="">
+  <a href="/admin" class="county">
+    <i class="layui-icon layui-icon-home"></i>
+    &nbsp;首页
+  </a>
+  <a><cite>省科室</cite></a>
+</span>
+{/block}
+{block name='content'}
+<div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+    <ul class="layui-tab-title">
+        <li class="layui-this">省级中心科室</li>
+        <li>市级中心科室</li>
+    </ul>
+    <div class="layui-tab-content">
+        <div class="layui-tab-item layui-show">
+            <div class="layui-form layui-card-header layui-inline" style="padding-bottom: 10px;">
+                <form action="{:request()->baseurl()}" method="post">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">科室名称</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="name" autocomplete="off" placeholder="请输入"
+                                       value="{$Think.session.search.name}" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button class="layui-btn layuiadmin-btn-useradmin" lay-submit>
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <button class="layui-btn add-office" data-value="{$cityId}" style="float: right;margin-bottom: 5px;">创建科室
+            </button>
+            <table class="layui-table" lay-even>
+                <tr>
+                    <td></td>
+                    <td>科室名称</td>
+                    <td>创建时间</td>
+                    <td>状态</td>
+                    <td width="85">操作</td>
+                </tr>
+                {volist name='list' id='vo'}
+                <tr>
+                    <td>{$i}</td>
+                    <td>{$vo.name}</td>
+                    <td>{$vo.create_time}</td>
+                    <td>{$vo.status==1?'<span style="color: green;font-weight: 700;">启用</span>':'<span
+                            style="color: red;font-weight: 700;">禁用</span>';}
+                    </td>
+                    <td>
+                        <button data-value="{$vo.id}" class="layui-btn layui-btn-xs edit-office">修改</button>
+                        <button data-value="{$vo.id}" class="layui-btn layui-btn-xs layui-btn-danger delete-office">删除
+                        </button>
+                    </td>
+                </tr>
+                {/volist}
+            </table>
+            <div class="layui-fluid tp-pages">
+                {$list->render()}
+            </div>
+            <div style="clear: both;"></div>
+
+        </div>
+        <div class="layui-tab-item">
+            <fieldset class="layui-elem-field layui-field-title site-title">
+                <legend><a name="grid">请选择对哪个市进行操作</a></legend>
+            </fieldset>
+            <div class="city-list layui-row layui-col-space15"></div>
+        </div>
+    </div>
+</div>
+{/block}
+{block name='script'}
+<script>
+    layui.use(['jquery', 'layer'], function () {
+        var $ = layui.jquery;
+        //市列表
+        $.ajax({
+            type: "POST",
+            url: "/api/office/citylist",
+            dataType: "json",
+            success: function (data) {
+                var html = '';
+                $.each(data, function (commentIndex, comment) {
+                    html += '<div class="lhj-content layui-col-md3"><a href="/admin/office/city/cityId/' + comment['id'] + '" class="layui-btn">' + comment['name'] + '</a></div>';
+                });
+                $('.city-list').html(html);
+            }
+        });
+        //添加
+        $('.add-office').on('click', function () {
+            center_id = $(this).data('value');
+            layer.open({
+                type: 2,
+                anim: 1,
+                skin: 'layui-layer-molv',
+                area: ['60%', '300px'],
+                title: "添加科室",
+                content: urladdr.addOffice + center_id,
+            });
+        });
+        //删除
+        $('.delete-office').on('click', function () {
+            var id = $(this).data('value');
+            layer.confirm('是否确认该操作？', {btn: ['确定', '取消'], title: "提示"}, function () {
+                $.ajax({
+                    type: "POST",
+                    url: "/api/office/delete",
+                    data: {'id': id},
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.code > 0) {
+                            layer.msg(data.msg, {icon: 1, time: 1000}, function () {
+                                layer.close(layer.index);
+                                window.parent.location.reload();
+                            });
+                        } else {
+                            layer.msg(data.msg, {icon: 5});
+                        }
+                    }
+                });
+            });
+        });
+        //修改
+        $('.edit-office').on('click', function () {
+            var id = $(this).data('value');
+            layer.open({
+                type: 2,
+                anim: 1,
+                skin: 'layui-layer-molv',
+                area: ['60%', '300px'],
+                title: "修改科室",
+                content: urladdr.editOffice + id,
+            });
+        });
+
+
+    });
+</script>
+{/block}

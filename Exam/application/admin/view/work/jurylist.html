@@ -1,0 +1,122 @@
+{extend name="common@layout/nonelayout" /}
+{block name="title"}职业工种管理{/block}
+{block name='crumbs'}
+<span class="layui-breadcrumb" lay-separator="">
+  <a href="/admin" class="county">
+    <i class="layui-icon layui-icon-home"></i>
+    &nbsp;首页
+  </a>
+  <a><cite>工种管理</cite></a>
+</span>
+{/block}
+{block name="content"}
+<div class="layui-tab-content">
+    <form action="" method="post" class="layui-form">
+        <div class="layui-inline">
+            <label class="layui-form-label">工种名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="name" placeholder="请输入"
+                       value="{notempty name='param.name'}{$param.name}{/notempty}" autocomplete="off"
+                       class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">职业代码</label>
+            <div class="layui-input-block">
+                <input type="text" name="code" placeholder="请输入"
+                       value="{notempty name='param.code'}{$param.code}{/notempty}" autocomplete="off"
+                       class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <button class="layui-btn layui-btn-primary reset">重置</button>
+            <button class="layui-btn" lay-submit>搜索</button>
+        </div>
+    </form>
+    <div class='layui-form'>
+        <table class="layui-table" lay-even>
+            <colgroup>
+                <col width="10">
+                <col>
+                <col>
+                <col width="100">
+                <col width="100">
+            </colgroup>
+            <thead>
+            <tr>
+                <th></th>
+                <th>工种名称</th>
+                <th>分类</th>
+                <th>职业代码</th>
+            </tr>
+            </thead>
+            <tbody>
+            {volist name='list' id='vo'}
+            <tr>
+                <td>
+                    <input type="checkbox" lay-filter="id" name="id" lay-skin="primary" value="{$vo.id}">
+                </td>
+                <td>{$vo.name}</td>
+                <td>{$vo.workType.name}</td>
+                <td>{$vo.code}</td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+    </div>
+    <div class="layui-fluid tp-pages">
+        {$list->render()}
+    </div>
+</div>
+{/block}
+
+{block name='script'}
+<script>
+
+    layui.use('form', function () {
+        var form = layui.form;
+        //查看详情
+        $('.work-show').on('click', function () {
+            id = $(this).data('value');
+            layer.open({
+                type: 2,
+                anim: 1,
+                skin: 'layui-layer-molv',
+                area: ['60%', '80%'],
+                title: "查看详情",
+                content: urladdr.showWork + id,
+            });
+        });
+        //重置
+        $(".reset").click(function () {
+            $.each($('form input'), function (index, item) {
+                $(item).val('');
+            });
+            return false;
+        });
+        //加载已经点过的checkbox
+        var work = $.cookie('work_id').split(',');
+        $('input[name="id"]').each(function (index, item) {
+            if ($.inArray(item.value, work) > -1) {
+                $(item).attr('checked', true);
+                form.render();
+            }
+        });
+        //点击储存
+        form.on('checkbox(id)', function (data) {
+            var work = $.cookie('work_id').split(','), iid = data.value;
+            work.pop();
+            if ($.inArray(iid, work) > -1) {
+                work.splice($.inArray(iid, work), 1);
+            } else {
+                work.push(iid);
+            }
+            if (work.length > 0) {
+                work = work.join(',') + ',';
+            }
+            $.cookie('work_id', work, {path: '/admin'});
+            return false;
+        });
+    });
+</script>
+{/block}

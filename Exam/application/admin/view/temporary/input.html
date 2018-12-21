@@ -1,0 +1,150 @@
+{extend name="common@layout/nonelayout" /}
+{block name="css"}
+<style>
+    .delete_button img{
+        width: 17px;
+        height: 17px;
+        /*background: #A9B3BF;*/
+        right: -55px;
+        z-index: 99999;
+        position: absolute;
+        top: 50%;
+        margin-top: -9px;
+        text-align: center;
+        line-height: 18px;
+        color: #fff;
+    }
+    .add_empty img {
+        width: 17px;
+        height: 17px;
+        /*background: #A9B3BF;*/
+        right: -55px;
+        z-index: 99999;
+        position: absolute;
+        top: 50%;
+        margin-top: -9px;
+        text-align: center;
+        line-height: 18px;
+        color: #fff;
+    }
+    .layui-form-label{
+        padding: 17px 1px;
+    }
+</style>
+{/block}
+{block name="content"}
+    <form class="layui-form" action="">
+        <input type="hidden" id="exam_plan_id" name="exam_plan_id" value="{$arrData['exam_plan_id']}">
+        <input type="hidden" name="code" value="{$arrData['code']}">
+        <input type="hidden" name="typeArea" value="{$arrData['typeArea']}">
+        <input type="hidden" name="roleType" value="{$arrData['roleType']}">
+        <div class="empty_list">
+            <div class="layui-form-item">
+                <label class="layui-form-label">姓名</label>
+                <div class="layui-input-inline">
+                    <div class="layui-form-mid layui-word-aux">
+                        <input type="text" name="staff_name[]" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+
+                    </div>
+                </div>
+
+                <label class="layui-form-label">电话</label>
+                <div class="layui-input-inline">
+                    <div class="layui-form-mid layui-word-aux">
+                        <input type="text" name="phone[]" maxlength="11" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <label class="layui-form-label">备注</label>
+                <div class="layui-input-inline">
+                    <div class="layui-form-mid layui-word-aux">
+                        <input type="text" name="remarks_column[]" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                        <span class="add_empty"><img src="__PUBLIC__/img/add.png" alt=""></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <button class="layui-btn" lay-submit lay-filter="Submission">立即提交</button>
+        </div>
+    </form>
+{/block}
+{/extend}
+{block name="script"}
+<script>
+    layui.use(['form', 'layer','jquery'], function () {
+        var form = layui.form;
+        var $ = layui.jquery;
+
+        function bindListener() {
+            $('.delete_button').unbind().click(function () {
+                var div = $(this).parent().parent().parent();
+                div.remove();
+            });
+        }
+
+        //添加
+        $('.add_empty').click(function () {
+            var input = "<div class=\"layui-form-item\">\n" +
+                "                <label class=\"layui-form-label\">姓名</label>\n" +
+                "                <div class=\"layui-input-inline\">\n" +
+                "                    <div class=\"layui-form-mid layui-word-aux\">\n" +
+                "                        <input type=\"text\" name=\"staff_name[]\" lay-verify=\"required\" placeholder=\"\" autocomplete=\"off\" class=\"layui-input\">\n" +
+                "\n" +
+                "                    </div>\n" +
+                "                </div>\n" +
+                "\n" +
+                "                <label class=\"layui-form-label\">电话</label>\n" +
+                "                <div class=\"layui-input-inline\">\n" +
+                "                    <div class=\"layui-form-mid layui-word-aux\">\n" +
+                "                        <input type=\"text\" name=\"phone[]\" maxlength=\"11\" lay-verify=\"required\" placeholder=\"\" autocomplete=\"off\" class=\"layui-input\">\n" +
+                "                    </div>\n" +
+                "                </div>\n" +
+                "\n" +
+                "                <label class=\"layui-form-label\">备注</label>\n" +
+                "                <div class=\"layui-input-inline\">\n" +
+                "                    <div class=\"layui-form-mid layui-word-aux\">\n" +
+                "                        <input type=\"text\" name=\"remarks_column[]\" lay-verify=\"required\" placeholder=\"\" autocomplete=\"off\" class=\"layui-input\">\n" +
+                "                         <span class=\"delete_button\"><img src=\"__PUBLIC__/img/del.png\" alt=\"\"></span>\n" +
+                "                    </div>\n" +
+                "                </div>\n" +
+                "            </div>";
+
+            $('.empty_list').append(input);
+            bindListener();
+        });
+        //添加表单监听事件
+        form.on('submit(Submission)', function (data) {
+            data=data.field;
+            $.ajax({
+                url:urladdr.addTemporaryExamStaffLog,
+                type:'post',
+                data:data,
+                dataType:'json',
+                success:function (data) {
+                    if (data.code==1){
+                        layer.msg(data.msg,{
+                            icon: 1,//提示的样式
+                            time:  1000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                            end: function () {
+                                //当你在iframe页面关闭自身时
+                                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                parent.layer.close(index); //再执行关闭
+                                parent.location.reload();
+
+                                // var indexs = parent.parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                // parent.parent.layer.close(indexs); //再执行关闭
+                                // parent.parent.location.reload();
+                            }
+                        });
+                    }else{
+                        layer.msg(data.msg);
+                    }
+                }
+            });
+            //防止页面跳转
+            return false;
+        });
+    });
+</script>
+{/block}

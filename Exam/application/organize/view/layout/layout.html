@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>{$title}</title>
+    <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css">
+    {load href="__STATIC__/css/common/page.css"/}
+    {block name="css"}{/block}
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">{$Think.session.organizeuser.username}机构</div>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+        <ul class="layui-nav layui-layout-left">
+            <li class="layui-nav-item"><a href="/organize/index/index">控制台</a></li>
+        </ul>
+        <ul class="layui-nav layui-layout-right">
+
+            <li class="layui-nav-item">
+                <a href="/organize/Index/center">机构中心<span class="layui-badge-dot"></span></a>
+            </li>
+            <li class="layui-nav-item" style="margin-right: 30px;">
+                <a href="">{$Think.session.organizeuser.username}</a>
+                <dl class="layui-nav-child" >
+<!--                     <dd><a href="javascript:;" id="updatePwd">修改密码</a></dd> -->
+                    <dd><a href="javascript:;" id="userInfo">基本信息</a></dd>
+                    <dd><a href="javascript:;" id="checkOut">退出</a></dd>
+                </dl>
+            </li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree"  lay-filter="test">
+               <!--  <li class="layui-nav-item layui-nav-itemed">
+                    <a class="" href="javascript:;">管理员设置</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="">管理员管理</a></dd>
+                    </dl>
+                </li> -->
+                <!-- <li class="layui-nav-item list"><a href="/organize/Admin/index">账号管理</a></li> -->
+                <li class="layui-nav-item "><a href="/organize/Exam_apply/applyshow">考试申请</a></li>
+                <li class="layui-nav-item "><a href="/organize/Enroll/index">报名管理</a></li>
+                <li class="layui-nav-item "><a href="/organize/Enroll/enrollpay">缴费管理</a></li>
+                <li class="layui-nav-item "><a href="/organize/Examorder/index">缴费审核记录</a></li>
+                <li class="layui-nav-item "><a href="/organize/Grade/index">成绩查询</a></li>
+                <li class="layui-nav-item "><a href="/organize/Certificate/passList">证书申领</a></li>
+                <li class="layui-nav-item "><a href="/organize/Alloction/index">考评员分配</a></li>   
+            
+                
+   
+            </ul>
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body">
+        <!-- 内容主体区域 -->
+        <div class="layui-tab-content">
+        {block name='content'}{/block}</div>
+        <!--<div style="padding: 15px;">内容主体区域</div>-->
+    </div>
+
+    <div class="layui-footer">
+        <!-- 底部固定区域 -->
+         © www.etlchina.net - 博奥教育
+    </div>
+</div>
+</body>
+</html>
+
+{load href="__PUBLIC__/layui/layui.js"/}
+{load href="__PUBLIC__/layui/lay/modules/code.js"/}
+{load href="__PUBLIC__/js/jquery.min.js"}
+{load href="__PUBLIC__/js/admin/layout.js"}
+{load href="__PUBLIC__/js/urladdr/urladdr.js"/}
+<script type="text/javascript">
+     $("a[href='"+document.location.pathname+"']").css('background','#009688').parents("li").find("a:first").click();
+
+    layui.use('element', function(){
+        var element = layui.element;
+    });
+    layui.use(['form', 'layer','jquery'], function () {
+        var form  = layui.form;
+        var $  = layui.jquery;
+        $("#updatePwd").click(function () {
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['500px', '500px'], //宽高
+                title: "修改密码",
+                content: "/organize/index/updatepage",  //调到新增页面
+                yes: function(index, layero){
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+
+        $("#userInfo").click(function () {
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['80%', '80%'], //宽高
+                title: "基本信息",
+                content: "/organize/index/infopage",  //详细信息页面 修改详细信息
+                yes: function(index, layero){
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+
+        $("#checkOut").click(function () {
+            layer.open({
+                title: ['温馨提示'],
+                content: '<div style="color:#767676">确定要退出当前账号吗？</div>',
+                btn: ['确定', '取消'],
+                shadeClose: true,
+                //回调函数
+                yes: function(index, layero){
+                    // self.location='http://www.baidu.com';//立即退出
+                    $.ajax({
+                        url:'/api/organize/loginOut',
+                        dataType:'json',
+                        //判断注册状态
+                        success:function (data) {
+                            if (data==1){
+                                layer.msg("退出成功", {
+                                    icon: 1,//提示的样式
+                                    time: 1000, //1秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                                    end: function () {
+                                        window.location.href='/cms/index/login';
+                                    }
+                                })
+                            }else{
+                                layer.msg(data)
+                            }
+                        }
+                    });
+                    //防止页面跳转
+                    return false;
+                },
+                btn2: function(index, layero){
+                    layer.close(index);
+                },
+                cancel: function(index,layero){ //按右上角“X”按钮
+                    layer.close(index);
+                },
+
+            });
+        });
+
+    });
+   
+</script>
+{block name="script"}{/block}

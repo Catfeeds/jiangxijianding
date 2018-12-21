@@ -1,0 +1,183 @@
+{extend name="common@layout/layout" /}
+
+{block name="css"}
+<link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css">
+{/block}
+{block name='crumbs'}
+<span class="layui-breadcrumb">
+  <a href="/admin" class="county">
+    <i class="layui-icon layui-icon-home"></i>
+    &nbsp;首页
+  </a>
+  <a><cite>文章模块管理</cite></a>
+        <a><cite>常见问题与用户协议</cite></a>
+
+</span>
+<style type="text/css">
+    .wen{
+        display: block;
+        width: 180px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+</style>
+{/block}
+{block name="content"}
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto" style="margin-top: 1%">
+
+            <div class="layui-form-item">
+                <button class="layui-btn" id="addExamInfo">
+                    <i class="layui-icon">&#xe608;</i>中心问题与用户协议添加
+                </button>
+                <button class="layui-btn" id="addExam">
+                    点击查看用户协议
+                </button>
+            </div>
+        </div>
+        <div class="layui-card-body">
+            <table class="layui-table">
+                <colgroup>
+                    <col width="5%">
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col width="340">
+                </colgroup>
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>标题</th>
+                    <th>状态</th>
+                    <th>类型</th>
+                    <th>答案</th>
+                    <th>创建时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+               {volist name='data' id='v'}
+                <tr>
+                  <td>{$i}</td>
+                  <td>{$v.title}</td>
+                  <td>{$v.status}</td>
+                  <td>{$v.type}</td>
+                  <td><a title="{$v.content}" class="wen">{$v.content}</a></td>
+                  <td>{$v.create_time}</td>
+                    <td>
+                        <button class="layui-btn layui-btn-normal layui-btn-xs edit" data-value="{$v.id}"><i class="layui-icon"></i></button>
+                        <button class="layui-btn layui-btn-danger layui-btn-xs delete" data-value="{$v.id}"><i class="layui-icon"></i></button>
+
+                    </td>
+                </tr>
+                {/volist}
+                </tbody>
+            </table>
+
+        <div class="layui-fluid tp-pages">
+            {$data->render()}
+        </div>
+    </div> </div>
+</div>
+{/block}
+
+{block name="script"}
+<script src="__PUBLIC__/js/jquery.min.js"></script>
+<!--<script src="__PUBLIC__/layui/layui.js"></script>-->
+
+<script type="text/javascript">
+
+
+    //添加栏目信息
+    layui.use(['form', 'layer','jquery'], function () {
+        var form  = layui.form;
+        var $  = layui.jquery;
+        $("#addExamInfo").click(function () {
+            layer.open({
+                type: 2,
+                anim:1,
+                skin: 'layui-layer-molv',  //加上边框
+                area: ['50%', '90%'], //宽高
+                title: "添加中心问题与用户协议信息",
+                content: "/cms/centre/about",  //调到新增页面
+                yes: function(index, layero){
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+        $('#addExam').click(function(){
+            layer.open({
+                type: 2,
+                anim:1,
+                skin: 'layui-layer-molv',  //加上边框
+                area: ['50%', '90%'], //宽高
+                title: "用户协议",
+                content: "/cms/centre/xieyi",  //调到新增页面
+                yes: function(index, layero){
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+    });
+
+    //删除报考信息
+    layui.use(['form', 'layer','jquery'], function () {
+        var layer = layui.layer;
+        var $  = layui.jquery;
+        $(".delete").click(function () {
+            var id = $(this).data('value');
+            layer.confirm("确认删除?", function () {
+                $.ajax({
+                    url: "/api/CmsAppAbout/delete",
+                    data: {'id': id},
+                    type: "post",
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.code == 1) {
+                            layer.msg(data.msg);
+                            parent.location.reload();
+                        } else {
+                            layer.msg(data.msg);
+                        }
+                    }
+                })
+            })
+        });
+    });
+
+    //修改栏目信息
+    layui.use(['form', 'layer','jquery'], function () {
+        var form  = layui.form;
+        var $  = layui.jquery;
+        $(".edit").click(function () {
+            var id = $(this).data('value');
+            layer.open({
+                type: 2,
+                anim:1,
+                skin: 'layui-layer-molv',  //加上边框
+                area: ['50%', '90%'], //宽高
+                title: "修改中心问题",
+                content: "/cms/centre/update?id="+id,  //调到新增页面
+                yes: function(index, layero){
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+    });
+
+
+
+</script>
+{/block}

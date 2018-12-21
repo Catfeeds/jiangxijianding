@@ -1,0 +1,210 @@
+{extend name="/layout/layout"}
+{block name="css"}
+{/block}
+{block name="content"}
+<body>
+<div class="layui-fluid">
+  <div class="layui-card">
+     <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+            <div class="layui-form-item">
+               <button class="layui-btn" id="applyadd"><i class="layui-icon">&#xe608;</i>添加专场申请</button>
+
+            </div>
+      </div>
+      
+    <div class="layui-card-body">
+      <table class="layui-table">
+        <thead>
+          <tr>
+            <th>申请标题</th>
+            <th>参考人数</th>
+            <th>考试时间</th>
+            <th>审核状态</th>
+      	  <th>操作</th>	
+          </tr>
+        </thead>
+        {volist name="applyList" id="vo"}
+        <tr>
+          <th>{$vo.title}</th>
+          <th>{$vo.exam_num}</th>
+          <th>{$vo.exam_time}</th>
+          <th>{$vo->status}</th>
+          <th>
+             <button name="update" listid='{$vo.id}' class="layui-btn layui-btn-sm {if ($vo['status'] >=1)} layui-btn-disabled {else} edit {/if}" {if ($vo.status >=1)} style="background-color: #ff5722" {/if}>
+                              <i class="layui-icon">&#xe642;</i>
+                              </button>
+                               <button id="delete" listid='{$vo.id}' class="layui-btn layui-btn-sm {if ($vo['status']>=1)} layui-btn-disabled {else} delete {/if}"  {if ($vo.status>=1)} style='background-color: #ff5722' {/if}><i class="layui-icon">&#xe640;</i>
+                              </button>
+                               <button name="detail" listid='{$vo.id}' class="layui-btn layui-btn-sm detil">
+                                  详情
+                              </button>
+                              {if (in_array($vo.status,config('applyStatus.submit')))}
+                              <button class="layui-btn layui-btn-sm" title="点击提交" name="put" listid='{$vo.id}'>提交</button>
+                              {/if}
+          </th>
+          
+        </tr>
+        {/volist}
+      </table>
+    </div>
+    <div class="layui-fluid tp-pages">
+        {$applyList->render();}
+    </div>
+  </div>
+</div>
+</body>
+{/block}
+{/extend}
+{block name="script"}
+<script>
+//Demo
+layui.use('form', function(){
+  var form = layui.form;
+  
+  //监听提交
+  form.on('submit(formDemo)', function(data){
+    layer.msg(JSON.stringify(data.field));
+    return false;
+  });
+});
+
+layui.use('laydate', function(){
+  var laydate = layui.laydate;
+  
+  //执行一个laydate实例
+  laydate.render({
+    elem: '#examtime' //指定元素
+  });
+});
+
+layui.use(['layer','jquery'],function(){
+  var $ = jQuery = layui.$;
+	$("#applyadd").click(function () {
+		  layer.open({
+            type: 2,
+            skin: 'layui-layer-rim', //加上边框
+            area: ['35%', '80%'], //宽高
+            title: "添加专场申请",
+            content: "/organize/ExamApply/applyadd",  //调到添加页面
+            yes: function(index, layero){
+                //do something
+                layer.close(index); //如果设定了yes回调，需进行手工关闭
+            }
+        });
+           
+  });
+
+  $('button[name=detail]').click(function(){
+    var id = $(this).attr('listid');
+    layer.open({
+            type: 2,
+            skin: 'layui-layer-rim', //加上边框
+            area: ['68%', '80%'], //宽高
+            title: "专场申请详情",
+            content: "/organize/ExamApply/applydetail?id="+id,  //调到添加页面
+            yes: function(index, layero){
+                //do something
+                layer.close(index); //如果设定了yes回调，需进行手工关闭
+            }
+        });
+  });
+
+  $('button[name=put]').click(function(){
+      var id = $(this).attr('listid');
+       layer.open({
+            title: ['温馨提示'],
+            content: '<div style="color:#767676">您要提交申请吗？提交后不可撤销！</div>',
+            btn: ['确定', '取消'],
+            shadeClose: true,
+
+            yes: function(index, layero){
+                $.ajax({
+                    url:'/api/ExamApply/applyput',
+                    type:'post',
+                    dataType:'json',
+                    data:{
+                        id:id,
+                    },
+                    //判断注册状态
+                    success:function (data) {
+                        if (data.code==1){
+                            layer.msg(data.msg, {
+                                icon: 1,//提示的样式
+                                time: 1000, //1秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                                end: function () {
+                                    location.reload();
+                                }
+                            })
+                        }else{
+                            layer.msg(data.msg)
+                        }
+                    }
+                });
+                    //防止页面跳转
+                    return false;
+                },
+        });
+  })
+
+  $('.edit').click(function(){
+      var id = $(this).attr('listid');
+      
+      layer.open({
+            type: 2,
+            skin: 'layui-layer-rim', //加上边框
+            area: ['35%', '80%'], //宽高
+            title: "专场申请修改",
+            content: "/organize/ExamApply/applyupdate?id="+id,  //调到添加页面
+            yes: function(index, layero){
+                //do something
+                layer.close(index); //如果设定了yes回调，需进行手工关闭
+            }
+        });
+
+  })
+
+  $('.delete').click(function(){
+    var id = $(this).attr('listid');
+    layer.open({
+            title: ['温馨提示'],
+            content: '<div style="color:#767676">您确定要删除此申请吗？</div>',
+            btn: ['确定', '取消'],
+            shadeClose: true,
+
+            yes: function(index, layero){
+                $.ajax({
+                    url:'/api/ExamApply/delete',
+                    type:'post',
+                    dataType:'json',
+                    data:{
+                        id:id,
+                    },
+                    //判断注册状态
+                    success:function (data) {
+                        if (data.code==1){
+                            layer.msg(data.msg, {
+                                icon: 1,//提示的样式
+                                time: 1000, //1秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                                end: function () {
+                                    location.reload();
+                                }
+                            })
+                        }else{
+                            layer.msg(data.msg)
+                        }
+                    }
+                });
+                    //防止页面跳转
+                    return false;
+                },
+        });
+
+  })
+    
+});
+ 
+
+
+ 
+</script>
+{/block}

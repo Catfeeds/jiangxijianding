@@ -1,0 +1,52 @@
+<div>
+    <div class="header_title"><span>试题列表</span></div>
+    <div class="shiti_main">
+        {volist name="$gradeData" id="vo"}
+        <div class="layui-col-xs12 layui-col-md12">
+            <span class="shiti_title">
+                {$vo.workname}&nbsp;
+                {switch name='$vo.level' }
+                    {case value='1'}高级技师{/case}
+                    {case value='2'}技师{/case}
+                    {case value='3'}高级{/case}
+                    {case value='4'}中级{/case}
+                    {case value='5'}初级{/case}
+                    {default /}其他
+                {/switch}
+            </span>
+            {volist name="$vo.paper" id="v"}
+            <div class="layui-col-xs3 layui-col-md3">
+                <div class="kecheng_item">
+                    <div class="kecheng_item_img"><img src="__PUBLIC__/center/img/kecheng_tiem.png" /></div>
+                    <p>{$v}</p>
+                </div>
+                <div class="dayin_btn dati_btn ajax-linkk" rel="{:url('/examinee/center/topicStart',['id'=>$key])}">开始答题</div>
+            </div>
+            {/volist}
+        </div>
+        {/volist}
+    </div>
+</div>
+<script type="text/javascript">
+    layui.use(['form', 'laypage', 'laydate'], function() {
+        var form = layui.form,
+            $ = layui.jquery;
+        form.render();
+        var laydate = layui.laydate;
+        $ = layui.jquery;
+        form.render();
+
+        var laypage = layui.laypage;
+
+    });
+    $(".ajax-linkk").each(function() {
+        $(this).click(function() {
+            var diZhi = $(this).attr("rel");
+            htmlobj = $.ajax({
+                url: diZhi,
+                async: false
+            });
+            $(".ajax-Box").html(htmlobj.responseText);
+        });
+    });
+</script>

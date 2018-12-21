@@ -1,0 +1,94 @@
+
+{include file='content/daohang'}
+<div class="RetrievePassword_main">
+    <div class="layui-container">
+        <ul class="subnav_process">
+            <li class="active">
+                <div>
+                    <i>1</i>
+                    <p>填写帐号</p>
+                </div>
+                <i></i>
+            </li>
+            <li class="active">
+                <div>
+                    <i>2</i>
+                    <p>设置新密码</p>
+                </div>
+                <i></i>
+            </li>
+            <li class="last">
+                <div>
+                    <i>3</i>
+                    <p>完成</p>
+                </div>
+
+            </li>
+        </ul>
+    </div>
+    <div class="RetrievePassword2_main">
+        <div class="layui-form-item">
+            <label class="layui-form-label">输入新密码：</label>
+            <div class="layui-input-block">
+                <input type="password" id="newPass" name="title" lay-verify="title" autocomplete="off" placeholder="输入新密码8~18位" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">确认新密码：</label>
+            <div class="layui-input-block">
+                <input type="password" id="queren" name="title" lay-verify="title" autocomplete="off" placeholder="确认新密码" class="layui-input">
+            </div>
+        </div>
+        <input type="hidden" value="{$mobile}" id="mobile">
+        <a href="javascript:;"><div class="denglu_btn" id="submit">确定</div></a>
+    </div>
+</div>
+
+<footer class="footer">
+    <img class="quanwei" src="__PUBLIC__/layui/img/quanwei.png" />
+    <p>主办单位：江西省职业技能鉴定指导中心 技术支持：博奥网络教育科技股份有限公司</p>
+    <p>网上支持（职业资格问答） 　　您是第 9027267 位访问者</p>
+</footer>
+</body>
+
+</html>
+
+<script src="__PUBLIC__/layui/js/layui.js" type="text/javascript" charset="utf-8"></script>
+<script src="__PUBLIC__/layui/js/layui.all.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+    
+    $('#submit').click(function(){
+        var newPass = $('#newPass').val();
+        var queren  = $('#queren').val();
+        var mobile = $('#mobile').val();
+        var reg = /^[\w]{8,18}$/;
+        if(!(newPass.match(reg))){
+            layer.msg('请输入正确手机验证码');
+            return false;
+        }
+        if(newPass != queren)
+        {
+            layer.msg('密码不一致');
+            return false;
+        }
+        $.ajax({
+                url:'/api/Organize/updatePass',
+                type:'post',
+                data:{
+                    mobile:mobile,
+                    newPass:newPass
+                },
+                dataType:'json',
+                //判断登录状态
+                success:function (data) {
+                    if (data.code==1){
+                                location.href = '/cms/index/forgetPassthree';
+                    }else{
+                        layer.msg(data.msg)
+                    }
+                }
+            });
+        
+
+    })
+</script>

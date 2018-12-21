@@ -1,0 +1,255 @@
+
+{block name="css"}
+<link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css">
+{/block}
+{block name="content"}
+<body >
+
+    <header >
+        <style type="text/css">
+            .layui-form-label
+            {
+                width:136px;
+            }
+            .layui-form-item
+            {
+                width:70%
+            }
+        </style>
+    </header>
+    <form class="layui-form" >
+        <div class="layui-form-item" style="margin-top: 10px">
+            <label class="layui-form-label">文章所属栏目 <span style="color:red">*</span></label>
+            <div class="layui-input-inline">
+                <select name="guide_id"  required  lay-verify="required" size="80px">
+                    <option value="0">请选择</option>
+                    <option value="{$info.id}" selected >{$info.guide_name}</option>
+
+                </select>
+            </div>
+            </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">文章标题 <span style="color:red">*</span></label>
+            <div class="layui-input-inline">
+                <input type="hidden" value="{$data.id}" id="id" name="id">
+                <input type="text"  value="{$data.title}" id="title" name="title" required lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+
+            </div>
+
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">标题是否需要加红</label>
+            <div class="layui-input-inline">
+                <input type="radio" name="red" value="0" title="否" {eq name="data.red" value="0"} checked {/eq}>
+                <input type="radio" name="red" value="1" title="是" {eq name="data.red" value="1"} checked {/eq}>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">文章来源 </label>
+            <div class="layui-input-inline">
+                <input type="text" value="{$data.source}" id="source" name="source" placeholder="请输入来源" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">文章发布时间 <span style="color:red">*</span></label>
+            <div class="layui-input-inline">
+                <input type="text" value="{:date('Y-m-d',$data.time)}" id="create_time" name="time" required lay-verify="required" placeholder="请选择发布时间" autocomplete="off" class="layui-input">
+
+            </div>
+        </div>
+        <div class="layui-form-item" id="jian">
+            <label class="layui-form-label">鉴定类型<span style="color:red">*</span></label>
+            <div class="layui-input-inline">
+                <select name="exam_type" lay-filter="exam_type" id="exam_type" required lay-verify="required" class="type" >
+                    <option value="0" >请选择</option>
+                    {volist name="exam_type" id='v'}
+                    <option value="{$v.id}" {eq name="data.exam_type" value="$v.id"} selected {/eq}>{$v.name}</option>
+                    {/volist}
+                </select>
+
+            </div>
+        </div>
+        <div class="layui-form-item" id="jia"{if $data.exam_type==1} style="display:block;" {else} style="display: none;" {/if}>
+            <label class="layui-form-label">工种类型<span style="color:red">*</span></label>
+            <div class="layui-input-inline">
+                <select name="work_type" id="work_type" lay-filter="work_type" required lay-verify="required" class="type" >
+                    <option value="0" >请选择</option>
+                    {volist name="work_type" id='vo'}
+                    <option value="{$vo.id}" {eq name="data.work_type" value="$vo.id"} selected {/eq}>{$vo.name}</option>
+                    {/volist}
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">鉴定计划<span style="color:red">*</span></label>
+            <div class="layui-input-inline">
+                <select name="type_exam_id" id="type_exam_id" required lay-verify="required" class="type" >
+                    <option value="{$data.type_exam_id}" selected>{if $data.type_exam_id==0}请选择 {else}{$infos[$data.type_exam_id]}{/if}</option>
+                </select>
+            </div>
+        </div>
+
+
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">文章内容<span style="color:red">*</span></label>
+            <div class="layui-input-block">
+                <textarea  id="content" name="content" cols="50" rows="15" style="width: 90%;height:300px;margin: 0 auto;" >{$data.content}</textarea>
+            </div></div>
+            <!--<div class="layui-form-item">-->
+                <!--<div class="layui-input-block">-->
+                    <!--<button class="layui-btn layui-btn-lg yu" >-->
+                        <!--修改或添加附件请点击-->
+                    <!--</button>-->
+                <!--</div>-->
+            <!--</div>-->
+            <div class="layui-form-item" style="margin-left: 13%;">
+            <div class="layui-input-inline">
+                <button class="layui-btn" lay-submit lay-filter="sub">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+            </div>
+        </form>
+</div>
+</body>
+{/block}
+
+{block name="script"}
+<script src="__PUBLIC__/js/jquery.min.js"></script>
+<script src="__PUBLIC__/layui/layui.all.js"></script>
+<script src="__PUBLIC__/ueditor/ueditor.config.js"></script>
+<script src="__PUBLIC__/ueditor/ueditor.all.js"></script>
+
+<script type="text/javascript">
+
+    var ue = UE.getEditor('content');
+    function getCOntent()
+    {
+        var content = UE.getEditor('content').getContent();
+        return content;
+    }
+
+    layui.use(['form','layer','layedit','upload','laydate'],function(){
+        var form = layui.form ,$ = layui.jquery;
+        var laydate = layui.laydate;
+        var upload = layui.upload;
+        //执行一个laydate实例
+        laydate.render({elem:'#create_time'});
+        //创建一个编辑器
+        //监听提交
+
+        form.on('select(exam_type)',function(data){
+            var type = data.value;
+            if(type==1)
+            {
+                $('#jia').show();
+            }else {
+                $('#jia').hide();
+                exam_plan();
+            }
+        });
+        form.on('select(work_type)',function(data){
+
+            exam_plan();
+
+        });
+        //创建一个编辑器
+        //监听开关
+
+        //监听单选按钮
+        function exam_plan(){
+            var exam_type =  $('#exam_type').val();
+            var type_id = exam_type;
+            var type ='exam';
+            if(exam_type==1)
+            {
+                var work_type =  $('#work_type').val();
+                if(work_type=='')
+                {
+                    layer.msg('工中类型不能为空');
+                    return false;
+                }
+                type='work';
+                type_id = work_type;
+            }
+
+            $.post('/api/ExamPlan/plan',{type:type,type_id:type_id},function(data)
+            {
+                var html='';
+
+                for (var i=0;i<data.length;i++)
+                {
+                    html+= ' <option value="'+data[i]['id']+'">'+data[i]["title"]+'</option>';
+                }
+
+                $('#type_exam_id').html(html);
+                form.render();
+
+            })
+        }
+        form.on('submit(sub)',function(data){
+            data = data.field;
+            var content = getCOntent();
+            data.content = content;
+            if(data.exam_type!=1)
+            {
+                data.work_type = 0;
+            }
+            if(content=='')
+            {
+                layer.msg('文章内容不能为空');
+                return false;
+            }
+            var button = $(this);
+            button.addClass('layui-btn-disabled').attr('disabled',true);
+            $.ajax({
+                url:'/api/CmsArticle/update',
+                type:'post',
+                data:data,
+                dataType:'json',
+                success:function(res)
+                {
+                    if(res.code==1)
+                    {
+                        layer.msg(res.msg,{
+                            icon:1,
+                            time:2000,
+                            end:function(){
+                                var indexof = parent.layer.getFrameIndex(window.name);
+                                parent.layer.close(indexof);
+                                parent.location.reload();
+                            }
+                        });
+                    }else{
+                        layer.msg(res.msg);
+                        button.removeClass('layui-btn-disabled').removeAttr('disabled');
+                    }
+                }
+            });
+            return false;
+        })
+    });
+
+
+
+    layui.use(['form', 'layer','jquery'], function () {
+        var form  = layui.form;
+        var $  = layui.jquery;
+        $(".yu").click(function () {
+            var id = $('#id').val();
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['90%', '90%'], //宽高
+                title: "编辑文章内容",
+                content: "/cms/article/FujianIndex?id="+id,  //调到新增页面
+                yes: function(index, layero){
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+            return false;
+        });
+    });
+
+</script>
+{/block}

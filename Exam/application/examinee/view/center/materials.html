@@ -1,0 +1,41 @@
+<div class="header_title"><span>学习资料</span>
+</div>
+<style>
+    #demoList a:hover{color: white;}
+</style>
+<div class="baoming_main">
+    <table class="layui-table myorder_table">
+        <thead>
+            <th>标题</th>
+            <th>类型</th>
+            <th>大小</th>
+            <th>操作</th>
+        </tr></thead>
+        <tbody id="demoList">
+        {volist name="data" id="vo"}
+        <tr>
+            <td>{$vo.file_name}</td>
+            <td>{$vo.file_type}</td>
+            <td>{$vo.file_size}</td>
+            <td width="82px">
+                <a class="layui-btn layui-btn-normal"  target="_blank" style="margin:0 auto;" href="{$vo.file_address}">在线学习</a>
+            </td>
+        </tr>
+        {/volist}
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript">
+    layui.use(['form', 'laypage','laydate'], function() {
+        var form = layui.form,
+            $ = layui.jquery;
+        form.render();
+        var laydate = layui.laydate;
+        $ = layui.jquery;
+        form.render();
+
+        var laypage = layui.laypage;
+
+
+    });
+</script>

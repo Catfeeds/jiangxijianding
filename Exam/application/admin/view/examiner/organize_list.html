@@ -1,0 +1,97 @@
+{extend name="common@layout/layout" /}
+{block name="title"}考评员审核{/block}
+{block name="css"}
+<style>
+    .layui-form-label {
+        width: 70px !important;
+        padding: 9px 15px 10px 0 !important;
+    }
+    .layui-inline {
+        margin-right: 0 !important;
+    }
+</style>
+{/block}
+{block name='crumbs'}
+<span class="layui-breadcrumb">
+  <a href="/admin" class="county">
+    <i class="layui-icon layui-icon-home"></i>
+    &nbsp;首页
+  </a>
+      <a href="/admin/examiner/audit"><cite>组织考评员审核</cite></a>
+      <a><cite>组织列表</cite></a>
+</span>
+{/block}
+{block name="content"}
+<div class="layui-form layui-card-header" style="padding-top: 15px;height: auto;">
+    <div class="layui-form-item">
+
+        <form action="/admin/ExamEnrollTrial/organizeEnroll" method="post">
+            <div class="layui-inline">
+                <label class="layui-form-label">组织名称</label>
+                <div class="layui-input-block">
+                    <input type="text" name="title" id="titleSea" sub="{$map['title']}" value="{$map['title']}" placeholder="请输入" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <input type="hidden" name="exam_plan_id" value="{$exam_plan_id}">
+            <div class="layui-inline">
+                <input type="submit" class="layui-btn layuiadmin-btn-order" value="搜索" id="searchBtn">
+            </div>
+        </form>
+    </div>
+</div>
+    <table class="layui-table">
+        <thead>
+        <tr>
+            <th width="50px">ID</th>
+            <th>组织名称</th>
+            <th>组织类型</th>
+            <th>总人数</th>
+            <th>已审核</th>
+            <th>待审</th>
+            <th width="200px">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {volist name="arrJuryList" id="vo"}
+        <tr>
+            <td id="id">{$i}</td>
+            <td>{$vo['name']}</td>
+            <td>{$vo->type}</td>
+            <td>{$vo['num_jury']}</td>
+            <td>{$vo.audited}</td>
+            <td>{$vo.audit}</td>
+            <td>
+                <a href="/admin/Examiner/auditing?exam_plan_id={$exam_plan_id}&organize_id={$vo['id']}">
+                    审核
+                </a>
+            </td>
+        </tr>
+        {/volist}
+
+        </tbody>
+    </table>
+<div class="layui-form-item">
+    <div class="layui-fluid tp-pages">
+        {$arrJuryList->render()}
+    </div>
+</div>
+{/block}
+{/extend}
+{block name="script"}
+
+<script>
+    layui.use(['form', 'layer','jquery'], function () {
+        var $ = layui.jquery;
+        $(".pager li a").click(function () {
+            var title = $("#titleSea").attr('sub');
+            if (title == '') {
+
+            } else {
+                var a = $(this).attr("href");
+                var url = a + "&title=" + title;
+                $(this).attr("href", url);
+            }
+        });
+    });
+</script>
+{/block}

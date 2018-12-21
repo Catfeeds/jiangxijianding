@@ -1,0 +1,128 @@
+{extend name="common@layout/nonelayout" /}
+{block name="css"}
+<style>
+    .multiSelect{
+        margin-top: -38px;
+    }
+</style>
+{/block}
+{block name="content"}
+
+<body>
+<form class="layui-form">
+    </div>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">不通过原因</label>
+        <div class="layui-input-block">
+            <select name="pass_reason" multiple lay-filter="multi">
+                <option value="">请选择不通过原因</option>
+                {volist name='pass' id='vo'}
+                <option value="{$key}">{$vo}</option>
+                {/volist}
+            </select>
+        </div>
+        <label class="layui-form-label">原因</label>
+        <div class="layui-input-block">
+            <input type="hidden" name="id" id="hiddenid" value="{$id}" >
+
+            <textarea placeholder="请输入审核不通过原因" id="reason" name="reason" class="layui-textarea"></textarea>
+        </div>
+    </div>
+    <center>
+    <div class="layui-inline">
+        <!--批量原因-->
+        <button class="layui-btn" lay-submit lay-filter="{if $organize_id == 1}subReason{else}Submission{/if}">提交</button>
+    </div>
+    </center>
+</form>
+</body>
+{/block}
+{/extend}
+{block name="script"}
+<script>
+    layui.use('element', function(){
+        var element = layui.element;
+    });
+    layui.use(['form', 'layer','jquery'], function () {
+        var form = layui.form;
+        var $ = layui.jquery;
+        //添加表单监听事件
+        form.on('submit(Submission)', function (data) {
+            data=data.field;
+            if (data.pass_reason == null && data.reason=='')
+            {
+                layer.msg('至少选择或者填写一项');
+                return false;
+            }
+            $.ajax({
+                url:urladdr.addReviewLog,
+                type:'post',
+                data:data,
+                dataType:'json',
+                success:function (data) {
+                    if (data.code==1){
+                        layer.msg(data.msg,{
+                            icon: 1,//提示的样式
+                            time:  1000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                            end: function () {
+                                //当你在iframe页面关闭自身时
+                                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                parent.layer.close(index); //再执行关闭
+                                parent.location.reload();
+
+                                var indexs = parent.parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                parent.parent.layer.close(indexs); //再执行关闭
+                                parent.parent.location.reload();
+                            }
+                        });
+                    }else{
+                        layer.msg(data.msg);
+                    }
+                }
+            });
+            //防止页面跳转
+            return false;
+        });
+        //添加表单监听事件
+        form.on('submit(subReason)', function (data) {
+            var id = $("#hiddenid").val();
+            var reason = $("#reason").val();
+            // alert(reason);
+            $.ajax({
+                url:urladdr.batchAddReviewLog,
+                type:'post',
+                data:{id:id,reason:reason},
+                dataType:'json',
+                success:function (data) {
+                    // console.log(data);
+                    if (data.code==1){
+                        layer.msg(data.msg,{
+                            icon: 1,//提示的样式
+                            time:  1000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                            end: function () {
+                                //当你在iframe页面关闭自身时
+                                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                parent.layer.close(index); //再执行关闭
+                                parent.location.reload();
+
+                                var indexs = parent.parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                parent.parent.layer.close(indexs); //再执行关闭
+                                parent.parent.location.reload();
+                            }
+                        });
+                    }else{
+                        layer.msg(data.msg);
+                    }
+                }
+            });
+            //防止页面跳转
+            return false;
+        });
+
+
+    });
+
+
+
+</script>
+{/block}

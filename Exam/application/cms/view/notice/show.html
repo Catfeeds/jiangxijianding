@@ -1,0 +1,116 @@
+{extend name="layout/nonelayout"}
+{block name="css"}
+<style>
+    th {
+        padding: 10px 0 10px 10px;
+    }
+
+    tr {
+        text-align: left;
+    }
+
+    .table-two td {
+        padding-left: 20px;
+    }
+</style>
+{/block}
+{block name="content"}
+<div class="layui-tab-content">
+    <form class="layui-form" action="">
+
+        <div class="layui-form-item">
+
+            <div class="layui-input-block">
+                <table border="1" width="700px" style="margin-left: -100px;">
+                    {volist name='data' id='v'}
+                    <tr>
+                        <th width="20%" style="text-align: center">
+                         {$v.name}
+
+                        </th>
+                        <td>
+                            <table class="table-two" width="100%" border="1" frame="void">
+                               {volist name='v.admin' id='vv'}
+                                <tr>
+                                    <th width="30%" style="text-align: center">
+                                     {$vv.admin_name}
+                                    </th>
+                                    <th width="30%" style="text-align: center">
+                                        {$vv.status.text}
+                                    </th>
+                                    <th style="text-align: center">
+                                        {if $vv.status.val==1}
+                                        <span  style="color:indianred">  发送时间：{$vv.create_time}</span>
+                                        {elseif $vv.status.val==2}
+                                        <span style="color: #5FB878;"> 查看时间：{$vv.update_time}</span>
+                                        {/if}
+                                    </th>
+                                </tr>
+                                {/volist}
+                            </table>
+                        </td>
+                    </tr>
+                     {/volist}
+                </table>
+            </div>
+        </div>
+
+    </form>
+</div>
+{/block}
+{block name="script"}
+<script>
+    layui.use('form', function () {
+        var form = layui.form;
+        //验证
+        form.verify({
+            //rolename存不存在
+            rolename: function (value) {
+                if (value.length === 0) return '角色名称不能为空';
+                var msg, id = $("#id").val();
+                $.ajax({
+                    type: "post",
+                    url: urladdr.findExcptRole,
+                    async: false,
+                    data: {'name': value, 'id': id},
+                    success: function (res) {
+                        if (res) {
+                            msg = '角色名称已存在';
+                        }
+                    }
+                });
+                return msg;
+            },
+        });
+
+        //监听提交
+        form.on('submit(formSubmit)', function (data) {
+            data = data.field, button = $(this);
+            button.addClass('layui-btn-disabled').attr('disabled', true);
+            $.post(urladdr.doeditRole, data, function (data) {
+                if (data.code === 1) {
+                    layer.msg(data.msg, {icon: 1, time: 1000}, function () {
+                        layer.close(layer.index);
+                        window.parent.location.reload();
+                    });
+                } else {
+                    layer.msg(data.msg, {icon: 5}, function () {
+                        button.removeClass('layui-btn-disabled').removeAttr('disabled');
+                    });
+                }
+            });
+            return false;
+        });
+
+        //选一个后面全选
+        form.on('checkbox(status)', function (data) {
+            var child = $(data.elem).parent().parent().find('input[type="checkbox"]');
+            child.each(function () {
+                this.checked = data.elem.checked;
+            });
+            form.render('checkbox');
+        });
+
+    });
+</script>
+{/block}

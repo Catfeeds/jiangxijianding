@@ -1,0 +1,121 @@
+{extend name="common@layout/nonelayout" /}
+{block name="css"}
+<style type="text/css">
+    .layui-form-item{
+        padding:20px 0 20px 40px;
+    }
+</style>
+{/block}
+{block name="content"}
+<form class="layui-form">
+    <div class="layui-form-item">
+        <div style="float: left;width: 100px;height: 40px;text-align: center;line-height:40px">理论考试时间:</div>
+        <div class="layui-input-block">
+            <input type="text" name="plan" id="plan" value="{$request->param('plan')}" style="display: none">
+            <input type="text" name="organize" id="organize" value="{$request->param('organize')}" style="display: none">
+            <input type="text" style="float: left; width: 200px" name="lilun_start_date" id="lilun_start_date" placeholder="请选择开始时间" autocomplete="off" class="layui-input" {if condition="isset($time[1])"}value="{$time[1]['start_time']}" {/if}>
+            <input type="text" style="float: left; width: 200px" name="lilun_end_date" id="lilun_end_date" placeholder="请选择结束时间"  autocomplete="off" {if condition="isset($time[1])"}value="{$time[1]['end_time']}" {/if} class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div style="float: left;width: 100px;height: 40px;text-align: center;line-height:40px">综合考试时间:</div>
+        <div class="layui-input-block">
+            <input type="text" style="float: left; width: 200px" name="zonghe_start_date" id="zonghe_start_date" placeholder="请选择开始时间" autocomplete="off" class="layui-input" {if condition="isset($time[2])"}value="{$time[2]['start_time']}"{/if}>
+            <input type="text" style="float: left; width: 200px" name="zonghe_end_date" id="zonghe_end_date" placeholder="请选择结束时间" autocomplete="off" class="layui-input" {if condition="isset($time[2])"}value="{$time[2]['end_time']}"{/if}>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div style="float: left;width: 100px;height: 40px;text-align: center;line-height:40px">实操考试时间:</div>
+        <div class="layui-input-block">
+            <input type="text" style="float: left; width: 200px" name="shicao_start_date" id="shicao_start_date" placeholder="请选择开始时间" autocomplete="off" class="layui-input" {if condition="isset($time[3])"}value="{$time[3]['start_time']}"{/if}>
+            <input type="text" style="float: left; width: 200px" name="shicao_end_date" id="shicao_end_date" placeholder="请选择结束时间" autocomplete="off" class="layui-input" {if condition="isset($time[3])"}value="{$time[3]['end_time']}"{/if}>
+        </div>
+    </div>
+    <div class="layui-form-item">
+    <div style="float: left;width: 100px;height: 40px;text-align: right;line-height:40px">场次:</div>
+    <div style="width: 20%;float: left;margin-left: 10px">
+        <select name="batch" id="batch" lay-verify="batch">
+            <option value ="-1">请选择</option>
+            {volist name='batch' id='vo' key='k'}
+                <option value ="{$vo['batch']}">场次{$vo['batch']}</option>
+            {/volist}
+        </select>
+    </div>
+    </div>
+    <div style="width: 100%;text-align: center"class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+        </div>
+    </div>
+</form>
+{/block}
+{/extend}
+{block name='script'}
+
+<script>
+    $("#batch").val("1");
+    layui.use('laydate', function(){
+        var laydate = layui.laydate;
+        //执行一个laydate实例
+        $('.layui-input').each(function(){
+            laydate.render({
+                elem: this,      //使用this指向当前元素,不能使用class名, 否则只有第一个有效
+                type:'datetime'
+            });
+        })
+    });
+    layui.use('form', function() {
+        var form = layui.form;
+        form.on('submit(formDemo)', function(data) {
+            $.ajax({
+                url:'/admin/missing/setTimeInfo',
+                data:{"lilun_start_date":$('#lilun_start_date').val(),'lilun_end_date':$('#lilun_end_date').val(),
+                      "zonghe_start_date":$('#zonghe_start_date').val(),"zonghe_end_date":$('#zonghe_end_date').val(),
+                      "shicao_start_date":$('#shicao_start_date').val(),"shicao_end_date":$('#shicao_end_date').val(),
+                      "plan":$('#plan').val(),'center':$('#organize').val(),'batch':$("#batch").val()},
+                type:"POST",
+                dataType:"json",
+                success:function(msg){
+                    if(msg['code'] ==200)
+                    {
+                        message = "设置成功";
+                    }else if(msg['code'] ==101)
+                    {
+                        message = "理论考试时间不完整";
+                    }else if(msg['code'] ==102)
+                    {
+                        message = "综合考试时间不完整";
+                    }else if(msg['code'] ==103)
+                    {
+                        message = "实操考试时间不完整";
+                    }else if(msg['code'] ==104)
+                    {
+                        message = "请选择考试时间";
+                    }else if(msg['code'] ==111)
+                    {
+                        message ="理论考试开始时间小于结束时间";
+                    }else if(msg['code'] ==112)
+                    {
+                        message ="综合考试开始时间小于结束时间";
+                    }else if(msg['code'] ==113)
+                    {
+                        message ="实操考试开始时间小于结束时间";
+                    }else if(msg['code'] ==100)
+                    {
+                        message ="实操考试开始时间小于结束时间";
+                    }
+                    layer.alert(message,function (index){
+                        layer.close(index);
+                        window.parent.location.reload();
+                    });
+                },
+                error:function(error) {
+                    layer.alert('操作失败',function (index){
+                        layer.close(index);
+                    });
+                }
+            });
+        });
+    });
+    </script>
+{/block}

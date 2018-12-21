@@ -1,0 +1,51 @@
+{extend name="nonelayout"}
+{block name="css"}
+{/block}
+{block name='content'}
+    <div class="LingQu_main">
+        <h2 class="tanchuang_title">现场领取</h2>
+        <div class="youji_main">
+            <p><img src="__PUBLIC__/front/img/time.png"/></p>
+            <p class="graycolor">现场领取时间</p>
+            <p>2018-09-09 9：00~2018--09-15 17：00</p>
+            <p class="fengexian"></p>
+            <p><img src="__PUBLIC__/front/img/map.png"/></p>
+            <p class="graycolor">地点</p>
+            <p>{$userinfo.exam_site}</p>
+        </div>
+        <div class="double_btn double_qxyj">
+            <div class="dayin_btn payment margin_right_15 formit" data-value="{$userinfo.id}">确定</div>
+            <div class="gray_btn payment layui-layer-close cancel">取消</div>
+        </div>
+    </div>
+{/block}
+{block name='script'}
+<script type="text/javascript">
+    layui.use(['form', 'layer','jquery','element'], function () {
+        var $ = layui.jquery, layer = layui.layer;
+        $(".formit").on('click',function () {
+            id = $(this).data('value');
+            $.post('/api/Certificate/invite', {'id': id}, function (data) {
+                layer.msg(data.msg, {icon: data.code}, function () {
+                    //当你在iframe页面关闭自身时
+                    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                    parent.layer.close(index); //再执行关闭
+                    parent.location.reload();
+                });
+            });
+            return false;
+        })
+    });
+
+    $('.cancel').on('click',function () {
+        //当你在iframe页面关闭自身时
+        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+        parent.layer.close(index); //再执行关闭
+        parent.location.reload();
+    })
+
+</script>
+{/block}
+
+
+

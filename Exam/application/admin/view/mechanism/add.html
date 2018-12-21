@@ -1,0 +1,422 @@
+{extend name="common@layout/nonelayout" /}
+{block name="css"}
+<style>
+    .delete_button img{
+        width: 17px;
+        height: 17px;
+        /*background: #A9B3BF;*/
+        right: -55px;
+        z-index: 99999;
+        position: absolute;
+        top: 50%;
+        margin-top: -9px;
+        text-align: center;
+        line-height: 18px;
+        color: #fff;
+    }
+    .add_empty img {
+        width: 17px;
+        height: 17px;
+        /*background: #A9B3BF;*/
+        right: -55px;
+        z-index: 99999;
+        position: absolute;
+        top: 50%;
+        margin-top: -9px;
+        text-align: center;
+        line-height: 18px;
+        color: #fff;
+    }
+</style>
+
+{/block}
+{block name="content"}
+<head>
+    <meta charset="utf-8">
+    <title>添加鉴定组织</title>
+
+</head>
+<body>
+<form class="layui-form" style="white-space:nowrap;">
+    <div class="layui-form-item">
+        <label class="layui-form-label">联系电话</label>
+        <div class="layui-input-block">
+            <input type="text" name="phone" id="phone" maxlength="11" placeholder="请输入联系电话" required  lay-verify="phone" autocomplete="off" class="layui-input">
+            <div class="layui-form-mid layui-word-aux"><span style="color: red">用于登录后台</span></div>
+        </div>
+    </div>
+    <div class="empty_list">
+        <label class="layui-form-label">备用账号:</label>
+        <div class="layui-form-item">
+            <label class="layui-form-label">姓名</label>
+            <div class="layui-input-inline">
+                <div class="layui-form-mid layui-word-aux">
+                    <input type="text" name="fullname[]" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+
+                </div>
+            </div>
+
+            <label class="layui-form-label">电话</label>
+            <div class="layui-input-inline">
+                <div class="layui-form-mid layui-word-aux">
+                    <input type="text" name="fullphone[]" maxlength="11" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                    <span class="add_empty"><img src="__PUBLIC__/img/add.png" alt=""></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" name="password" value="111111" id="password" placeholder="请输入密码" required  lay-verify="password" autocomplete="off" class="layui-input">
+    <div class="layui-form-item">
+        <label class="layui-form-label">组织名称</label>
+        <div class="layui-input-block">
+            <input type="text" name="name" id="name" placeholder="请输入组织名称" required  lay-verify="name" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">组织代码</label>
+        <div class="layui-input-block">
+            <input type="text" name="code" id="code" maxlength="3" placeholder="请输入组织代码" required  lay-verify="code" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">选择地区</label>
+        <div class="layui-input-inline">
+            <select name="provid" id="provid" lay-search lay-filter="provid">
+                <option value="360000">江西省</option>
+            </select>
+        </div>
+        <div class="layui-input-inline">
+            <select name="cityid" id="cityid" lay-search lay-filter="cityid">
+                <option value="">请选择市</option>
+                {volist name="arrArea" id="vo"}
+                <option value="{$vo.code}">{$vo.area_name}</option>
+                {/volist}
+            </select>
+        </div>
+        <div class="layui-input-inline">
+            <select name="areaid" id="areaid" lay-search lay-filter="areaid">
+                <option value="">请选择县/区</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">详细地址</label>
+        <div class="layui-input-block">
+            <input type="text" name="detail_address" id="detail_address" placeholder="请输入详细地址" required  lay-verify="required" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    {if $center_type == 1}
+    <div class="layui-form-item">
+        <label class="layui-form-label">所属鉴定中心</label>
+        <div class="layui-input-block">
+            <select name="subordinate_admin" lay-search="" id="">
+                <option value="">请选择所属鉴定中心</option>
+                {volist name="center" id="vo"}
+                    <option value="{$vo.id}">{$vo.name}</option>
+                {/volist}
+            </select>
+        </div>
+    </div>
+{else}
+    <input type="hidden" name="subordinate_admin" value="{$center}">
+    {/if}
+    <div class="layui-form-item">
+        <label class="layui-form-label">建设日期</label>
+        <div class="layui-input-block">
+            <input type="text" name="build_date" id="build_date" placeholder="请选择建设日期" required  lay-verify="required" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">联系人</label>
+        <div class="layui-input-block">
+            <input type="text" name="dutyer" id="dutyer" placeholder="请输入联系人" required  lay-verify="linkman" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">负责人</label>
+        <div class="layui-input-block">
+            <input type="text" name="linkman" id="linkman" placeholder="请输入负责人" required  lay-verify="linkman" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">组织类型</label>
+        <div class="layui-input-block">
+            <input type="radio" name="type" value="1" title="鉴定所" checked>
+            <input type="radio" name="type" value="2" title="院校">
+            <input type="radio" name="type" value="3" title="机构">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">是否启用</label>
+        <div class="layui-input-block">
+            <input type="checkbox" name="status" value="1" id="status" checked lay-text="是|否" lay-skin="switch">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">是否为事业单位</label>
+        <div class="layui-input-block">
+            &nbsp&nbsp&nbsp<input type="checkbox" name="is_institution" value="1" id="is_institution" lay-text="是|否" checked lay-skin="switch">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" id="addorganize" lay-submit lay-filter="formSubmit">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+{/block}
+{/extend}
+{block name="script"}
+<script>
+    layui.use(['form', 'layer','jquery'], function () {
+        var form  = layui.form;
+        var $  = layui.jquery;
+//删除
+        function bindListener() {
+            $('.delete_button').unbind().click(function () {
+                var div = $(this).parent().parent().parent();
+                div.remove();
+            });
+        }
+
+        //添加
+        $('.add_empty').click(function () {
+            var input = "  <div class=\"layui-form-item\">\n" +
+                "                    <label class=\"layui-form-label\">姓名</label>\n" +
+                "                    <div class=\"layui-input-inline\">\n" +
+                "                        <div class=\"layui-form-mid layui-word-aux\">\n" +
+                "                            <input type=\"text\" name=\"fullname[]\" lay-verify=\"required\" placeholder=\"\" autocomplete=\"off\" class=\"layui-input\">\n" +
+                "\n" +
+                "                        </div>\n" +
+                "                    </div>\n" +
+                "\n" +
+                "                    <label class=\"layui-form-label\">电话</label>\n" +
+                "                    <div class=\"layui-input-inline\">\n" +
+                "                        <div class=\"layui-form-mid layui-word-aux\">\n" +
+                "                            <input type=\"text\" name=\"fullphone[]\" lay-verify=\"required\" placeholder=\"\" autocomplete=\"off\" class=\"layui-input\">\n" +
+                "                            <span class=\"delete_button\"><img src=\"__PUBLIC__/img/del.png\" alt=\"\"></span>\n" +
+                "                        </div>\n" +
+                "                    </div>\n" +
+                "                </div>";
+
+            $('.empty_list').append(input);
+            bindListener();
+        });
+
+        //获取市
+        form.on('select(provid)', function(data){
+            var code = data.value;
+            $.ajax({
+                url:urladdr.selCityBycode,
+                type:'post',
+                dataType:'json',
+                data:{
+                    code:code,
+                },
+                success:function (data) {
+                    // console.log(data);
+                    if (data.code==1){
+                        //1.清空已设置标签
+                        $("#cityid").html("");
+                        $("#areaid").html("");
+                        //2.获取select标签
+                        var cityid = document.getElementById ("cityid");
+                        var oldOption = document.createElement("option");
+                        //4.设置option属性，值
+                        oldOption.value = "";
+                        oldOption.innerText = "请选择市";
+                        cityid.append(oldOption);
+                        //2.获取select标签
+                        var areaid = document.getElementById ("areaid");
+                        var areaOption = document.createElement("option");
+                        //4.设置option属性，值
+                        areaOption.value = "";
+                        areaOption.innerText = "请选择县/区";
+                        areaid.append(areaOption);
+                        for (var i=0;i<data.data.length;i++){
+                            //3.创建option标签
+                            var option = document.createElement("option");
+                            //4.设置option属性，值
+                            option.value = data.data[i]['code'];
+                            option.innerText = data.data[i]['area_name'];
+                            //5.select内部插入option
+                            cityid.append(option);
+                            //6.渲染标签
+                            form.render();
+                        }
+                    }else{
+                        $("#cityid").html("");
+                        form.render();
+                        layer.msg(data.msg)
+                    }
+                }
+            });
+            //防止页面跳转
+            return false;
+        });
+
+        //获取县区
+        form.on('select(cityid)', function(data){
+            var code = data.value;
+            $.ajax({
+                url:urladdr.selCityBycode,
+                type:'post',
+                dataType:'json',
+                data:{
+                    code:code,
+                },
+                success:function (data) {
+                    // console.log(data);
+                    if (data.code==1){
+                        //1.清空已设置标签
+                        $("#areaid").html("");
+                        //2.获取select标签
+                        var areaid = document.getElementById ("areaid");
+                        var oldOption = document.createElement("option");
+                        //4.设置option属性，值
+                        oldOption.value = "";
+                        oldOption.innerText = "请选择县/区";
+                        areaid.append(oldOption);
+                        for (var i=0;i<data.data.length;i++){
+                            //3.创建option标签
+                            var option = document.createElement("option");
+                            //4.设置option属性，值
+                            option.value = data.data[i]['code'];
+                            option.innerText = data.data[i]['area_name'];
+                            //5.select内部插入option
+                            areaid.append(option);
+                            //6.渲染标签
+                            form.render();
+                        }
+                    }else{
+                        $("#areaid").html("");
+                        form.render();
+                        layer.msg(data.msg)
+                    }
+                }
+            });
+            //防止页面跳转
+            return false;
+        });
+
+        form.verify({
+            // //验证用户名
+            // username: function (value) {
+            //     // if(!new RegExp("^[a-zA-Z0-9_\u4e00-\u9fa5\\s·]+$").test(value)) {
+            //     //     return '名称不能有特殊字符';
+            //     // }
+            //     if(/(^\_)|(\__)|(\_+$)/.test(value)){
+            //         return '名称首尾不能出现下划线\'_\'';
+            //     }
+            //     var msg;
+            //     $.ajax({
+            //         type: "post",
+            //         async: false,
+            //         url: urladdr.findAdminorganize,
+            //         data: {'username': value},
+            //         success: function (data) {
+            //             if (data == 1) {
+            //                 console.log(data);
+            //                 msg = '用户名已存在';
+            //             }
+            //         }
+            //     });
+            //     return msg;
+            // },
+            //密码格式
+            password: [/^[\S]{6,12}$/,'密码必须6到12位，且不能出现空格'],
+            //名称验证
+            name: function(value, item){ //value：表单的值、item：表单的DOM对象
+                if(!new RegExp("^[a-zA-Z0-9_\u4e00-\u9fa5\\s·]+$").test(value)) {
+                    return '名称不能有特殊字符';
+                }
+                if(/(^\_)|(\__)|(\_+$)/.test(value)){
+                    return '名称首尾不能出现下划线\'_\'';
+                }
+            },
+
+            //验证代码
+            code: function (value) {
+                if (!/^\d{3}$/.test(value)){
+                    return '代码只能是3位';
+                }
+                var msg;
+                $.ajax({
+                    type: "post",
+                    async: false,
+                    url: urladdr.findAdminorganize,
+                    data: {'code': value},
+                    success: function (data) {
+                        if (data) {
+                            console.log(data);
+                            msg = '代码已存在';
+                        }
+                    }
+                });
+                return msg;
+            },
+
+            //验证联系人
+            linkman: function(value, item){ //value：表单的值、item：表单的DOM对象
+                if(!new RegExp("^[a-zA-Z0-9_\u4e00-\u9fa5\\s·]+$").test(value)) {
+                    return '联系人不能有特殊字符';
+                }
+                if(/(^\_)|(\__)|(\_+$)/.test(value)){
+                    return '联系人首尾不能出现下划线\'_\'';
+                }
+                if(/^\d+\d+\d$/.test(value)){
+                    return '联系人不能全为数字';
+                }
+            },
+
+            //验证手机号
+            phone: [/^(?:0[0-9]{2,3}[-\\s]{1}|\\(0[0-9]{2,4}\\))[0-9]{6,8}$|^[1-9]{1}[0-9]{5,7}$|^[1-9]{1}[0-9]{10}$/, '电话格式不正确！'],
+        });
+        //添加表单监听事件
+        form.on('submit(formSubmit)',function (data) {
+            data = data.field;
+            // console.log(data);
+            // return false;
+            data.provid = $("#provid").find("option:selected").text();
+            data.cityid = $("#cityid").find("option:selected").text();
+            data.areaid = $("#areaid").find("option:selected").text();
+            data.provids = $("#provid").find("option:selected").val();
+            data.cityids = $("#cityid").find("option:selected").val();
+            data.areaids = $("#areaid").find("option:selected").val();
+            $.post(urladdr.addApiOrganize,data,function (data) {
+                if (data.code == 1){
+                    layer.msg(data.msg, {
+                        icon: 1,//提示的样式
+                        time: 2000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                        end: function () {
+                            //当你在iframe页面关闭自身时
+                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                            parent.layer.close(index); //再执行关闭
+                            parent.location.reload();
+                        }
+                    })
+                }else{
+                    layer.msg(data.msg);
+                }
+            });
+            //防止页面跳转
+            return false;
+        });
+
+    });
+    layui.use('laydate', function(){
+        var laydate = layui.laydate;
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#build_date', //指定元素
+            type:'date'
+        });
+    });
+</script>
+{/block}

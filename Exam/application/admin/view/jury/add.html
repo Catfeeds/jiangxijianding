@@ -1,0 +1,178 @@
+{extend name="common@layout/layout" /}
+{block name="title"}管理中心{/block}
+{block name'css'}
+<style>
+    .close {
+        cursor: pointer;
+    }
+</style>
+{/block}
+{block name='crumbs'}
+<span class="layui-breadcrumb" lay-separator="">
+  <a href="/admin" class="county">
+    <i class="layui-icon layui-icon-home"></i>&nbsp;首页
+  </a>
+    <a href="{:url('lists')}"><cite>考评人员管理</cite></a>
+    <a><cite>添加考评人员</cite></a>
+</span>
+{/block}
+
+{block name="content"}
+<div class="layui-tab-content">
+    <!--<span class="layui-badge">单条</span>--> <span style="font-size: 18px;">添加考评人员</span>
+    <form class="layui-form" style="width:100%;">
+        <table border="1" class="layui-table">
+            <colgroup>
+                <col width="50">
+                <col width="100">
+                <col width="50">
+                <col width="100">
+            </colgroup>
+            <tr>
+                <th width="100">手机号码:</th>
+                <td colspan="3">
+                    <input type="text" name="phone" value="" required lay-verify="phone" placeholder="手机号码"
+                           autocomplete="off" class="layui-input">
+                </td>
+            </tr>
+            <tr>
+                <th width="100">姓名:</th>
+                <td colspan="3">
+                    <input type="text" name="name" value="" required lay-verify="required" placeholder="姓名"
+                           autocomplete="off" class="layui-input">
+                </td>
+            </tr>
+            <tr>
+                <th width="100">所属中心</th>
+                <td colspan="3">
+                    <select name="organize_id" id="" lay-verify="required">
+                        <option value="">请选择</option>
+                        {volist name='list' id='vo'}
+                        <option value="{$vo.id}">{$vo.name}</option>
+                        {/volist}
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th width="100">证件号:</th>
+                <td colspan="3">
+                    <input type="text" name="id_number" value="" required lay-verify="required" placeholder="证件号"
+                           autocomplete="off" class="layui-input">
+                </td>
+            </tr>
+
+            <tr>
+                <th width="100">状态:</th>
+                <td colspan="3">
+                    <input type="radio" name="status" value="1" title="启用" checked>
+                    <input type="radio" name="status" value="0" title="禁用">
+                </td>
+            </tr>
+            <tr>
+                <th width="100">证书:</th>
+                <td colspan="3">
+                    <div class="layui-form">
+                        <table class="zhengs" width="100%">
+
+                        </table>
+                    </div>
+                    <button class="layui-btn add-work" style="margin-top: 10px;">选择工种</button>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <button class="layui-btn" lay-submit lay-filter="formSubmit" style="float: right;">立即提交</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <div id="workList"></div>
+</div>
+{/block}
+
+{block name="script"}
+<script>
+    layui.use(['table', 'form', 'upload', 'laydate', 'layer'], function () {
+        var form = layui.form, $ = layui.jquery, upload = layui.upload, laydate = layui.laydate, table = layui.table;
+
+        //监听提交
+        form.on('submit(formSubmit)', function (data) {
+            data = data.field, button = $(this);
+            button.addClass('layui-btn-disabled').attr('disabled', true);
+            $.post(urladdr.addJury, data, function (data) {
+                if (data.code > 0) {
+                    layer.msg(data.msg, {icon: 1, time: 600}, function () {
+                        location.href = '/admin/jury/lists';
+                    });
+                } else {
+                    layer.msg(data.msg, {icon: 5}, function () {
+                        button.removeClass('layui-btn-disabled').removeAttr('disabled');
+                    });
+                }
+            });
+            return false;
+        });
+        //刷新这个页面也清空cookie
+        $.cookie('work_id', '', {path: '/admin'});
+        //添加工种
+        $('.add-work').on('click', function () {
+            id = $(this).data('value');
+            layer.open({
+                type: 2,
+                anim: 1,
+                skin: 'layui-layer-molv',
+                area: ['60%', '80%'],
+                title: "选择工种",
+                content: urladdr.juryWork,
+                btn: ['添加'],
+                yes: function () {
+                    if ($.cookie('work_id').length > 0) {
+                        $('.zhengs').empty();
+                        $.post(urladdr.apiWorklist, {id: $.cookie('work_id')}, function (data) {
+                            if (data.code > 0) {
+                                layer.msg(data.msg, {icon: 1});
+                                var html = '';
+                                $.each(data.data, function (index, item) {
+                                    html += '<tr><td>' + item.name + '</td><input type="hidden" value="' + item.id + '" name="' + item.id + '[work_id]"><td><input type="radio" name="' + item.id + '[card_level]" value="00" checked title="考评员"><input type="radio" name="' + item.id + '[card_level]" value="01" title="高级考评员"></td><td><input type="text" name="' + item.id + '[card_no]" lay-verify="required" placeholder="请输入证书编号" class="layui-input"></td><td><input name="' + item.id + '[card_create_time]" lay-verify="required" type="text" class="layui-input date"></td><td><i data-value="' + item.id + '" style="cursor: pointer;" class="layui-icon layui-unselect layui-tab-close close">ဆ</i></td></tr>';
+                                });
+                                html = '<tr><th>工种名称</th><th>级别</th><th>证书编号</th><th>领取时间</th><th></th></tr>' + html;
+                                $('.zhengs').append(html);
+                                form.render();
+                                //循环渲染date
+                                $('.date').each(function () {
+                                    laydate.render({
+                                        elem: this
+                                        , type: 'datetime'
+                                        , format: 'yyyy-MM-dd'
+                                    });
+                                });
+                                console.log($.cookie('work_id'));
+                                $('.close').on('click', function () {
+                                    var iid = $(this).data('value') + '';
+                                    $(this).parent().parent().remove();
+                                    var work = $.cookie('work_id').split(',');
+                                    work.pop();
+                                    //删除cookie里的这个元素
+                                    work.splice($.inArray(iid, work), 1);
+                                    if (work.length > 0) {
+                                        work = work.join(',') + ',';
+                                        $.cookie('work_id', work, {path: '/admin'});
+                                    }
+                                    console.log($.cookie('work_id'));
+
+                                });
+
+                                return false;
+                            }
+                        });
+                    }
+                    layer.closeAll();
+                }
+
+            });
+            return false;
+        });
+
+    });
+</script>
+{/block}

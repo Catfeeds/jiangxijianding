@@ -1,0 +1,84 @@
+{block name="css"}
+<link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css">
+{/block}
+{block name="content"}
+<body >
+<div  class="layui-body" style="left: 30px;">
+    <header ></header>
+    <form class="layui-form" >
+
+
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">中心简介</label>
+                <div class="layui-input-block">
+                    <input type="hidden" name="id" value="{$data.id}">
+                    <textarea  id="content" name="content" cols="50" rows="15" style="width: 90%;height:500px;margin: 0 auto;" >{if empty($data.content)}  {else} {$data.content} {/if}</textarea>
+
+
+                </div></div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit lay-filter="sub">立即提交</button>
+                </div>
+            </div>
+
+    </form>
+</div>
+</body>
+{/block}
+
+{block name="script"}
+<script src="__PUBLIC__/js/jquery.min.js"></script>
+<script src="__PUBLIC__/layui/layui.all.js"></script>
+<script src="__PUBLIC__/ueditor/ueditor.config.js"></script>
+<script src="__PUBLIC__/ueditor/ueditor.all.js"></script>
+
+<script type="text/javascript">
+
+    var ue = UE.getEditor('content');
+    function getCOntent()
+    {
+        var content = UE.getEditor('content',{initialFrameWidth:20}).getContent();
+        return content;
+    }
+    layui.use(['form','layer','layedit','upload','laydate'],function(){
+        var form = layui.form ,$ = layui.jquery;
+        var laydate = layui.laydate;
+
+        //执行一个laydate实例
+        laydate.render({elem:'#create_time'});
+
+        form.on('submit(sub)',function(data){
+            data = data.field;
+            data.content = getCOntent();
+            data.article_id = $('#article_id').val();
+            var button = $(this);
+            button.addClass('layui-btn-disabled').attr('disabled',true);
+            $.ajax({
+                url:'/api/CmsPresentation/add',
+                type:'post',
+                data:data,
+                dataType:'json',
+                success:function(res)
+                {
+                    if(res.code==1)
+                    {
+                        layer.msg(res.msg,{
+                            icon:1,
+                            time:2000,
+                            end:function(){
+                                var indexof = parent.layer.getFrameIndex(window.name);
+                                parent.layer.close(indexof);
+                            }
+                        });
+                    }else{
+                        layer.msg(res.msg);
+                        button.removeClass('layui-btn-disabled').removeAttr('disabled');
+                    }
+                }
+            });
+            return false;
+        })
+    })
+</script>
+{/block}

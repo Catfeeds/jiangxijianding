@@ -1,0 +1,121 @@
+{extend name="common@layout/nonelayout" /}
+
+{block name="content"}
+<div class="layui-tab-content">
+    <form class="layui-form">
+        <input type="hidden" name="id" id="id" value="{notempty name='res'}{$res.id}{/notempty}"/>
+        <table border="1" class="layui-table">
+            <colgroup>
+                <col width="50">
+                <col width="100">
+                <col width="50">
+                <col width="100">
+            </colgroup>
+            <tr>
+                <th width="100">名称:</th>
+                <td colspan="3">
+                    <input type="text" name="name" disabled value="{notempty name='res'}{$res.name}{/notempty}" required
+                           lay-verify="required" placeholder="名称" autocomplete="off" class="layui-input">
+                </td>
+            </tr>
+            <tr>
+                <th width="100">类型:</th>
+                <td colspan="3">
+                    <select name="county_type">
+                        <option value="标准市" {$res.county_type==""?'selected':'disabled';}>标准市</option>
+                        <option value="省辖市" {$res.county_type=="省辖县"?'selected':'disabled';}>省辖市</option>
+                        <option value="县级市" {$res.county_type=="县级市"?'selected':'disabled';}>县级市</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th width="100">联系人:</th>
+                <td colspan="3">
+                    <input type="text" name="linkman" disabled value="{notempty name='res'}{$res.linkman}{/notempty}"
+                           required
+                           lay-verify="required" placeholder="联系人" autocomplete="off" class="layui-input">
+                </td>
+            </tr>
+            <tr>
+                <th width="100">负责人电话:</th>
+                <td colspan="3">
+                    <input type="text" name="phone" disabled value="{notempty name='res'}{$res.phone}{/notempty}"
+                           required
+                           lay-verify="phone" placeholder="负责人电话" autocomplete="off" class="layui-input">
+                </td>
+            </tr>
+            <tr>
+                <th width="100">地址:</th>
+                <td colspan="3">
+                    <input type="text" name="address" disabled value="{notempty name='res'}{$res.address}{/notempty}"
+                           required
+                           lay-verify="required" placeholder="负责人电话" autocomplete="off" class="layui-input">
+                </td>
+            </tr>
+            <tr>
+                <th width="100">邮编:</th>
+                <td colspan="3">
+                    <input type="text" name="zip_code" disabled value="{notempty name='res'}{$res.zip_code}{/notempty}"
+                           required
+                           lay-verify="required" placeholder="邮编" autocomplete="off" class="layui-input">
+                </td>
+            </tr>
+            <tr>
+                <th width="100">邮箱:</th>
+                <td colspan="3">
+                    <input type="text" name="email" disabled value="{notempty name='res'}{$res.email}{/notempty}"
+                           required
+                           lay-verify="email" placeholder="邮箱" autocomplete="off" class="layui-input">
+                </td>
+            </tr>
+
+            <tr>
+                <th width="100">状态:</th>
+                <td colspan="3">
+                    <input type="radio" name="status" value="1" title="启用" {$res.status==1?'checked':'disabled';}>
+                    <input type="radio" name="status" value="0" title="冻结" {$res.status==1?'disabled':'checked'}>
+                </td>
+            </tr>
+        </table>
+
+        <button class="layui-btn layui-btn-warm edit lhj-sub">修改信息</button>
+        <button class="layui-btn submit lhj-sub" style="display:none;" lay-submit lay-filter="formSubmit">确认提交</button>
+
+        </button>
+    </form>
+</div>
+{/block}
+
+{block name='script'}
+<script>
+    layui.use(['form', 'laydate'], function () {
+        var form = layui.form, $ = layui.jquery;
+        $('.edit').on('click', function () {
+            $(this).hide();
+            $('input').removeAttr('disabled');
+            $('option').removeAttr('disabled');
+            form.render();
+            $('.submit').show();
+            return false;
+        });
+        //监听提交
+        form.on('submit(formSubmit)', function (data) {
+            var formData = data.field, button = $(this);
+            button.addClass('layui-btn-disabled').attr('disabled', true);
+            $.post(urladdr.doeditCity, formData, function (data) {
+                if (data.code > 0) {
+                    layer.msg(data.msg, {icon: 1, time: 1000}, function () {
+                        layer.close(layer.index);
+                        window.parent.location.reload();
+                    });
+                } else {
+                    layer.msg(data.msg, {icon: 5}, function () {
+                        button.removeClass('layui-btn-disabled').removeAttr('disabled');
+                    });
+                }
+            });
+            return false;
+        });
+    });
+</script>
+{/block}

@@ -1,0 +1,67 @@
+{extend name="common@layout/layout"}
+
+{block name="title"}考场列表{/block}
+{block name="content"}
+<div class="layui-tab-content">
+    <div style="width: 100%;text-align: center"><button id="setTime" class="layui-btn" style="">设置考试时间</button></div>
+    <table class="layui-table">
+        <colgroup>
+            <col>
+            <col>
+        </colgroup>
+        <thead>
+        <tr>
+            <td>考场</td>
+            <td>场次</td>
+        </tr>
+        </thead>
+        <tbody>
+        {volist name='list' id='vo' key='k'}
+        <tr>
+            <td style="width: 50%">
+                <button id="doing" data-plan="{$request->param('plan')}"
+                        data-organize="{$request->param('organize')}"
+                        data-work="{$request->param('work_id')}"
+                        data-level="{$request->param('level')}"
+                        data-subject="{$request->param('subject')}"
+                        data-roomNum="{$vo['ExamRoomNum']}";
+                        data-batch="{$vo['batch']}"
+                        data-url="{$url}"
+                        class="layui-btn layui-btn-xs work-show" style="width: 50%;height: 100%">考场{$k}</button>
+            </td>
+            <td>
+                {$vo['batch']}
+            </td>
+        </tr>
+        {/volist}
+        </tbody>
+    </table>
+    <div class="layui-fluid tp-pages">
+    </div>
+</div>
+{/block}
+
+{block name='script'}
+<script>
+    layui.use(['layer','jquery'], function(){
+        var $ = layui.jquery, layer = layui.layer;
+        $(document).on('click','#doing',function(){
+            window.location.href=$(this).attr('data-url')+'?organize='+$(this).attr('data-organize')+'&plan='+$(this).attr('data-plan')+
+                '&work_id='+$(this).attr('data-work')+'&level='+$(this).attr('data-level')+'&subject='+$(this).attr('data-subject')
+                +'&num='+$(this).attr('data-roomNum')+'&batch='+$(this).attr('data-batch');
+        });
+    });
+    layui.use(['layer','jquery'], function(){
+        var $ = layui.jquery, layer = layui.layer;
+        $(document).on('click','#setTime',function(){
+            layer.open({
+                type: 2,
+                area: ['600px','550px'],
+                title: '设置考试时间',
+                shadeClose: true,
+                content: ['setTime?organize='+{$request->param('organize')}+'&plan='+{$request->param('plan')}+'&work_id='+{$request->param('work_id')}+"&level="+{$request->param('level')}+'&subject='+{$request->param('subject')}+'&num='+{$request->param('subject')}+'&enroll_id='+$(this).attr('data-setNum'),'no']
+            });
+        });
+    });
+</script>
+{/block}

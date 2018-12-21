@@ -1,0 +1,91 @@
+{extend name="/layout/nonelayout"}
+{block name="css"}
+{/block}
+{block name='content'}
+<form class="layui-form">
+    {if($cert['cert']==1)} <h2 class="tanchuang_title">联系方式</h2> {else /}
+    <h2 class="tanchuang_title">地址确认</h2>
+    {/if}
+    <div class="XiuGaiDiZhi_main">
+        <div class="layui-form-item" {if($cert['cert']==2)} style="display:none" {/if}>
+            <label class="layui-form-label">所属中心</label>
+            <div class="layui-input-block">
+                {$center['name']}
+            </div>
+        </div>
+        <div class="layui-form-item" {if($cert['cert']==2)} style="display:none" {/if}>
+            <label class="layui-form-label">领取地址</label>
+            <div class="layui-input-block">
+                {$center['address']}
+            </div>
+        </div>
+        <div class="layui-form-item" {if($cert['cert']==1)} style="display:none" {/if}>
+            <label class="layui-form-label">地址&nbsp;<span style="color: red">*</span></label>
+            <div class="layui-input-block">
+                <input type="text" name="address" id="address" value="{$info['detail_address']}" placeholder="请输入地址" required lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">电话&nbsp;<span style="color: red">*</span></label>
+            <div class="layui-input-block">
+                <input type="text" name="phone" id="phone" placeholder="请输入电话" value="{$info['phone']}" required lay-verify="phone" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item" {if($cert['cert']==1)} style="display:none" {/if}>
+            <label class="layui-form-label" >邮编&nbsp;<span style="color: red">*</span></label>
+            <div class="layui-input-block">
+                <input type="text" name="zip_code" id="zip_code" placeholder="请输入电话" required lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+    <input type="hidden" value="{$cert['cert']}" name="cert" id="cert">
+    <input type="hidden" value="{$cert['plan']}" name="cert" id="plan">
+    </div>
+    <div class="double_btn double_qx">
+        <div class="dayin_btn payment margin_right_15 editMail" data-value="">确定</div>
+        <div class="gray_btn payment" id="cancel">取消</div>
+    </div>
+</form>
+{/block}
+{block name='script'}
+<script type="text/javascript">
+    layui.use(['form', 'layer','jquery','element'], function () {
+        var $ = layui.jquery, layer = layui.layer;
+        
+        $('.editMail').on('click',function () {
+            var id = $(this).data('value');
+            return false;
+            var address = $('#address').val();
+            var phone = $('#phone').val();
+            var zip_code = $('#zip_code').val();
+            var cert = $('#cert').val();
+            var plan = $('#plan').val();
+            if(cert==1 && !(/^1[34578]\d{9}$/.test(phone)))
+            {
+                layer.msg('手机号格式错误');
+                return false;
+            }
+            if(cert==2 && (!(/^1[34578]\d{9}$/.test(phone)) || address =='' || zip_code ==''))
+            {
+                layer.msg('必填项有误');
+                return false;
+            }
+
+            $.post('/api/Certificate/apply', {'address':address,'phone':phone,'zip_code':zip_code,'cert':cert,'plan':plan}, function (data) {
+                layer.msg(data.msg, {icon: data.code}, function () {
+                    //当你在iframe页面关闭自身时
+                    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                    parent.layer.close(index)
+                    layer.close(index); //再执行关闭
+                    parent.parent.location.reload();
+                });
+            });
+            return false;
+        })
+    });
+
+
+
+</script>
+{/block}
+
+
+

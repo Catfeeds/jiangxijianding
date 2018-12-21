@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+    <link rel="stylesheet" type="text/css" href="/static/layui/css/main.css" />
+    <link rel="stylesheet" type="text/css" href="/static/layui/css/layui.css" />
+
+    <title>fdsgf</title>
+    <style type="text/css">
+        img {
+            border: 0;
+            max-width: 100%;
+        }
+        .zuixin ul li {
+            line-height: 30px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .zuixin ul li span {
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+            background: #C52730;
+            color: white;
+            text-align: center;
+            margin-right: 10px;
+            margin-top: 10px;
+            line-height: 20px;
+        }
+
+    </style>
+</head>
+
+
+<div class="daohang"></div>
+<div class=" xiangqing">
+    <div class="layui-col-xs9">
+
+        <h3 class="baoming_title">
+            <span class="baoming_title_span" >图片文章</span>
+            <span class="layui-breadcrumb rightfloat" lay-separator=">">
+				  <a target="_blank" href="/">首页</a>
+                <a href="/cms/index/category?id=26">十分广泛</a>				  <a><cite>图片文章</cite></a>
+				</span>
+        </h3>
+        <div class="xiangqing_header">
+            <h2 style="color:#F00;"> fdsgf            </h2>
+            <p>来源：dsfg</p>
+            <p>时间:2018-12-10</p>
+        </div>
+        <div class="baoming_main">
+          <p>sdfgfdsgfd</p>        </div>
+       </div>
+
+        <div class="layui-col-xs3 baomingrukou">
+            <h3 class="baoming_title"><span class="baoming_title_span">图片文章</span></h3>
+            <div class="baomingrukou_main zuixin">
+            <ul>
+                                <li ><a  href="/html/article/273.html"><span>1</span>ASDF</a></li>
+                                <li ><a  href=""><span>2</span>fdsgf</a></li>
+                                <li ><a  href=""><span>3</span>阿迪斯发士大夫</a></li>
+                                <li ><a  href="/html/article/263.html"><span>4</span>省职鉴中心开展“夏日送清凉 爱心降酷暑”志愿者服务活动</a></li>
+                                <li ><a  href="/html/article/261.html"><span>5</span>全省职业技能鉴定管理人员政策业务培训班在南昌举办</a></li>
+                                <li ><a  href="/html/article/250.html"><span>6</span>关于对何磊等970人颁发国家职业资格证书的通知</a></li>
+                                <li ><a  href="/html/article/245.html"><span>7</span>刘三秋厅长巡视省直机关事业单位工勤人员岗位等级考核鉴定考点</a></li>
+                                <li ><a  href="/html/article/243.html"><span>8</span>省职鉴中心召开座谈会征求意见建议</a></li>
+                
+            </ul>
+            </div>
+
+        </div>
+
+</div>
+
+<footer class="footer">
+    <img class="quanwei" src="/static/img/cms1.0/quanwei.png" />
+    <p>主办单位：江西省职业技能鉴定指导中心 技术支持：北京博奥网络教育科技股份有限公司</p>
+    <p>网上支持（职业资格问答） 　　您是第 9027267 位访问者</p>
+</footer>
+</body>
+
+</html>
+
+<script src="/static/layui/layui.js" type="text/javascript" charset="utf-8"></script>
+<script src="/static/layui/layui.all.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use('jquery', function(){
+        $ = layui.jquery;
+        $.get('daohang.html', function(data) {
+            $(".daohang").html(data);
+        });
+
+    });
+</script>

@@ -1,0 +1,535 @@
+{extend name="layout"}
+{block name="title"}在线学习{/block}
+{block name="css"}
+{/block}
+{block name="content"}
+{notempty name="$_GET['type']"}
+<ul class="layui-tab-title">
+    <li data-value="1" class="{if condition=" $_GET['type']==1"}layui-this{/if} radio">单选</li>
+    <li data-value="2" class="{if condition=" $_GET['type']==2"}layui-this{/if} radio">多选</li>
+    <li data-value="3" class="{if condition=" $_GET['type']==3"}layui-this{/if} radio">判断</li>
+    <li data-value="4" class="{if condition=" $_GET['type']==4"}layui-this{/if} radio">填空</li>
+    <li data-value="5" class="{if condition=" $_GET['type']==5"}layui-this{/if} radio">简答</li>
+    <li data-value="6" class="{if condition=" $_GET['type']==6"}layui-this{/if} radio">作文</li>
+    <li data-value="7" class="{if condition=" $_GET['type']==7"}layui-this{/if} radio">论述</li>
+    <li data-value="8" class="{if condition=" $_GET['type']==8"}layui-this{/if} radio">分析</li>
+    <li data-value="9" class="{if condition=" $_GET['type']==9"}layui-this{/if} radio">操作题</li>
+</ul>
+{/notempty}
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <div class="layui-form">
+                <div class="layui-form-item">
+                    <form action="/learning/set_volume/index?type=<?=isset($_GET['type']) ? $_GET['type'] : '1'?>" method="post">
+                        <input type="hidden" name="type" value="<?=isset($_GET['type']) ? $_GET['type'] : '1'?>">
+                        <div class="layui-form-item">
+                        <label class="layui-form-label">搜索条件</label>
+                        <div class="layui-input-block">
+                            <div class="layui-inline">
+                                <select name="work" id="work" lay-filter="work">
+                                    <option value="">请选择工种</option>
+                                    {volist name="work" id="vo"}
+                                    <option {notempty name="search.work"} {if condition="$search.work == $vo.id"} selected="selected" {/if} {/notempty} value="{$vo.id}">{$vo.name}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                            <div class="layui-inline">
+                                <select name="direction" id="direction" lay-filter="direction">
+                                    <option value="">请选择方向</option>
+                                    {volist name="direction" id="vo"}
+                                         <option {notempty name="search.direction"} {if condition="$search.direction == $vo.id"} selected="selected" {/if} {/notempty} value="{$vo.id}">{$vo.name}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                            <div class="layui-inline">
+                                <select name="level" id="level" lay-filter="level">
+                                    <option value="">请选择级别</option>
+                                    <option {notempty name="search.level"} {if condition="$search.level == 1"} selected="selected" {/if} {/notempty} value="1">高级技师</option>
+                                    <option {notempty name="search.level"} {if condition="$search.level == 2"} selected="selected" {/if} {/notempty} value="2">技师</option>
+                                    <option {notempty name="search.level"} {if condition="$search.level == 3"} selected="selected" {/if} {/notempty} value="3">高级</option>
+                                    <option {notempty name="search.level"} {if condition="$search.level == 4"} selected="selected" {/if} {/notempty} value="4">中级</option>
+                                    <option {notempty name="search.level"} {if condition="$search.level == 5"} selected="selected" {/if} {/notempty} value="5">初级</option>
+                                </select>
+                            </div>
+                            <div class="layui-inline">
+                                <button class="layui-btn layui-btn-primary reset">重置</button>
+                                <button class="layui-btn" lay-submit>搜索</button>
+                            </div>
+                        </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="layui-form">
+
+                <table class="layui-table">
+                    <thead>
+                    <tr>
+                        <th width="20px" style="padding-left: 0px;">
+                            &nbsp; &nbsp;<button class="layui-btn layui-btn-primary layui-btn-sm" id="checkHr" lay-skin="primary" lay-submit lay-filter="allChoose">全&nbsp;&nbsp;&nbsp;选</button>
+                            <button class="layui-btn layui-btn-primary layui-btn-sm" lay-skin="primary" lay-submit lay-filter="theChoose">全不选</button>
+                        </th>
+                        <th width="5%">ID</th>
+                        <th>题目</th>
+                        <th>题型</th>
+                        <th>工种</th>
+                        <th>方向</th>
+                        <th>级别</th>
+                        <th>创建时间</th>
+                        <th>详情</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {volist name="data" id="vo"}
+                    <tr>
+                        <td><input type="checkbox" data-value="{$vo.id}" lay-filter="eachChoose" lay-skin="primary">
+                        </td>
+                        <td>{$i}</td>
+                        <td>{$vo.topic_name}</td>
+                        <td>{$vo.type}</td>
+                        <td>{$vo.work_name}</td>
+                        <td>{$vo.direction_name}</td>
+                        <td>{$vo->level_id}</td>
+                        <td>{$vo.create_time}</td>
+                        <td>
+                            {switch name="$vo.type" }
+                            {case value="单选题"}
+                            <button data-value="{$vo.id}" class="layui-btn layui-btn-xs select addChoose">查看</button>
+                            {/case}
+                            {case value="多选题"}
+                            <button data-value="{$vo.id}" class="layui-btn layui-btn-xs select addChoose">查看</button>
+                            {/case}
+                            {case value="判断题"}
+                            <button data-value="{$vo.id}" class="layui-btn layui-btn-xs select addJudge">查看</button>
+                            {/case}
+                            {case value="填空题"}
+                            <button data-value="{$vo.id}" class="layui-btn layui-btn-xs select addEmpty">查看</button>
+                            {/case}rief
+                            {case value="简答题"}
+                            <button data-value="{$vo.id}" class="layui-btn layui-btn-xs select addBrief">查看</button>
+                            {/case}
+                            {case value="作文题"}
+                            <button data-value="{$vo.id}" class="layui-btn layui-btn-xs select addComposition">查看
+                            </button>
+                            {/case}
+                            {case value="论述题"}
+                            <button data-value="{$vo.id}" class="layui-btn layui-btn-xs select addDescribe">查看</button>
+                            {/case}
+                            {case value="分析题"}
+                            <button data-value="{$vo.id}" class="layui-btn layui-btn-xs select addAnalyze">查看</button>
+                            {/case}
+                            {case value="操作题"}
+                            <button data-value="{$vo.id}" class="layui-btn layui-btn-xs select addOperation">查看</button>
+                            {/case}
+                            {/switch}
+                        </td>
+                    </tr>
+                    {/volist}
+                    </tbody>
+                </table>
+            </div>
+
+            {if condition="count($data)<=0"}
+            <div style="margin: 0 auto;width: 120px;font-size: 20px;">
+                <div class="layui-form-mid layui-word-aux">暂无数据！</div>
+            </div>
+            {/if}
+
+            <div class="layui-form-item layui-layout-admin">
+                    <div class="layui-input-block">
+                        <div class="layui-footer" style="height: 80px;">
+                            <button class="layui-btn layui-btn-normal addQuestions" style="float: right;">立即提交</button>
+                        </div>
+                    </div>
+                </div>
+
+        </div>
+    </div>
+    {/block}
+
+    {block name="script"}
+    <script type="text/javascript">
+
+        //cookie公共函数
+        function get_cookie(Name) {
+            var search = Name + "="//查询检索的值
+            var returnvalue = "";//返回值
+            if (document.cookie.length > 0) {
+                sd = document.cookie.indexOf(search);
+                if (sd != -1) {
+                    sd += search.length;
+                    end = document.cookie.indexOf(";", sd);
+                    if (end == -1)
+                        end = document.cookie.length;
+                    //unescape() 函数可对通过 escape() 编码的字符串进行解码。
+                    returnvalue = unescape(document.cookie.substring(sd, end))
+                }
+            }
+            return returnvalue;
+        }
+
+        layui.use(['form', 'layer', 'jquery'], function () {
+            var form = layui.form,$ = layui.jquery;
+
+            $(function () {
+                //选项卡
+                $(".radio").click(function () {
+                    var id = $(this).data('value');
+                    location.href = '/learning/set_volume/index?type=' + id;
+                });
+                //提交试题
+                $(".addQuestions").click(function () {
+                    //从cookie中取值
+                    var lang = get_cookie("langCookie");
+
+                    //首次添加试题
+                    if (typeof lang == "undefined" || lang.length == 0) {
+                        return layer.msg('请选择数据');
+                    }
+
+                    layer.open({
+                        type: 2,
+                        skin: 'layui-layer-rim', //加上边框
+                        area: ['1000px', '90%'], //宽高
+                        title: "试题",
+                        content: "/learning/set_volume/add?id=" + lang,
+                        yes: function (index, layero) {
+                            layer.close(index); //如果设定了yes回调，需进行手工关闭
+                        }
+                    });
+                });
+            });
+
+            //根据工种展示方向
+            form.on('select(work)', function(data){
+                var work_type = data.value;
+
+                $.ajax({
+                    url:'/api/workDirection/selectWorkId',
+                    type:'post',
+                    dataType:'json',
+                    data:{
+                        id:work_type,
+                    },
+                    success:function (data) {
+
+                        if (data.code==1){
+                            //1.清空已设置标签
+                            $("#direction").html("");
+                            //2.获取select标签
+                            var work = document.getElementById ("direction");
+                            for (var i=0;i<data.data.length;i++){
+                                //3.创建option标签
+                                var option = document.createElement("option");
+                                //4.设置option属性，值
+                                option.value = data.data[i]['id'];
+                                option.innerText = data.data[i]['name'];
+                                //5.select内部插入option
+                                work.append(option);
+                                //6.渲染标签
+                                form.render();
+                            }
+                        }else{
+                            $("#direction").html("");
+                            form.render();
+                            layer.msg(data.msg)
+                        }
+                    }
+                });
+                //防止页面跳转
+                return false;
+            });
+
+            //选项题
+            $(".addChoose").click(function () {
+                var id = $(this).data('value');
+                layer.open({
+                    type: 2,
+                    skin: 'layui-layer-rim', //加上边框
+                    area: ['1000px', '90%'], //宽高
+                    title: "选项题",
+                    content: "/learning/topic/officialAddChoose/id/" + id,  //调到新增页面
+                    yes: function (index, layero) {
+                        layer.close(index); //如果设定了yes回调，需进行手工关闭
+                    }
+
+                });
+            });
+            //判断题
+            $(".addJudge").click(function () {
+                var id = $(this).data('value');
+
+                layer.open({
+                    type: 2,
+                    skin: 'layui-layer-rim', //加上边框
+                    area: ['1000px', '90%'], //宽高
+                    title: "判断题",
+                    content: "/learning/topic/officialAddJudge/id/" + id,
+                    yes: function (index, layero) {
+                        layer.close(index); //如果设定了yes回调，需进行手工关闭
+                    }
+                });
+            });
+            //填空题
+            $(".addEmpty").click(function () {
+                var id = $(this).data('value');
+
+                layer.open({
+                    type: 2,
+                    skin: 'layui-layer-rim', //加上边框
+                    area: ['1000px', '90%'], //宽高
+                    title: "填空题",
+                    content: "/learning/topic/officialAddEmpty/id/" + id,
+                    yes: function (index, layero) {
+                        layer.close(index); //如果设定了yes回调，需进行手工关闭
+                    }
+                });
+            });
+            //简答题
+            $(".addBrief").click(function () {
+                var id = $(this).data('value');
+
+                layer.open({
+                    type: 2,
+                    skin: 'layui-layer-rim', //加上边框
+                    area: ['1000px', '90%'], //宽高
+                    title: "简答题",
+                    content: "/learning/topic/officialAddBrief/id/" + id,
+                    yes: function (index, layero) {
+                        layer.close(index); //如果设定了yes回调，需进行手工关闭
+                    }
+                });
+            });
+            //作文题
+            $(".addComposition").click(function () {
+                var id = $(this).data('value');
+
+                layer.open({
+                    type: 2,
+                    skin: 'layui-layer-rim', //加上边框
+                    area: ['1000px', '90%'], //宽高
+                    title: "作文题",
+                    content: "/learning/topic/officialAddComposition/id/" + id,
+                    yes: function (index, layero) {
+                        layer.close(index); //如果设定了yes回调，需进行手工关闭
+                    }
+                });
+            });
+            //论述题
+            $(".addDescribe").click(function () {
+                var id = $(this).data('value');
+
+                layer.open({
+                    type: 2,
+                    skin: 'layui-layer-rim', //加上边框
+                    area: ['1000px', '90%'], //宽高
+                    title: "论述题",
+                    content: "/learning/topic/officialAddDescribe/id/" + id,
+                    yes: function (index, layero) {
+                        layer.close(index); //如果设定了yes回调，需进行手工关闭
+                    }
+                });
+            });
+            //分析题
+            $(".addAnalyze").click(function () {
+                var id = $(this).data('value');
+
+                layer.open({
+                    type: 2,
+                    skin: 'layui-layer-rim', //加上边框
+                    area: ['1000px', '90%'], //宽高
+                    title: "分析题",
+                    content: "/learning/topic/officialAddAnalyze/id/" + id,
+                    yes: function (index, layero) {
+                        layer.close(index); //如果设定了yes回调，需进行手工关闭
+                    }
+                });
+            });
+            //操作题
+            $(".addOperation").click(function () {
+                var id = $(this).data('value');
+
+                layer.open({
+                    type: 2,
+                    skin: 'layui-layer-rim', //加上边框
+                    area: ['1000px', '90%'], //宽高
+                    title: "简答题",
+                    content: "/learning/topic/officialAddOperation/id/" + id,
+                    yes: function (index, layero) {
+                        layer.close(index); //如果设定了yes回调，需进行手工关闭
+                    }
+                });
+            });
+        });
+
+        //选中事件
+        layui.use(['form', 'layer', 'jquery'], function () {
+            var form = layui.form;
+            var $ = layui.jquery;
+            //定义装数据的空数组
+            lang = new Array();
+
+            //单选事件
+            form.on('checkbox(eachChoose)', function (data) {
+
+                if (this.checked) {
+                    lang.push($(data.elem).data('value'));
+
+                    document.cookie = "langCookie=" + lang + ',' + get_cookie("langCookie");
+                } else {
+
+                    var langArr = get_cookie("langCookie").split(",");
+                    var itemArr = $(data.elem).data('value');
+
+                    for (var i = 0; i < langArr.length; i++) {
+
+                        if (langArr[i] == itemArr) {
+                            // console.log(langArr[i]);
+                            var index = langArr.indexOf(langArr[i]);
+                            langArr.splice(index, 1);
+                        }
+                    }
+                    document.cookie = "langCookie=" + langArr;
+
+                }
+            });
+            //全不选
+            form.on('submit(theChoose)', function (data) {
+
+                lang = new Array();
+
+                if (false) {
+
+                    var child = $(data.elem).parents('table').find('tbody input[type="checkbox"]');
+
+                    child.each(function (index, item) {
+                        lang.push($(item).data('value'));
+                        item.checked = data.elem.checked;
+                    });
+
+                    form.render('checkbox');
+
+                    document.cookie = "langCookie=" + lang + ',' + get_cookie("langCookie");
+                } else {
+                    var child = $(data.elem).parents('table').find('tbody input[type="checkbox"]');
+                    itemStr = '';
+                    child.each(function (index, item) {
+                        itemStr += $(item).data('value') + ',';
+
+                        item.checked = false; //checkbox
+                    });
+                    form.render('checkbox');
+
+                    //过滤
+                    var langArr = get_cookie("langCookie").split(",");
+                    Array.prototype.unique4 = function () {
+                        this.sort();
+                        var re = [this[0]];
+
+                        for(var i = 1; i < this.length; i++)
+                        {
+                            if( this[i] !== re[re.length-1] )
+                            {
+                                re.push(this[i]);
+                            }
+                        }
+                        return re;
+                    }
+                    var langArr = langArr.unique4();
+
+                    //删除空
+                    for (var i=0;i<langArr.length;i++) {
+
+                        if (langArr[i] === '') {
+                            var index = langArr.indexOf(langArr[i]);
+                            langArr.splice(index,1);
+                        }
+                    }
+
+                    var itemArr = itemStr.split(",");
+
+                    //删除空
+                    for (var i=0;i<itemArr.length;i++) {
+
+                        if (itemArr[i] === '') {
+                            var index = itemArr.indexOf(itemArr[i]);
+                            itemArr.splice(index,1);
+                        }
+                    }
+
+                    //求差集
+                    Array.prototype.diff = function(a) {
+                        return this.filter(function(i) {return a.indexOf(i) < 0;});
+                    };
+
+                    var langArr = langArr.diff(itemArr);
+
+                    document.cookie = "langCookie=" + langArr;
+                }
+            });
+
+            //监听table 选中事件 全选
+            form.on('submit(allChoose)', function (data) {
+
+                lang = new Array();
+
+                if (true) {
+                    var child = $(data.elem).parents('table').find('tbody input[type="checkbox"]');
+
+                    child.each(function (index, item) {
+                        lang.push($(item).data('value'));
+                        item.checked = true;
+
+                    });
+                    form.render();
+                    document.cookie = "langCookie=" + lang + ',' + get_cookie("langCookie");
+                }
+            });
+
+            //cookie取值便利选中
+            window.onload = function () {
+
+                // document.cookie="langCookie=";
+                var data = document.getElementById('checkHr');
+
+                var langStr = get_cookie("langCookie").split(',');
+
+                //去重
+                Array.prototype.unique4 = function () {
+                    this.sort();
+                    var re = [this[0]];
+
+                    for(var i = 1; i < this.length; i++)
+                    {
+                        if( this[i] !== re[re.length-1] )
+                        {
+                            re.push(this[i]);
+                        }
+                    }
+                    return re;
+                }
+                var sureNumArr = langStr.unique4();
+
+                //删除空
+                for (var i=0;i<sureNumArr.length;i++) {
+
+                    if (sureNumArr[i] === '') {
+                        var index = sureNumArr.indexOf(sureNumArr[i]);
+                        sureNumArr.splice(index,1);
+                    }
+                }
+
+                for (i = 0; i < sureNumArr.length; i++) {
+                    $(data).parents('table').find('tbody input[data-value="' + sureNumArr[i] + '"]').each(function (index, item) {
+                        item.checked = true;
+                    });
+                }
+                form.render('checkbox');
+            }
+        });
+
+
+    </script>
+    {/block}

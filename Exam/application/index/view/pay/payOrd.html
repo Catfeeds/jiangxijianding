@@ -1,0 +1,27 @@
+<body>
+<table width="50%" border="0" align="center" cellpadding="0" cellspacing="0" style="border:solid 1px #107929">
+    <tr>
+        <td>
+            <table width="100%" border="0" align="center" cellpadding="5" cellspacing="1">
+                <form method="post" action="{:url('index/pay/sendPayOrd')}" targe="_blank">
+                    <input type="hidden" name="order" value="{$order}"/>
+                    <input type="hidden" name="amt" value="{$amt}"/>
+                    <tr>
+                        <td colspan="2">
+                            请您确认价格,如有异议.请联系xxx!
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="left">&nbsp;价格</td>
+                        <td align="left">&nbsp;&nbsp;<input size="50" type="text" value="{$amt}"/></td>
+                    </tr>
+                    <tr>
+                        <td align="left">&nbsp;</td>
+                        <td align="left">&nbsp;&nbsp;<input type="submit" formtarget="_blank" value="马上支付"/></td>
+                    </tr>
+                </form>
+            </table>
+        </td>
+    </tr>
+</table>
+</body>

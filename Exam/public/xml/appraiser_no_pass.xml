@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--考评人员不通过-->
+<root>
+    <!--每个数据项内标签名有哪些，多个用|分割-->
+    <fields>item|time</fields>
+    <!--每个数据项标签名要和文件名一致-->
+    <appraiser_no_pass>
+        <item>考评人员不通过11</item>
+        <time>1545125140</time>
+    </appraiser_no_pass>
+    <appraiser_no_pass>
+        <item>材料审核不通过222</item>
+        <time>1545125140</time>
+    </appraiser_no_pass>
+    <appraiser_no_pass>
+        <item>材料审核不通过333</item>
+        <time>1545125140</time>
+    </appraiser_no_pass>
+    <appraiser_no_pass>
+        <item>材料审核不通过444</item>
+        <time>1545125140</time>
+    </appraiser_no_pass>
+</root>

@@ -1,0 +1,173 @@
+{include file='content/daohang'}
+<div class="RetrievePassword_main">
+    <div class="layui-container">
+        <ul class="subnav_process">
+            <li class="active">
+                <div>
+                    <i>1</i>
+                    <p>填写帐号</p>
+                </div>
+                <i></i>
+            </li>
+            <li>
+                <div>
+                    <i>2</i>
+                    <p>设置新密码</p>
+                </div>
+                <i></i>
+            </li>
+            <li class="last">
+                <div>
+                    <i>3</i>
+                    <p>完成</p>
+                </div>
+
+            </li>
+        </ul>
+    </div>
+    <div class="layui-tab layui-tab-brief RetrievePassword_tab" lay-filter="docDemoTabBrief">
+        <ul class="layui-tab-title">
+            <li class="layui-this">手机号码找回</li>
+        </ul>
+        <div class="layui-tab-content " style="height: 200px;">
+            <div class="layui-tab-item layui-show">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">手机号：</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="mobile" name="mobile" required  lay-verify="required|phone"  lay-verify="title" autocomplete="off" placeholder="请填写准确有效的手机号码" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">验证码：</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="code" name="code" required lay-verify="required" autocomplete="off" placeholder="请输入验证码" class="layui-input yzm_input">
+                        <a href="javascript:;" id="send_str" class="huoqu_btn">获取验证码</a>&nbsp;&nbsp;<span id="p_djs" style="display: none" >(<span id="djs">0</span>)</span></span>
+                    </div>
+
+                </div>
+                <a href="javascript:;"><div class="denglu_btn" id="phonePass">下一步</div></a>
+            </div>
+        </div>
+    </div>
+</div>
+<footer class="footer">
+    <img class="quanwei" src="__PUBLIC__/layui/img/quanwei.png" />
+    <p>主办单位：江西省职业技能鉴定指导中心 技术支持：博奥网络教育科技股份有限公司</p>
+    <p>网上支持（职业资格问答） 　　您是第 9027267 位访问者</p>
+</footer>
+</body>
+
+</html>
+
+<script src="__PUBLIC__/layui/js/layui.js" type="text/javascript" charset="utf-8"></script>
+<script src="__PUBLIC__/layui/js/layui.all.js" type="text/javascript" charset="utf-8"></script>
+
+<script src="__PUBLIC__/layui/layui.js"></script>
+<script type="text/javascript">
+    layui.use(['form', 'layer','jquery','element'], function () {
+        var element = layui.element;
+        var form  = layui.form;
+        var $  = layui.jquery;
+        //form表单验证
+        form.verify({
+            mobile: function (value) {
+                if (value == "") {
+                    return "手机号不能为空";
+                }
+            },
+            code: function (value) {
+                if (value == "") {
+                    return "手机验证码不能为空";
+                }
+            },
+
+        });
+
+        // 为密码添加正则验证
+        $('#code').blur(function() {
+            var reg = /^[\w]{6}$/;
+            if(!($('#code').val().match(reg))){
+                layer.msg('请输入正确手机验证码');
+            }
+            return false;
+        });
+
+        $('#send_str').on('click', function() {
+            
+            var time=60;
+            var mobile = $('#mobile').val();
+            var sends = $('#djs').text();
+            var reg = /^1[3456789]\d{9}$/;
+            if(! (mobile.match(reg))){
+                layer.msg('请输入合法手机号');
+                return false;
+            }
+            $.post("/api/Organize/checkPhone",{mobile:mobile},function (data) {
+                if (data.code == -1){
+                    layer.msg(data.msg);
+                    return false;
+                }
+            });
+
+            if(sends != false)
+            {
+                return false;
+            }
+           
+            $.post("/api/UserLogin/sendMessage", {mobile: mobile}, function (data) {
+                if (data.code == 1) {
+                    var setTime;
+                    setTime = setInterval(function () {
+                        if (time <= 0) {
+                            $("#send_str").text("重新发送");
+                            $("#djs").text(0);
+                            clearInterval(setTime);
+                            return;
+                        }
+                        time--;
+                        $("#send_str").text("已发送("+time+")");
+                        $('#djs').text(time);
+                    }, 1000);
+                } else {
+                    layer.msg('发送失败', {icon: 2});
+                }
+            });
+        });
+
+        $('#phonePass').click(function(){
+            var reg = /^1[3456789]\d{9}$/;
+            var mobile = $('#mobile').val();
+            var code = $('#code').val();
+            if(!(mobile.match(reg))){
+                layer.msg('请输入合法手机号');
+                return false;
+            }
+            if(code=='')
+            {
+                layer.msg('验证码不能为空');
+                return false;
+            }
+            $.ajax({
+                url:'/api/UserLogin/checkSms',
+                type:'post',
+                data:{
+                    mobile:mobile,
+                    code:code
+                },
+                dataType:'json',
+                //判断登录状态
+                success:function (data) {
+                    if (data.code==1){
+                       
+                        location.href = '/cms/index/forgetPasstwo?mobile='+data.data.mobile;
+                    }else{
+                        layer.msg(data.msg)
+                    }
+                }
+            });
+            return false;
+
+        });
+
+    });
+</script>

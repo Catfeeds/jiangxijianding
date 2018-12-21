@@ -1,0 +1,34 @@
+<div class="header_title"><span>学时日志</span>
+</div>
+<div class="baoming_main">
+    <table class="layui-table">
+        <thead>
+            <th>试卷名称</th>
+            <th>学时</th>
+            <th>得分</th>
+        </tr></thead>
+        <tbody id="demoList">
+        {volist name="data" id="vo"}
+        <tr>
+            <td>{topic_name}</td>
+            <td>{$vo.learn_time}</td>
+            <td>{$vo.score}</td>
+        </tr>
+        {/volist}
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript">
+    layui.use(['form', 'laypage','laydate'], function() {
+        var form = layui.form,
+            $ = layui.jquery;
+        form.render();
+        var laydate = layui.laydate;
+        $ = layui.jquery;
+        form.render();
+
+        var laypage = layui.laypage;
+
+
+    });
+</script>

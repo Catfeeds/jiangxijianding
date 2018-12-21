@@ -1,0 +1,231 @@
+{extend name="/layout/layout"}
+{block name="css"}
+{/block}
+{block name="content"}
+
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        
+        <div class="layui-card-body">
+            <table class="layui-table">
+                <colgroup>
+                    <col width="150">
+                    
+                    <col width="200">
+                    <col>
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>订单号</th>
+                    <th>订单金额</th>
+                    <th>订单状态</th>
+                    <td>发票状态</td>
+                    <th width="20%">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {volist name="orderData" id="vo" key='n'}
+                <tr>
+                    <td id="id">{$n}</td>
+                    <td>{$vo['order_num']}</td>
+                    <td>{$vo['total_money']}</td>
+                    <td>{$vo->pay_state}</td>
+                    <td>{$vo->status}</td>
+                    <td>
+                        <button id="detail" list='{$vo.id}' class="layui-btn layui-btn-sm detail">
+                            <i class="layui-icon">详情</i>
+                        </button>
+                        {if($vo['pay_state']==4 && $vo['total_money']!=0 && in_array($vo.status,config('InvoiceStatus.open')))}
+                        <button id="detail" list='{$vo.id}' money='{$vo.total_money}' class="layui-btn layui-btn-sm open">
+                            <i class="layui-icon">申请开票</i>
+                        </button>
+                        {/if}
+                        {if(in_array($vo.status,config('InvoiceStatus.type')))}
+                        <button id="detail" list='{$vo.id}' money='{$vo.total_money}' class="layui-btn layui-btn-sm express">
+                            <i class="layui-icon">邮寄</i>
+                        </button>
+                        <button id="detail" list='{$vo.id}' money='{$vo.total_money}' class="layui-btn layui-btn-sm send">
+                            <i class="layui-icon">电子邮件</i>
+                        </button>
+                        {/if}
+                    </td>
+                </tr>
+                {/volist}
+
+                </tbody>
+            </table>
+        </div> 
+        <div class="layui-fluid tp-pages">
+           {$orderData->render()}
+        </div>
+    </div>
+</div>
+
+
+</body>
+{/block}
+{/extend}
+{block name="script"}
+<script type="text/javascript">
+
+    layui.use('element', function(){
+        var element = layui.element;
+    });
+
+    layui.use(['form', 'layer','jquery'], function () {
+        var form  = layui.form;
+        var $  = layui.jquery;
+
+        $(".detail").click(function () {
+            var id =$(this).attr('list');
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['80%', '90%'], //宽高
+                title: "查看订单详情",
+                content: urladdr.detailInvoice+"?id="+id,  //调到页面
+                yes: function(index, layero){
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+
+        $('.open').click(function(){
+             var id =$(this).attr('list');
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['40%', '70%'], //宽高
+                title: "开票信息",
+                content: "/organize/Invoice/openInvoice?id="+id,  //调到页面
+                yes: function(index, layero){
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        })
+        // $(".pager li a").click(function () {
+        //     var title = $("#titleSea").attr('sub');
+        //     var workname = $("#worknameSea").attr('sub');
+        //     var directionname = $("#directionnameSea").attr('sub');
+        //     var work_level_subject_level = $("#levelSea").attr('sub');
+        //     var exam_type = $("#exam_typeSea").attr('sub');
+        //     if (title == '' && workname == '' && directionname == '' && level == '' && exam_type == ''){
+
+        //     }else{
+        //         var a = $(this).attr("href");
+        //         var url = a+"&title="+title+"&workname="+workname+"&directionname="+directionname+"&work_level_subject_level="+work_level_subject_level+"&exam_type="+exam_type;
+        //         $(this).attr("href",url);
+        //     }
+        // });
+         
+        $('.express').click(function(){
+            var id = $(this).attr('list');
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['35%', '60%'], //宽高
+                title: "领取确认",
+                content: "/organize/Invoice/receivetype?id="+id+'&type=express',  //调到页面
+                yes: function(index, layero){
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        })
+
+         $('.send').click(function(){
+            var id = $(this).attr('list');
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['35%', '60%'], //宽高
+                title: "领取确认",
+                content: "/organize/Invoice/receivetype?id="+id+'&type=send',  //调到页面
+                yes: function(index, layero){
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        })
+
+        $('.cancel').click(function(){
+            var id = $(this).attr('list');
+            layer.open({
+                title: ['温馨提示'],
+                content: '<div style="color:#767676">您确定要撤销吗,撤销后将不能参加考试</div>',
+                btn: ['确定', '取消'],
+                shadeClose: true,
+                //回调函数
+                yes: function(index, layero){
+                    $.ajax({
+                        url:'/api/ExamEnroll/cancel',
+                        type:'post',
+                        dataType:'json',
+                        data:{
+                            id:id,
+                            type:'cancel',
+                        },
+                        //判断注册状态
+                        success:function (data) {
+                                layer.msg(data.msg, {
+                                    icon: 1,//提示的样式
+                                    time: 1000, //1秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                                    end: function () {
+                                        location.reload();
+                                    }
+                                })
+                        }
+                    });
+                    //防止页面跳转
+                    return false;
+                },
+
+            });
+        });
+
+        $('.apply').click(function(){
+            var people = $('#people').val();
+            var price  = $('#price').val();
+            var plan_id = $("#plan_id").val();
+            layer.open({
+                title: ['温馨提示'],
+                content: '<div style="color:#767676">此次申请缓缴费共'+people+'人,总申请费用为'+price+'元</div>',
+                btn: ['确定', '取消'],
+                shadeClose: true,
+                //回调函数
+                yes: function(index, layero){
+                    $.ajax({
+                        url:'/api/ExamEnroll/apply',
+                        type:'post',
+                        dataType:'json',
+                        data:{
+                            people:people,
+                            price:price,
+                            plan_id:plan_id,
+                        },
+                        //判断注册状态
+                        success:function (data) {
+                                layer.msg(data.msg, {
+                                    icon: 1,//提示的样式
+                                    time: 1000, //1秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                                    end: function () {
+                                        location.reload();
+                                    }
+                                })
+                        }
+                    });
+                    //防止页面跳转
+                    return false;
+                },
+
+            });
+
+        })
+
+
+    });
+
+
+</script>
+{/block}

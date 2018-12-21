@@ -1,0 +1,131 @@
+{extend name="common@layout/nonelayout" /}
+{block name="css"}
+<style>
+    th {
+        padding: 10px 0 10px 10px;
+    }
+
+    tr {
+        text-align: left;
+    }
+
+    .table-two td {
+        padding-left: 20px;
+    }
+</style>
+{/block}
+{block name="content"}
+<div class="layui-tab-content">
+    <form class="layui-form" action="">
+        <div class="layui-form-item">
+            <label class="layui-form-label">角色名称</label>
+            <div class="layui-input-block">
+                <input type="hidden" id="id" name="id" value="{$res.id}">
+                <input type="text" name="name" required lay-verify="rolename" placeholder="请输入角色名称" value="{$res.name}"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">选择权限</label>
+            <div class="layui-input-block">
+                <table border="1" width="100%">
+                    {volist name="arrMenu" id="vo"}
+                    <tr>
+                        <th width="30%">
+                            <input type="checkbox" {notempty name="$vo.checked" }checked{/notempty}
+                            name="menu[{$vo.id}]" title="{$vo.title}" lay-filter="status" lay-skin="primary">
+                        </th>
+                        <td>
+                            <table class="table-two" width="100%" border="1" frame="void">
+                                {notempty name="vo['son']"}
+                                {volist name="vo['son']" id="c"}
+                                <tr>
+                                    <th width="30%">
+                                        <input type="checkbox" {notempty name="$c.checked" }checked{/notempty}
+                                        name="menu[{$c.id}]" title="{$c.title}" lay-filter="status" lay-skin="primary">
+                                    </th>
+
+                                    {notempty name="c['son']"}
+                                    <td>
+                                        {volist name="c['son']" id="cc"}
+                                        <input type="checkbox" {notempty name="$cc.checked" }checked{/notempty}
+                                        name="menu[{$cc.id}]" title="{$cc.title}" lay-skin="primary">
+                                        {/volist}
+                                    </td>
+                                    {/notempty}
+
+                                </tr>
+                                {/volist}
+                                {/notempty}
+                            </table>
+                        </td>
+                    </tr>
+                    {/volist}
+                </table>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="formSubmit">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+</div>
+{/block}
+{block name="script"}
+<script>
+    layui.use('form', function () {
+        var form = layui.form;
+        //验证
+        form.verify({
+            //rolename存不存在
+            rolename: function (value) {
+                if (value.length === 0) return '角色名称不能为空';
+                var msg, id = $("#id").val();
+                $.ajax({
+                    type: "post",
+                    url: urladdr.findExcptRole,
+                    async: false,
+                    data: {'name': value, 'id': id},
+                    success: function (res) {
+                        if (res) {
+                            msg = '角色名称已存在';
+                        }
+                    }
+                });
+                return msg;
+            },
+        });
+
+        //监听提交
+        form.on('submit(formSubmit)', function (data) {
+            data = data.field, button = $(this);
+            button.addClass('layui-btn-disabled').attr('disabled', true);
+            $.post(urladdr.doeditRole, data, function (data) {
+                if (data.code > 0) {
+                    layer.msg(data.msg, {icon: 1, time: 1000}, function () {
+                        layer.close(layer.index);
+                        window.parent.location.reload();
+                    });
+                } else {
+                    layer.msg(data.msg, {icon: 5}, function () {
+                        button.removeClass('layui-btn-disabled').removeAttr('disabled');
+                    });
+                }
+            });
+            return false;
+        });
+
+        //选一个后面全选
+        form.on('checkbox(status)', function (data) {
+            var child = $(data.elem).parent().parent().find('input[type="checkbox"]');
+            child.each(function () {
+                this.checked = data.elem.checked;
+            });
+            form.render('checkbox');
+        });
+
+    });
+</script>
+{/block}

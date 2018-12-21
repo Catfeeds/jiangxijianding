@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" type="text/css" href="/static/layui/css/lay.css" />
+    <link rel="stylesheet" type="text/css" href="/static/layui/css/main.css" />
+    <title>2016年下半年全国统考报名入口现已开通</title>
+    <style type="text/css">
+        img {
+            border: 0;
+            max-width: 100%;
+        }
+
+    </style>
+</head>
+
+
+<div class="daohang"></div>
+<div class=" xiangqing">
+    <div class="layui-col-xs9">
+
+        <h3 class="baoming_title">
+            <span class="baoming_title_span">职业资格鉴定</span>
+            <span class="layui-breadcrumb rightfloat" lay-separator=">">
+				  <a target="_blank" href="/">首页</a>
+				  <a  href="/cms/index/jian?guide=12">网上报名</a>
+				  <a><cite>职业资格鉴定</cite></a>
+				</span>
+        </h3>
+        <div class="xiangqing_header">
+            <h2 style="color:#F00;"> 2016年下半年全国统考报名入口现已开通            </h2>
+            <p>来源：本站</p>
+            <p>时间:2018-11-11</p>
+
+        </div>
+        <div class="baoming_main">
+          <p style="text-align: center;"><strong><span>2016</span></strong><strong><span>年下半年全国统考报名入口现已开通</span></strong></p><p><strong><span></span></strong>&nbsp;</p><p><span>2016年国家职业资格全国统一鉴定下半年网上报名端口已开通,考生可点击首页右侧“网上报名”按钮进行注册，获取报名序号并记下报名序号，然后再登录进行报名信息的填写。</span><span>网报成功后，请在规定的时间到江西省职业技能鉴定指导中心（江大南路19号）现场审核，现场审核通过后，再缴费，缴费完成后在考前5天内自行打印准考证。</span></p><p><span></span><span>考生电子相片用于打印准考证及证书打印等，相片应为免冠证件照，规格为90 X 120像素大小，分辨率为300 ；小写jpg格式。</span></p><p><span></span><span>相同考生在同一考试时间只能申报一个职业工种，考生在填报时应仔细认真，确认无误后再上传电子相片、提交审核，一但提交审核后信息将无法修改。</span></p><p><span></span><span>请用IE8.0以上浏览器进行网上报名；若有些项目为灰色，请换其它工种填报，灰色出来后，再将工种换回正确的工种；请不要重复去注册。</span></p>        </div>
+       </div>
+
+
+    <div class="layui-col-xs3 baomingrukou">
+        <h3 class="baoming_title"><span class="baoming_title_span">报名入口</span></h3>
+        <div class="baomingrukou_main">
+            <div class="baomingrukou_btn_main">
+                <a  href="/examinee/menu/index?id=12" class="leftfloat">
+                    <div class="baomingrukou_btn">考生报名</div>
+                </a>
+                <a  href="/cms/index/login" class="rightfloat">
+                    <div class="baomingrukou_btn">机构报名</div>
+                </a>
+            </div>
+
+           <div class="aaa">
+
+           </div>
+
+        </div>
+
+    </div>
+</div>
+
+<footer class="footer">
+    <img class="quanwei" src="/static/img/cms1.0/quanwei.png" />
+    <p>主办单位：江西省职业技能鉴定指导中心 技术支持：北京博奥网络教育科技股份有限公司</p>
+    <p>网上支持（职业资格问答） 　　您是第 9027267 位访问者</p>
+</footer>
+</body>
+
+</html>
+
+<script src="/static/layui/layui.js" type="text/javascript" charset="utf-8"></script>
+<script src="/static/layui/layui.all.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use('jquery', function(){
+        $ = layui.jquery;
+        $.get('daohang.html', function(data) {
+            $(".daohang").html(data);
+        });
+        $.get('wenti.html',function(data){
+            $(".aaa").html(data)
+        })
+
+    });
+</script>

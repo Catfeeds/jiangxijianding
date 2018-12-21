@@ -1,0 +1,59 @@
+{extend name="common@layout/layout"}
+
+{block name="title"}考场统计{/block}
+{block name="content"}
+<div class="layui-tab-content">
+    <table class="layui-table">
+        <colgroup>
+            <col width="10">
+            <col>
+            <col>
+            <col>
+            <col>
+            <col>
+            <col width="100">
+            <col width="235">
+        </colgroup>
+        <thead>
+        <tr>
+            <th width="100px">工种</th>
+            <th width="50px">级别</th>
+            <th width="50px">科目</th>
+            <th width="50px">考试人数</th>
+            <th width="50px">考场数</th>
+            <th width="50px">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {volist name='list' id='vo'}
+        <tr>
+            <td>{$vo['work_name']}</td>
+            <td>{$vo['level_name']}</td>
+            <th>{$vo['sub_name']}</th>
+            <td>{$vo['total_seat']}</td>
+            <td>{$vo['room_count']}</td>
+            <td>
+                <button id="doing" data-plan="{$plan}" data-organize="{$organize}" data-work="{$vo['work_id']}"
+                        data-level="{$vo['level']}" data-subject="{$vo['subject_id']}"
+                        class="layui-btn layui-btn-xs work-show" data-url="{$url}">查看考场</button>
+            </td>
+        </tr>
+        {/volist}
+        </tbody>
+    </table>
+    <div class="layui-fluid tp-pages">
+    </div>
+</div>
+{/block}
+
+{block name='script'}
+<script>
+    layui.use(['layer','jquery'], function(){
+        var $ = layui.jquery, layer = layui.layer;
+        $(document).on('click','#doing',function(){
+            window.location.href=$(this).attr('data-url')+'?organize='+$(this).attr('data-organize')+'&plan='+$(this).attr('data-plan')+
+            '&work_id='+$(this).attr('data-work')+'&level='+$(this).attr('data-level')+'&subject='+$(this).attr('data-subject');
+        });
+    });
+</script>
+{/block}

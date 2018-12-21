@@ -1,0 +1,110 @@
+<div>
+	<div class="header_title"><span>开始练习</span>
+		<p class="margin_right rightfloat">学习列表>美容美发三级单选练习</p>
+	</div>
+	<div class="baoming_main">
+		<div class="layui-col-xs12 layui-col-md12">
+			<div class="layui-col-xs6 layui-col-md6 double_btn tileixing">
+				<div class="dayin_btn margin_right_15">单选题</div>
+				<div class="margin_right_15">多选题</div>
+				<div class="margin_right_15">判断题</div>
+				<div class="margin_right_15">简答题</div>
+				<div class="margin_right_15">论述题</div>
+
+			</div>
+			<div class="layui-col-xs6 layui-col-md6">
+				<div class="dayin_btn margin_right_15 rightfloat">提交</div>
+				<span class="daojishi rightfloat margin_right_15">倒计时：02:14:11</span>
+			</div>
+		</div>
+		<div class="layui-col-xs12 layui-col-md12 shitileibiao">
+			<span class="leftfloat margin_right_15">单选题1/100</span>
+			<div class="kong_btn margin_right_15 leftfloat ajax-linkk" rel="DaTiXiangQing.html">试题列表</div>
+
+		</div>
+		<div class="layui-col-xs12 layui-col-md12 tileixing_main">
+			<ul class="layui-form shiti">
+				<li>1、驾驶人未携带哪种证件驾驶机动车上路，交通警察可依法扣留车辆？</li>
+				<li class="xti"><input type="radio" name="t1" value="A、机动车驾驶证" title="A、机动车驾驶证" checked=""></li>
+				<li class="xti"><input type="radio" name="t1" value="B、居民身份证" title="B、居民身份证" checked=""></li>
+				<li class="xti"><input type="radio" name="t1" value="C、从业资格证" title="C、从业资格证" checked=""></li>
+				<li class="xti"><input type="radio" name="t1" value="D、机动车通行证" title="D、机动车通行证" checked=""></li>
+			</ul>
+			<ul class="layui-form shiti hidebb">
+				<li>2、引导应对气候变化国际合作，成为全球生态文明建设的重要</li>
+				<li class="xti"><input type="checkbox" name="" title="A、参与者" lay-skin="primary"> </li>
+				<li class="xti"><input type="checkbox" name="" title="B、贡献者" lay-skin="primary"> </li>
+				<li class="xti"><input type="checkbox" name="" title="C、引领者" lay-skin="primary"> </li>
+				<li class="xti"><input type="checkbox" name="" title="D、领导者" lay-skin="primary"> </li>
+			</ul>
+			<ul class="layui-form shiti hidebb">
+				<li>1、十九大报告明确，党是最高政治领导力量。</li>
+				<li class="xti"><input type="radio" name="t3" value="A、对" title="A、对" checked=""></li>
+				<li class="xti"><input type="radio" name="t3" value="B、错" title="B、错" checked=""></li>
+			</ul>
+			<ul class="layui-form shiti hidebb">
+				<li>1、中国特色社会主义进入新时代，意味着什么？</li>
+				<li class="xti">
+					<textarea style="width: 500px;" name="desc" placeholder="请输入内容" class="layui-textarea"></textarea>
+				</li>
+			</ul>
+			<ul class="layui-form shiti hidebb">
+				<li>1、在社会主义市场经济体制的建立和发展过程中，我国的民族问题会呈现出哪些特点和发展趋向？</li>
+				<li class="xti">
+					<textarea style="width: 500px;" name="desc" placeholder="请输入内容" class="layui-textarea"></textarea>
+				</li>
+			</ul>
+			
+		</div>
+		<div class="double_btn updowndouble">
+				<div class="dayin_btn margin_right_15 queren">确定</div>
+				<div class="kong_btn margin_right_15">上一题</div>
+				<div class="kong_btn margin_right_15">下一题</div>
+			</div>
+		<div class="daanjiexi">
+			<span>答案解析</span><p>正确答案：A。A才是对的才是对的才是对的才是对的</p>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	layui.use(['form', 'table', 'laypage', 'laydate'], function() {
+		var form = layui.form,
+			$ = layui.jquery;
+		form.render();
+		var laydate = layui.laydate;
+		$ = layui.jquery;
+		form.render();
+
+		var laypage = layui.laypage;
+		var table = layui.table;
+
+		table.init('demo', {
+			limit: 10 //注意：请务必确保 limit 参数（默认：10）是与你服务端限定的数据条数一致
+			//支持所有基础参数
+		});
+	});
+	$(function() {
+		var libb = $('.tileixing div');
+		var li_cbb = $('.tileixing_main ul');
+		var ZhuanJiaImg = $('.zhuanjiaImg')
+		libb.click(function() {
+			$(this).addClass('dayin_btn').siblings().removeClass('dayin_btn');
+			var h = $(this).index();
+			li_cbb.eq(h).show().siblings().hide();
+		});
+	});
+	$(".queren").click(function(){
+		$(".daanjiexi").show()
+	});
+	$(".ajax-linkk").each(function() {
+			$(this).click(function() {
+				var diZhi = $(this).attr("rel");
+				htmlobj = $.ajax({
+					url: diZhi,
+					async: false
+				});
+				$(".ajax-Box").html(htmlobj.responseText);
+			});
+		});
+</script>

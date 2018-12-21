@@ -1,0 +1,128 @@
+{extend name="common@layout/layout" /}
+{block name="title"}专家管理{/block}
+{block name='crumbs'}
+<span class="layui-breadcrumb" lay-separator="">
+  <a href="/admin" class="county">
+    <i class="layui-icon layui-icon-home"></i>&nbsp;首页
+  </a>
+    <a href="{:url('index')}"><cite>专家管理</cite></a>
+    <a><cite>添加专家</cite></a>
+</span>
+{/block}
+
+{block name="content"}
+<div class="layui-tab-content">
+    <span class="layui-badge">单条</span> <span style="font-size: 18px;">添加专家</span>
+    <form class="layui-form" style="width:75%;">
+        <table border="1" class="layui-table">
+            <colgroup>
+                <col width="50">
+                <col width="100">
+                <col width="50">
+                <col width="100">
+            </colgroup>
+            <tr>
+                <th width="100">手机号码:</th>
+                <td colspan="3">
+                    <input type="text" name="phone" value="" required lay-verify="phone" placeholder="手机号码"
+                           autocomplete="off" class="layui-input">
+                </td>
+            </tr>
+            <tr>
+                <th width="100">姓名:</th>
+                <td colspan="3">
+                    <input type="text" name="name" value="" required lay-verify="required" placeholder="姓名"
+                           autocomplete="off" class="layui-input">
+                </td>
+            </tr>
+            <tr>
+                <th width="100">证件号:</th>
+                <td colspan="3">
+                    <input type="text" name="id_number" value="" required lay-verify="required" placeholder="证件号"
+                           autocomplete="off" class="layui-input">
+                </td>
+            </tr>
+
+            <tr>
+                <th width="100">雇用时间:</th>
+                <td colspan="3">
+                    <input type="text" id="hire_time" name="hire_time" data-value="" lay-verify="required"
+                           placeholder="雇用时间" autocomplete="off" class="layui-input">
+                </td>
+            </tr>
+            <tr>
+                <th width="100">状态:</th>
+                <td colspan="3">
+                    <input type="radio" name="status" value="1" title="启用" checked>
+                    <input type="radio" name="status" value="0" title="禁用">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1"></td>
+                <td colspan="3">
+                    <button class="layui-btn layui-col-md3" style="float:right;" id="" lay-submit
+                            lay-filter="formSubmit">确认添加
+                    </button>
+                </td>
+            </tr>
+        </table>
+
+    </form>
+
+    <!--<hr class="layui-bg-green">-->
+
+    <!--<span class="layui-badge">批量</span> <span style="font-size: 18px;">添加专家</span>-->
+    <!--<br><br>-->
+    <!--<button type="button" class="layui-btn" onclick="alert('功能暂未开放');">-->
+    <!--<i class="layui-icon">&#xe601;</i>下载表格模板-->
+    <!--</button>-->
+    <!--<button type="button" class="layui-btn" id="" onclick="alert('功能暂未开放');">-->
+    <!--<i class="layui-icon">&#xe67c;</i>上传表格-->
+    <!--</button>-->
+</div>
+{/block}
+
+{block name="script"}
+<script>
+    layui.use(['form', 'upload', 'laydate'], function () {
+        var form = layui.form, $ = layui.jquery, upload = layui.upload, laydate = layui.laydate;
+        var datevalue = $("#hire_time").data('value');
+        laydate.render({
+            elem: '#hire_time'
+            , type: 'datetime'
+            , format: 'yyyy-MM-dd HH:mm:ss'
+            , value: datevalue
+        });
+        //监听提交
+        form.on('submit(formSubmit)', function (data) {
+            var formData = data.field, button = $(this);
+            button.addClass('layui-btn-disabled').attr('disabled', true);
+            $.post(urladdr.addExpert, formData, function (data) {
+                if (data.code > 0) {
+                    layer.msg(data.msg, {icon: 1, time: 1000}, function () {
+                        layer.close(layer.index);
+                        window.location.href = "/admin/Expert/";
+                    });
+                } else {
+                    layer.msg(data.msg, {icon: 5}, function () {
+                        button.removeClass('layui-btn-disabled').removeAttr('disabled');
+                    });
+                }
+            });
+            return false;
+        });
+
+        //执行实例
+        var uploadInst = upload.render({
+            elem: '#test1' //绑定元素
+            , url: '/upload/' //上传接口
+            , done: function (res) {
+                //上传完毕回调
+            }
+            , error: function () {
+                //请求异常回调
+            }
+        });
+    });
+</script>
+{/block}

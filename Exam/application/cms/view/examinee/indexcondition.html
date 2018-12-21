@@ -1,0 +1,195 @@
+{include file='content/daohang'}
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/layui/css/demand.css"/>
+		<div class="tiaojian_main ">
+			<div class="layui-container layui-form">
+				<div class="login_conent Inquiry_box" style="height: 366px">
+					<h2>报考条件查询</h2>
+					<div class="layui-form-item">
+						<label class="layui-form-label">身份：</label>
+						<div class="layui-input-block">
+							<select name="role" id="role" lay-verify="required">
+								<option value="0">考生</option>
+								<option value="1">考评人员</option>
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label" >工种：</label>
+						<div class="layui-input-block">
+							<select name="work_id" lay-verify="required" lay-submit lay-filter="work_id" lay-search>
+								{volist name="list" id="vo"}
+								<option value="{$vo.id}">{$vo.code}  {$vo.name}</option>
+								{/volist}
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">方向：</label>
+						<div class="layui-input-block">
+							<select name="dir_id" id="dir_id" lay-verify="required">
+								<option value=""></option>
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">级别：</label>
+						<div class="layui-input-block">
+							<select name="level" id="level" lay-verify="required">
+								<option value=""></option>
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="width: 56px;" >验证码：</label>
+						<div class="layui-input-block">
+							<!--<img class="yzmimg" src="__PUBLIC__/layui/img/yanzm.png" />-->
+							<input type="text" name="yzm" id="yzm" lay-verify="code" autocomplete="off" placeholder="请输入验证码" class="layui-input yzm_input" style="width: 147px;">
+
+							<img  id="verifycode_imgq" class="verifycode_imgq" style="width: 90px;height: 37px" onclick="this.src='{:captcha_src()}?'+Math.random()" src="{:captcha_src()}" alt="captcha" />
+						</div>
+					</div>
+					<!--<div class="denglu_btn" onclick="ChaXun();">查询</div>-->
+					<div class="denglu_btn" lay-submit lay-filter="formSub">查询</div>
+				</div>
+			</div>
+		</div>
+		<div class="ChaXun_main" style="display: none;">
+			<h2 class="tanchuang_title">报考条件查询结果</h2>
+			<div class="chaxun_main">
+				<div class="level_box">
+					<img src="__PUBLIC__/layui/img/level1.png"/>
+				</div>
+				<h2 class="level_b"><span class="stu_level"></span></h2>
+				<div class="level_txt">
+					<h4>报考条件：</h4>
+					<p><b></b><span class="stu_content"></span></p>
+				</div>
+			</div>
+		</div>
+	{include file='content/foot'}
+	</body>
+
+</html>
+<script src="__PUBLIC__/layui/layui.js" type="text/javascript" charset="utf-8"></script>
+<script>
+	//Demo
+	layui.use('form', function() {
+		var form = layui.form;
+
+	});
+	layui.use(['form', 'layer','jquery'], function () {
+		var form = layui.form;
+		var $ = layui.jquery;
+		//获取工种
+		form.on('select(work_id)', function (data) {
+			var role = $("#role").val();
+			var work_id = data.value;
+			$.ajax({
+				url: "/api/Work/selDirLevelData",
+				type: 'post',
+				dataType: 'json',
+				data: {
+					role: role,
+					work_id: work_id,
+				},
+				success: function (data) {
+					if (data.code == 1) {
+						$("#dir_id").html("<option value=''>请选择</option>");
+						$("#level").html("<option value=''>请选择</option>");
+						//获取 work 标签
+						var dir_id = document.getElementById("dir_id");
+						var level = document.getElementById("level");
+						for (var i in data.data['dir']) {
+							var opt = document.createElement("option");
+							opt.value = data.data['dir'][i]['id'];
+//							opt.setAttribute('title', data.data[i]['name']);
+							opt.innerText = data.data['dir'][i]['name'];
+							dir_id.appendChild(opt);
+							form.render();
+						}
+						for (var i in data.data['level']) {
+							var opt = document.createElement("option");
+							opt.value = data.data['level'][i]['id'];
+//							opt.setAttribute('title', data.data[i]['name']);
+							opt.innerText = data.data['level'][i]['name'];
+							level.appendChild(opt);
+							form.render();
+						}
+//
+					} else {
+						form.render();
+						layer.msg(data.msg)
+					}
+				}
+			});
+			//防止页面跳转
+			return false;
+		});
+
+
+		//监听提交
+		form.on('submit(formSub)',function (data) {
+			var  yzm = $('#yzm').val();
+			if (yzm == ''){
+				layer.msg('请输入验证码');
+				return false;
+			}
+
+			var data = data.field;
+			$.ajax({
+				url:'/api/Work/search',
+				type:'post',
+				data:data,
+				dataType:'json',
+				//判断注册状态
+				success:function (data) {
+					if (data.code == 1){
+						layer.open({
+							type: 1,
+							title: false,
+							shadeClose: false,
+							shade: 0.8,
+							area: ['700px', '400px'],
+							content: $('.ChaXun_main'),
+							success: function () {
+								$('.stu_level').html(data.data.levelChinese);
+								$('.stu_content').html(data.data.content);
+								$("#verifycode_imgq").click();
+								$('#yzm').val("").focus();
+							},
+							cancel: function (index, layero) {
+								$(".ChaXun_main").css('display', 'none');
+								$("#verifycode_imgq").click();
+								$('#yzm').val("").focus();
+							}
+						});
+					}else{
+						layer.msg(data.msg,{icon:5});
+						$("#verifycode_imgq").click();
+						$('#yzm').val("").focus();
+					}
+				},error:function (data) {
+					$("#verifycode_imgq").click();
+					layer.msg(data.msg);
+				}
+			});
+			//防止页面跳转
+			return false;
+		});
+	});
+
+//	function ChaXun() {
+//		layer.open({
+//			type: 1,
+//			title: false,
+//			shadeClose: false,
+//			shade: 0.8,
+//			area: ['400px', '400px'],
+//			content: $('.ChaXun_main'),
+//			cancel: function(index, layero) {
+//				$(".ChaXun_main").css('display', 'none');
+//			}
+//		});
+//
+//	}
+</script>

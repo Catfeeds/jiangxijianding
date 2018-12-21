@@ -1,0 +1,221 @@
+{extend name="/layout/nonelayout"}
+{block name="css"}
+{/block}
+{block name="content"}
+<body>
+
+<form class="layui-form">
+    <table border="1" class="layui-table" width="100px" >
+        <h5>鉴定计划详情</h5>
+        <tr>
+            <td>
+                报名时间
+            </td>
+            <td>
+                {volist name="arrWork" length='1' id="vo"}
+                {$vo.enroll_starttime}
+                {/volist} 到
+                {volist name="arrWork" length='1' id="vo"}
+                {$vo.enroll_endtime}
+                {/volist}
+            </td>
+            <td>
+                审核截止时间
+            </td>
+            <td>
+                {volist name="arrWork" length='1' id="vo"}
+                {$vo.audit_endtime}
+                {/volist}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                缴费截止时间
+            </td>
+            <td>
+                {volist name="arrWork" length='1' id="vo"}
+                {$vo.pay_endtime}
+                {/volist}
+            </td>
+             <td>
+                打印准考证时间
+            </td>
+            <td>
+                {volist name="arrWork" length='1' id="vo"}
+                {$vo.print_starttime}
+                {/volist} 到
+                {volist name="arrWork" length='1' id="vo"}
+                {$vo.print_endtime}
+                {/volist}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                打印准考证时间
+            </td>
+            <td>
+                {volist name="arrWork" length='1' id="vo"}
+                {$vo.print_starttime}
+                {/volist} 到
+                {volist name="arrWork" length='1' id="vo"}
+                {$vo.print_endtime}
+                {/volist}
+            </td>
+        </tr>
+        <tr>
+            <td>
+               考试时间
+            </td>
+            <td>
+                {volist name="arrWork" length='1' id="vo"}
+                {$vo.exam_time}
+                {/volist}
+            </td>
+             <td>
+                工种类型
+            </td> 
+            <td>
+
+                {volist name="arrWork" id="vo"}
+                {$vo.typename;break;}
+                {/volist}
+            </td>
+        </tr>
+        </table>
+        <table border="1" class="layui-table" width="100px" >
+        <tr>
+            <td>
+                <label class="layui-form-label">工种名称</label>
+            </td>
+            {volist name="arrWork" id="vo"}
+            <td>
+                {$vo.workname}
+            </td>
+            {/volist}
+
+        </tr>
+        <tr>
+            <td>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">工种方向</label>
+                </div>
+            </td>
+            {volist name="arrWork" id="vo"}
+            <td>
+                {volist name="vo.wdname" id="v" key='n'}
+                {$v}
+                {if($n%2)==0}
+                    <br>
+                    {else}
+                    ,
+                {/if}
+                {/volist}
+            </td>
+            {/volist}
+
+        </tr>
+        <tr>
+            <td>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">工种级别</label>
+                </div>
+            </td>
+            {volist name="arrWork" id="vo"}
+            <td>
+                <!--<span class="layui-bg-orange">-->
+                {volist name="vo.level" id="v"}
+                {$v}
+                {/volist}
+                <!--</span>-->
+            </td>
+            {/volist}
+        </tr>
+    </table>
+
+
+
+
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label"></label>
+        <input type="hidden" value="{$plan_id}" name="plan_id">
+        <input type="hidden" value="{$order_id}" name="order_id">
+    </div>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label"></label>
+        <div class="layui-input-block">
+            <span class="layui">此订单金额{$count['total_money']}元</span>
+        </div>
+    </div>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">请输入申请原因</label>
+        <div class="layui-input-block">
+          <textarea name="remark" placeholder="字数不得少于5个,最多150个" lay-verify="required" minlength="5" maxlength="150" id="remark" class="layui-textarea"></textarea>
+        </div>
+    </div>
+
+     <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label"></label>
+        <div class="layui-inline">
+        <button class="layui-btn"  lay-filter="Submission" id="submit">提交</button>
+        </div>
+    </div>
+</form>
+</body>
+{/block}
+{/extend}
+{block name="script"}
+<script type="text/javascript">
+     layui.use('laydate', function(){
+        var laydate = layui.laydate;
+        var myDate = new Date();//获取系统当前时间
+
+    });
+
+    layui.use(['form', 'layer','jquery'], function () {
+        var form = layui.form;
+        var $ = layui.jquery;
+
+        $('#submit').click(function(){
+            var plan_id = $('input[name=plan_id]').val();
+            var remark = $('#remark').val();
+            var order_id = $('input[name=order_id]').val();
+            if(remark.length <5 || remark.length>150 || remark == '字数不得少于5个,最多150个')
+            {
+                return false;
+            }
+            $.ajax({
+                url:'/api/ExamOrder/apply',
+                type:'post',
+                dataType:'json',
+                data:{
+                    order_id:order_id,
+                    plan_id:plan_id,
+                    remark:remark
+                },
+                //判断注册状态
+                success:function (data) {
+                        if (data.code==1){
+                        layer.msg(data.msg,{
+                            icon: 1,//提示的样式
+                            time:  2000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                            end: function () {
+                                //当你在iframe页面关闭自身时
+                                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                parent.layer.close(index); //再执行关闭
+                                parent.location.reload();
+                            }
+                        });
+                    }else{
+                        layer.msg(data.msg);
+                    }
+                }
+            }); 
+            return false;
+
+        })
+
+
+
+    })
+</script>
+{/block}

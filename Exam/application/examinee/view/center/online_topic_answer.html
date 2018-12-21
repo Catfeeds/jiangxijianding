@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css">
+<body>
+
+<div class="header_title"><span>学习记录</span>
+    <p class="margin_right rightfloat ajax-linkk" rel="{:url('/examinee/center/onlineTopic')}">学习列表></p>
+</div>
+
+<div class="layui-col-xs12 layui-col-md12">
+    <div class="layui-col-xs6 layui-col-md6 double_btn tileixing">
+        <span class="daojishi leftfloat margin_right_15">
+            <h3 style="color: black;margin-left: 15px !important;">满分:100.0分，及格:60.0分，已得分:{$score}.0分</h3>
+        </span>
+        <div class="margin_right_15"></div>
+        <div class="margin_right_15"></div>
+        <div class="margin_right_15"></div>
+        <div class="margin_right_15"></div>
+
+    </div>
+    <div class="layui-col-xs6 layui-col-md6"><span class="daojishi rightfloat margin_right_15"></span></div>
+</div><br>
+<div class="layui-tab-content" style="width: 60%;margin: 0 auto;padding-top: 70px;">
+
+    <div class="layui-form layuiadmin-card-header-auto">
+        {volist name="resultsCorrect|default=''" id="vo" }
+        <ul class="layui-show">
+            {switch name="$vo.type" }
+            {case value="单选题" }
+            <div class="test">
+                <div class="warp_test">
+                    <table class="outer_table">
+                        <tbody>
+                        <tr>
+                            <td><h5> ■ {$vo.topic_name}</h5><br>
+                                <p>A、{$vo.option_a}</p><p>B、{$vo.option_b}</p><p>C、{$vo.option_c}</p><p>D、{$vo.option_d}</p><br>
+                                <table cellpadding="0" cellspacing="0" class="choice_table">
+                                    <tbody>
+                                        <p>您的答案： <img src="__PUBLIC__/img/right.gif" alt=""></p>
+                                        <p>正确答案为：{$vo.answer}</p>
+                                        <p>解释说明： {$vo.answer_explain}</p>
+                                    </tbody>
+                                </table></td>
+                            <td align="right"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div><hr>
+            {/case}
+            {case value="多选题"}
+            <div class="test">
+                <div class="warp_test">
+                    <table class="outer_table">
+                        <tbody>
+                        <tr>
+                            <td><h5> ■ {$vo.topic_name} </h5><br>
+                                <p>A、{$vo.option_a}</p><p>B、{$vo.option_b}</p><p>C、{$vo.option_c}</p><p>D、{$vo.option_d}</p><br>
+                                <table cellpadding="0" cellspacing="0" class="choice_table">
+                                    <tbody>
+                                        <p>您的答案：{$vo.user_answer} <img src="__PUBLIC__/img/right.gif" alt=""></p>
+                                        <p>正确答案为：{$vo.answer}</p>
+                                        <p>解释说明： {$vo.answer_explain}</p>
+                                    </tbody>
+                                </table></td>
+                            <td align="right"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div><hr>
+            {/case}
+            {case value="判断题"}
+            <div class="test">
+                <div class="warp_test">
+                    <table class="outer_table">
+                        <tbody>
+                        <tr>
+                            <td><h5> ■ {$vo.topic_name} </h5><br>
+                                <table cellpadding="0" cellspacing="0" class="choice_table">
+                                    <tbody>
+                                        <p>您的答案：{$vo.user_answer} <img src="__PUBLIC__/img/right.gif" alt=""></p>
+                                        <p>正确答案为：{$vo.answer}</p>
+                                        <p>解释说明： {$vo.answer_explain}</p>
+                                    </tbody>
+                                </table></td>
+                            <td align="right"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div><hr>
+            {/case}
+            {/switch}
+        </ul>
+        {/volist}
+
+
+        {volist name="resultError|default=''" id="vo" }
+        <ul class="layui-show">
+            {switch name="$vo.type" }
+            {case value="单选题" }
+            <div class="test">
+                <div class="warp_test">
+                    <table class="outer_table">
+                        <tbody>
+                        <tr>
+                            <td><h5> ■ {$vo.topic_name}</h5><br>
+                                <p>A、{$vo.option_a}</p><p>B、{$vo.option_b}</p><p>C、{$vo.option_c}</p><p>D、{$vo.option_d}</p><br>
+                                <table cellpadding="0" cellspacing="0" class="choice_table">
+                                    <tbody>
+                                        <p>您的答案：{$vo.user_answer}<img src="__PUBLIC__/img/error.gif" alt=""></p>
+                                        <p>正确答案为：{$vo.answer}</p>
+                                        <p>解释说明： {$vo.answer_explain}</p>
+                                    </tbody>
+                                </table></td>
+                            <td align="right"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div><hr>
+            {/case}
+            {case value="多选题"}
+            <div class="test">
+                <div class="warp_test">
+                    <table class="outer_table">
+                        <tbody>
+                        <tr>
+                            <td><h5> ■ {$vo.topic_name} </h5><br>
+                                <p>A、{$vo.option_a}</p><p>B、{$vo.option_b}</p><p>C、{$vo.option_c}</p><p>D、{$vo.option_d}</p><br>
+                                <table cellpadding="0" cellspacing="0" class="choice_table">
+                                    <tbody>
+                                        <p>您的答案：{$vo.user_answer}<img src="__PUBLIC__/img/error.gif" alt=""></p>
+                                        <p>正确答案为：{$vo.answer}</p>
+                                        <p>解释说明： {$vo.answer_explain}</p>
+                                    </tbody>
+                                </table></td>
+                            <td align="right"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div><hr>
+            {/case}
+            {case value="判断题"}
+            <div class="test">
+                <div class="warp_test">
+                    <table class="outer_table">
+                        <tbody>
+                        <tr>
+                            <td><h5> ■ {$vo.topic_name} </h5><br>
+                                <table cellpadding="0" cellspacing="0" class="choice_table">
+                                    <tbody>
+                                        <p>您的答案：{$vo.user_answer}<img src="__PUBLIC__/img/error.gif" alt=""></p>
+                                        <p>正确答案为：{$vo.answer}</p>
+                                        <p>解释说明： {$vo.answer_explain}</p>
+                                    </tbody>
+                                </table></td>
+                            <td align="right"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div><hr>
+            {/case}
+            {/switch}
+        </ul>
+        {/volist}
+
+
+        {volist name="resultEmpty|default=''" id="vo" }
+        <ul class="layui-show">
+            {switch name="$vo.type" }
+            {case value="单选题" }
+            <div class="test">
+                <div class="warp_test">
+                    <table class="outer_table">
+                        <tbody>
+                        <tr>
+                            <td><h5> ■ {$vo.topic_name}</h5><br>
+                                <p>A、{$vo.option_a}</p><p>B、{$vo.option_b}</p><p>C、{$vo.option_c}</p><p>D、{$vo.option_d}</p><br>
+                                <table cellpadding="0" cellspacing="0" class="choice_table">
+                                    <tbody>
+                                        <p><img src="__PUBLIC__/img/error.gif" alt="">您暂未填写答案，正确答案为：{$vo.answer}</p>
+                                        <p>解释说明： {$vo.answer_explain}</p>
+                                    </tbody>
+                                </table></td>
+                            <td align="right"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div><hr>
+            {/case}
+            {case value="多选题"}
+            <div class="test">
+                <div class="warp_test">
+                    <table class="outer_table">
+                        <tbody>
+                        <tr>
+                            <td><h5> ■ {$vo.topic_name} </h5><br>
+                                <p>A、{$vo.option_a}</p><p>B、{$vo.option_b}</p><p>C、{$vo.option_c}</p><p>D、{$vo.option_d}</p><br>
+                                <table cellpadding="0" cellspacing="0" class="choice_table">
+                                    <tbody>
+                                        <p><img src="__PUBLIC__/img/error.gif" alt="">您暂未填写答案，正确答案为：{$vo.answer}</p>
+                                        <p>解释说明： {$vo.answer_explain}</p>
+                                    </tbody>
+                                </table></td>
+                            <td align="right"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div><hr>
+            {/case}
+            {case value="判断题"}
+            <div class="test">
+                <div class="warp_test">
+                    <table class="outer_table">
+                        <tbody>
+                        <tr>
+                            <td><h5> ■ {$vo.topic_name} </h5><br>
+                                <table cellpadding="0" cellspacing="0" class="choice_table">
+                                    <tbody>
+                                        <p><img src="__PUBLIC__/img/error.gif" alt="">您暂未填写答案，正确答案为：{$vo.answer}</p>
+                                        <p>解释说明： {$vo.answer_explain}</p>
+                                    </tbody>
+                                </table></td>
+                            <td align="right"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div><hr>
+            {/case}
+            {/switch}
+        </ul>
+        {/volist}
+    </div>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+    layui.use(['form', 'laypage', 'laydate'], function() {
+        var form = layui.form,
+            $ = layui.jquery;
+        form.render();
+        var laydate = layui.laydate;
+        $ = layui.jquery;
+        form.render();
+
+        var laypage = layui.laypage;
+
+    });
+    // $(".ajax-linkk").onclick(function() {
+    //     $(this).click(function() {
+    //         var diZhi = $(this).attr("rel");
+    //         htmlobj = $.ajax({
+    //             url: diZhi,
+    //             async: false
+    //         });
+    //         $(".ajax-Box").html(htmlobj.responseText);
+    //     });
+    // });
+</script>

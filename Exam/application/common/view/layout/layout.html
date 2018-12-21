@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>{block name="title"}标题{/block}</title>
+    <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css">
+
+
+    {load href="__STATIC__/css/common/page.css"/}
+    <style>
+        .layui-input-inline {
+            width: 180px !important;
+            padding-left: 10px;
+        }
+
+        .layui-card-header {
+            padding-left: 0;
+        }
+
+        .layui-form-label {
+            width: auto;
+            padding: 9px 0 10px !important;
+        }
+
+        .layui-inline {
+            margin-right: 0 !important;
+        }
+    </style>
+    {block name="css"}{/block}
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">
+            <img src="__STATIC__/img/admin/logo.png" width="85" alt="">
+            <img src="__STATIC__/img/admin/font.png" alt="" style="margin-left: 80px;">
+        </div>
+        {notempty name="$count"}
+        <ul class="layui-nav layui-layout-left" style="margin-left: 1459px;">
+            <li class="layui-nav-item"><a href="/cms/notice/index">未读消息<span class="layui-badge">{$count}</span></a>
+            </li>
+        </ul>
+        {/notempty}
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:void(0);">{$Think.session.adminuser.username}</a>
+                <dl class="layui-nav-child">
+                    <!--<dd><a href="javascript:;" id="userInfo">基本信息</a></dd>-->
+                    <dd><a href="javascript:;" id="checkOut">退出</a></dd>
+                </dl>
+            </li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree jx-left-nav" lay-filter="test">
+                {volist name='menuData' id='vo'}
+                {notempty name='$vo.son'}
+                <li class="layui-nav-item">
+                    <a class="" href="{$vo.url == '#' ? 'javascript:void(0);':'/'.$vo.url}">{$vo.title}</a>
+                    <dl class="layui-nav-child">
+                        {volist name='$vo.son' id='voo'}
+                        <dd><a class="check"
+                               href="{$voo.url == '#' ? 'javascript:void(0);':'/'.$voo.url}">{$voo.title}</a></dd>
+                        {/volist}
+                    </dl>
+                </li>
+                {else}
+                <li class="layui-nav-item"><a class="check" href='{$vo.url == ' #' ?
+                    'javascript:void(0);':'/'.$vo.url}'>{$vo.title}</a></li>
+                {/notempty}
+                {/volist}
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body" style="background: #009688;">
+        <!-- 内容主体区域 -->
+        <div class="layui-tab-content">
+            <div class="layui-card" style="padding: 15px;">
+                {if condition="isset($Navigation)"}
+                {include file="common@navigation/index" /}
+                {/if}
+                {block name='crumbs'}{/block}
+                {block name='content'}{/block}
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-footer">
+        <!-- 底部固定区域 -->
+        <a href="http://www.etlchina.net">© www.etlchina.net - 博奥教育</a>
+    </div>
+</div>
+</body>
+</html>
+{load href="__PUBLIC__/js/urladdr/urladdr.js"/}
+{load href="__PUBLIC__/layui/layui.js"/}
+{load href="__PUBLIC__/layui/lay/modules/code.js"/}
+{load href="__PUBLIC__/js/admin/layout.js"}
+{load href="__PUBLIC__/js/common/must.js"}
+{load href="__PUBLIC__/js/jquery.min.js"}
+{load href="__PUBLIC__/js/jquery.cookie.js"}
+<script type="text/javascript">
+    //点亮当前
+    $(function () {
+        $(".check[href='" + $.cookie('menu') + "']").addClass('layui-this');
+    });
+    layui.use(['layer', 'element', 'form', 'jquery'], function () {
+        var element = layui.element, $ = layui.jquery, form = layui.form;
+        $('.check').on('click', function () {
+            var menu = $(this).attr('href');
+            $.cookie('menu', menu, {expires: 1, path: '/admin'});
+
+
+        });
+        $("#userInfo").click(function () {
+            layer.open({
+                type: 2,
+                anim: 1,
+                skin: 'layui-layer-molv',
+                area: ['60%', '60%'], //宽高
+                title: "基本信息",
+                content: "/admin/index/infopage",  //详细信息页面 修改详细信息
+                yes: function (index, layero) {
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+        $("#checkOut").click(function () {
+            layer.open({
+                title: ['温馨提示'],
+                content: '<div style="color:#767676">确定要退出当前账号吗？</div>',
+                btn: ['确定', '取消'],
+                shadeClose: true,
+                //回调函数
+                yes: function (index, layero) {
+                    $.ajax({
+                        url: '/api/admin/loginOut',
+                        dataType: 'json',
+                        //判断注册状态
+                        success: function (data) {
+                            if (data == 1) {
+                                layer.msg("退出成功", {
+                                    icon: 1,//提示的样式
+                                    time: 1000, //1秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                                    end: function () {
+                                        window.location.href = '/cms/index/admin';
+                                    }
+                                })
+                            } else {
+                                layer.msg(data)
+                            }
+                        }
+                    });
+                    //防止页面跳转
+                    return false;
+                },
+                btn2: function (index, layero) {
+                    layer.close(index);
+                },
+                cancel: function (index, layero) { //按右上角“X”按钮
+                    layer.close(index);
+                },
+            });
+        });
+    });
+</script>
+{block name="script"}{/block}

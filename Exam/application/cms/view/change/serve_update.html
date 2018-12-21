@@ -1,0 +1,105 @@
+
+{block name="css"}
+<link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css">
+{/block}
+{block name="content"}
+<body >
+
+<style type="text/css">
+    .layui-form-item{
+        margin-left: 15%;
+    }
+</style>
+
+    <header ></header>
+    <form class="layui-form" >
+
+        <div class="layui-form-item" style="margin-top: 10%">
+            <label class="layui-form-label">栏目名称<span style="color:red">*</span></label>
+            <div class="layui-input-inline">
+                <input type="text" id="title" value="{$info.title}" name="title" required lay-verify="required" placeholder="请输入名称" autocomplete="off" class="layui-input">
+            </div>
+            </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">服务功能<span style="color:red">*</span></label>
+            <div class="layui-input-block">
+                {volist name='data' id='v'}
+                <input type="checkbox" value="{$v.id}" name="fu_ser[]"  title="{$v.name}" {eq name="v.serve_id" value="$info.id"} checked {/eq}>
+                {/volist}
+            </div>
+        </div>
+
+            <div class="layui-input-inline">
+                <input type="hidden" value="{$info.id}" name="id">
+            </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="sub">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                <button type="reset" class="layui-btn" id="add">添加服务功能</button>
+            </div>
+        </div>
+
+    </form>
+
+</body>
+{/block}
+
+{block name="script"}
+<script src="__PUBLIC__/js/jquery.min.js"></script>
+<script src="__PUBLIC__/layui/layui.js"></script>
+
+
+<script type="text/javascript">
+    layui.use('element', function(){
+        var element = layui.element;
+    });
+    layui.use(['form', 'layer','jquery'], function () {
+        var form  = layui.form;
+        var $  = layui.jquery;
+
+        //添加表单监听事件
+        form.on('submit(sub)',function (data) {
+            data = data.field;
+
+            $.post("/api/CmsServe/serveUpdate",data,function (data) {
+                if (data.code == 1){
+                    layer.msg(data.msg, {
+                        icon: 1,//提示的样式
+                        time: 2000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                        end: function () {
+                            //当你在iframe页面关闭自身时
+                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                            parent.layer.close(index); //再执行关闭
+                            parent.location.reload();
+                        }
+                    })
+                }else{
+                    layer.msg(data.msg);
+                }
+            })
+            //防止页面跳转
+            return false;
+        });
+        $('#add').click(function(){
+            layer.open({
+                type: 2,
+                    anim:1,
+                    skin: 'layui-layer-molv', //加上边框
+                area: ['90%', '90%'], //宽高
+                title: "添加功能信息",
+                content: "/cms/change/addFuServe",  //调到新增页面
+                yes: function(index, layero){
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        })
+
+
+    });
+
+</script>
+{/block}

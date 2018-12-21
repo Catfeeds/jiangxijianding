@@ -1,0 +1,149 @@
+{include file='content/daohang'}
+<body class="login">
+<div class="login_main">
+    <div class="layui-container">
+        <form class="layui-form">
+            <div class="login_conent">
+                <h2>鉴定工作者登录</h2>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">组织代码：</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="username" name="username" lay-verify="required" autocomplete="off"
+                               placeholder="请输入组织代码" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">手机号码：</label>
+                    <div class="layui-input-block">
+                        <input type="text" maxlength="11" name="phone" id="phone" lay-verify="phone" autocomplete="off"
+                               placeholder="请输入手机号码" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">附加码：</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="code" name="code" lay-verify="required" autocomplete="off"
+                               placeholder="请输入验证码" class="layui-input yzm_input">
+                        <img class="yzmimg" title="点击刷新" onclick="this.src='{:captcha_src()}?'+Math.random()"
+                             src="{:captcha_src()}" alt="captcha"/>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">短信验证码：</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="sms" lay-verify="required" autocomplete="off" placeholder="请获取验证码"
+                               class="layui-input yzm_input">
+                        <button id="getSms" class="layui-btn get-code">获取验证码</button>
+                    </div>
+                </div>
+                <div class="denglu_btn" lay-submit lay-filter="sub">登录</div>
+            </div>
+        </form>
+    </div>
+</div>
+{include file='content/foot'}
+</body>
+
+{load href="__PUBLIC__/js/urladdr/urladdr.js"/}
+{load href="__PUBLIC__/layui/layui.js"/}
+<script type="text/javascript">
+
+    //发送验证码
+
+
+    //====emd=====
+
+    layui.use('form', function () {
+        var form = layui.form, $ = layui.jquery, username = $("#username"), phone = $('#phone'), code = $('#code'),
+            icon;
+
+        //发送验证码
+        $('.get-code').on('click', function () {
+            //组织代码
+            if ($.trim($(username).val()) === '') {
+                layer.msg('组织代码不能为空', {icon: 5});
+                $(username).addClass('layui-form-danger').trigger('focus');
+                return false;
+            }
+            //手机号
+            if ($.trim($(phone).val()) === '') {
+                layer.msg('手机号码不能为空', {icon: 5});
+                $(phone).addClass('layui-form-danger').trigger('focus');
+                return false;
+            } else {
+                var pattern = /^1[3456789]\d{9}$/;
+                if (pattern.test($.trim($(phone).val())) === false) {
+                    layer.msg('手机号码格式不对', {icon: 5});
+                    $(phone).addClass('layui-form-danger').trigger('focus');
+                    return false;
+                }
+            }
+            //附加码
+            if ($.trim($(code).val()) === '') {
+                layer.msg('附加码不能为空', {icon: 5});
+                $(code).addClass('layui-form-danger').trigger('focus');
+                return false;
+            }
+            //发送代码,手机号,附加码
+            $.post(urladdr.sendMsg, {
+                username: $(username).val(),
+                phone: $(phone).val(),
+                code: $(code).val()
+            }, function (data) {
+                if (data.code > 0) {
+                    icon = 1;
+                    //----start-------
+                    var countdown = 60;
+                    var obj = $("#getSms");
+                    settime(obj);
+
+                    function settime(obj) { //发送验证码倒计时
+                        if (countdown == 0) {
+                            obj.attr('disabled', false).removeClass('layui-btn-disabled');
+                            //obj.removeattr("disabled");
+                            obj.html("获取验证码");
+                            countdown = 60;
+                            return;
+                        } else {
+                            obj.attr('disabled', true).addClass('layui-btn-disabled');
+                            obj.html("重发(" + countdown + ")");
+                            countdown--;
+                        }
+                        setTimeout(function () {
+                                settime(obj)
+                            }
+                            , 1000)
+                    }
+
+                    //----end---
+                } else {
+                    icon = 5;
+                    $('.yzmimg').trigger('click');
+                }
+                layer.msg(data.msg, {icon: icon})
+            });
+            //阻止按钮提交
+            return false;
+        });
+
+
+        //添加表单监听事件
+        form.on('submit(sub)', function (data) {
+            data = data.field;
+            $.post(urladdr.dologin, data, function (data) {
+                if (data.code === 1) {
+                    layer.msg(data.msg, {
+                        icon: 1, time: 2000, end: function () {
+                            location.href = urladdr.index;
+                        }
+                    });
+                } else {
+                    layer.msg(data.msg, {icon: 5});
+                    $('.yzmimg').trigger('click');
+                }
+            });
+            return false;
+        });
+    });
+
+</script>

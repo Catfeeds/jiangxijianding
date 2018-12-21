@@ -1,0 +1,134 @@
+{include file='content/daohang'}
+<div class="daohang"></div>
+<div class="Inquiry_main layui-form" >
+    <div class="layui-container">
+        <div class="login_conent Inquiry_conent" style="height: 321px">
+            <h2>职业证书查询</h2>
+            <div class="layui-form-item">
+                <label class="layui-form-label">证件号码：</label>
+                <div class="layui-input-block">
+                    <input type="text" name="id_no" lay-verify="id_no" autocomplete="off" placeholder="请输入证件号" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">考生姓名：</label>
+                <div class="layui-input-block">
+                    <input type="text" name="username" lay-verify="username" autocomplete="off" placeholder="请输入姓名" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">证书编号：</label>
+                <div class="layui-input-block">
+                    <input type="text" name="certificate_no"  lay-verify="certificate_no" autocomplete="off" placeholder="请输入编号" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">验证码：</label>
+                <div class="layui-input-block">
+                    <!--<img class="yzmimg" src="__PUBLIC__/layui/img/yanzm.png" />-->
+                    <input type="text" name="yzm" id="yzm" lay-verify="code" autocomplete="off" placeholder="请输入验证码" class="layui-input yzm_input" style="width: 147px;">
+
+                    <img  id="verifycode_imgq" class="verifycode_imgq" style="width: 100px;height: 37px" onclick="this.src='{:captcha_src()}?'+Math.random()" src="{:captcha_src()}" alt="captcha" />
+                </div>
+            </div>
+            <p>注：输入以上两项内容即可查询</p>
+            <div class="denglu_btn" lay-submit lay-filter="sub">查询</div>
+        </div>
+    </div>
+</div>
+{include file='content/foot'}
+
+</body>
+</html>
+
+
+
+<script src="__PUBLIC__/layui/layui.js"></script>
+
+<script type="text/javascript">
+
+
+    layui.use(['form', 'layer','jquery'], function () {
+        var form  = layui.form;
+        var $  = layui.jquery;
+
+        form.on('submit(sub)',function (data) {
+
+            var  yzm = $('#yzm').val();
+            if (yzm == ''){
+                layer.msg('请输入验证码');
+                return false;
+            }
+
+            var data = data.field;
+            $.ajax({
+                url:'/api/Certificate/certloginAction',
+                type:'post',
+                data:data,
+                dataType:'json',
+                //判断注册状态
+                success:function (data) {
+                    if (data.code == 1){
+                        layer.msg(data.msg, {
+                            icon: 1,//提示的样式
+                            time: 2000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                            end: function () {
+                                location.href = '/cms/index/certinquire';
+                            }
+                        });
+                    }else{
+                        layer.msg(data.msg,{icon:5});
+                        $("#verifycode_imgq").click();
+                        $('#yzm').val("").focus();
+                    }
+                },error:function (data) {
+                    $("#verifycode_imgq").click();
+                    layer.msg(data.msg);
+                }
+            });
+            //防止页面跳转
+            return false;
+        });
+
+        $(".checkOut").click(function () {
+            layer.open({
+                title: ['温馨提示'],
+                content: '<div style="color:#767676">确定要退出当前账号吗？</div>',
+                btn: ['确定', '取消'],
+                shadeClose: true,
+                //回调函数
+                yes: function (index, layero) {
+                    // self.location='http://www.baidu.com';//立即退出
+                    $.ajax({
+                        url: '/api/Certificate/loginOut',
+                        dataType: 'json',
+                        //判断注册状态
+                        success: function (data) {
+                            if (data == 1) {
+                                layer.msg("退出成功", {
+                                    icon: 1,//提示的样式
+                                    time: 1000, //1秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                                    end: function () {
+                                        window.location.href = '/examinee/Indexcert/index';
+                                    }
+                                })
+                            } else {
+                                layer.msg(data)
+                            }
+                        }
+                    });
+                    //防止页面跳转
+                    return false;
+                },
+                btn2: function (index, layero) {
+                    layer.close(index);
+                },
+                cancel: function (index, layero) { //按右上角“X”按钮
+                    layer.close(index);
+                },
+
+            });
+        });
+    });
+
+</script>

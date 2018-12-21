@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<link rel="stylesheet" type="text/css" href="css/lay.css" />
+		<link rel="stylesheet" type="text/css" href="css/main.css" />
+		<title>鉴定所查询</title>
+	</head>
+
+	<body class="login">
+		<div class="header_top">
+			<div class="layui-container">
+				<div class="layui-col-xs6 jd_header_left"><span>当前日期：2018年9月10日</span><span>10:30</span><span>星期一</span></div>
+				<div class="layui-col-xs6 jd_header_right">
+					<span>设为首页 </span>
+					<span>加入收藏</span>
+					<span>主任信箱</span>
+				</div>
+			</div>
+		</div>
+		<div class="banner"><img src="img/banner.png" /></div>
+		<nav>
+			<div class="layui-container">
+				<ul class="nav">
+					<li>
+						<a href="#">首页</a>
+					</li><span>|</span>
+					<li>
+						<a href="#">政务公开</a>
+					</li><span>|</span>
+					<li>
+						<a href="#">鉴定安排</a>
+					</li><span>|</span>
+					<li>
+						<a href="#">政策法规</a>
+					</li><span>|</span>
+					<li>
+						<a href="#">资讯中心</a>
+					</li><span>|</span>
+					<li>
+						<a href="#">技能竞赛</a>
+					</li><span>|</span>
+					<li>
+						<a href="#">党建园地</a>
+					</li>
+				</ul>
+			</div>
+		</nav>
+		<div class="JianDingSuo_main layui-container">
+			<h3 class="baoming_title">
+				<span class="baoming_title_span">鉴定所查询</span>
+				<span class="sousuo_input rightfloat">
+				  <input type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入搜索内容" class="layui-input"><img class="sousuosmall" src="img/sousuosmall.png"/>
+				</span>
+			</h3>
+			<div class="JianDingSuo_main_top layui-form">
+				<span>属性</span>
+				<ul>
+					<li class="thisbg">全部</li>
+					<li>机构</li>
+					<li>院校</li>
+					<li>所站</li>
+				</ul>
+				<div class="layui-form-item">
+					<div class="layui-inline">
+						<label class="layui-form-label">鉴定工种</label>
+						<div class="layui-input-inline">
+							<select name="modules" lay-verify="required" lay-search="">
+								<option value="1">layer</option>
+								<option value="2">form</option>
+								<option value="3">layim</option>
+							</select>
+						</div>
+					</div>
+					<div class="layui-inline">
+						<label class="layui-form-label">方向</label>
+						<div class="layui-input-inline">
+							<select name="modules" lay-verify="required" lay-search="">
+								<option value="1">layer</option>
+								<option value="2">form</option>
+								<option value="3">layim</option>
+							</select>
+						</div>
+					</div>
+					<div class="layui-inline">
+						<label class="layui-form-label">等级</label>
+						<div class="layui-input-inline">
+							<select name="modules" lay-verify="required" lay-search="">
+								<option value="1">layer</option>
+								<option value="2">form</option>
+								<option value="3">layim</option>
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+			<h3 class="baoming_title topmargin">
+				<table class="layui-table" lay-even="" lay-skin="nob">
+					 <colgroup>
+					    <col width="10%">
+					    <col width="30%">
+					    <col width="40%">
+					    <col width="20%">
+					  </colgroup>
+				<tbody>
+				   <tr>
+						<td>属性</td>
+						<td>名称</td>
+						<td>地址</td>
+						<td>鉴定工种</td>
+					</tr>
+				  </tbody>
+				 </table> 
+			</h3>
+			<div class="JianDingSuo_main_table">
+			<table class="layui-table" lay-even="" lay-skin="nob">
+				 <colgroup>
+				    <col width="10%">
+					    <col width="30%">
+					    <col width="40%">
+					    <col width="20%">
+				  </colgroup>
+				<tbody>
+					<tr>
+						<td>院校</td>
+						<td>抚州市理工学校</td>
+						<td>抚州市武侯区长春大街3号</td>
+						<td class="chankangongz" onclick="ChaKanGongZhong();">查看</td>
+					</tr>
+					<tr>
+						<td>院校</td>
+						<td>抚州市理工学校</td>
+						<td>抚州市武侯区长春大街3号</td>
+						<td class="chankangongz">查看</td>
+					</tr>
+					<tr>
+						<td>院校</td>
+						<td>抚州市理工学校</td>
+						<td>抚州市武侯区长春大街3号</td>
+						<td class="chankangongz">查看</td>
+					</tr>
+					<tr>
+						<td>院校</td>
+						<td>抚州市理工学校</td>
+						<td>抚州市武侯区长春大街3号</td>
+						<td class="chankangongz">查看</td>
+					</tr>
+					<tr>
+						<td>院校</td>
+						<td>抚州市理工学校</td>
+						<td>抚州市武侯区长春大街3号</td>
+						<td class="chankangongz">查看</td>
+					</tr>
+				</tbody>
+			</table>
+			</div>
+		</div>
+		<div class="ChaKanGongZhong">
+			<h2>抚州市理工技校鉴定工种信息</h2>
+			<table class="layui-table">
+				 <thead>
+			     <tr>
+						<td>鉴定类别</td>
+						<td>工种代码</td>
+						<td>鉴定工种</td>
+						<td>工种方向</td>
+						<td>鉴定等级</td>
+					</tr>
+			    </thead>
+				<tbody>
+					
+					<tr>
+						<td rowspan="2">A</td>
+						<td rowspan="2">65465151256165</td>
+						<td rowspan="2">焊工</td>
+						<td>电焊</td>
+						<td>一级</td>
+					</tr>
+					<tr>
+						<td>气焊</td>
+						<td>二级</td>
+					</tr>
+					<tr>
+						<td>B</td>
+						<td>65465151256165</td>
+						<td>维修工</td>
+						<td>维修</td>
+						<td>一级</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<footer class="footer">
+			<img class="quanwei" src="img/quanwei.png" />
+			<p>主办单位：江西省职业技能鉴定指导中心 技术支持：博奥教育科技有限公司</p>
+			<p>网上支持（职业资格问答） 　　您是第 9027267 位访问者</p>
+		</footer>
+	</body>
+
+</html>
+<script src="js/jquery-1.7.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/layui.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/layui.all.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+	layui.use(['form', 'laydate'], function() {
+		var form = layui.form;
+		var laydate = layui.laydate;
+		$ = layui.jquery;
+		form.render();
+	});
+	function ChaKanGongZhong() {
+		layer.open({
+			type: 1,
+			title: false,
+			shadeClose: true,
+			shade: 0.8,
+			area: ['600px', '250px'],
+			content: $('.ChaKanGongZhong'),
+			cancel: function(index, layero) {
+				$(".ChaKanGongZhong").css('display', 'none');
+			}
+		});
+	}
+	$('.JianDingSuo_main_top ul li').bind('click', function() {
+		$('.thisbg').removeClass('thisbg');
+		$(this).addClass('thisbg');
+
+	});
+</script>

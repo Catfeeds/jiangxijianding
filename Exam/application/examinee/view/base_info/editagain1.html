@@ -1,0 +1,260 @@
+
+{extend name="layout"}
+{block name="css"}
+<link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css">
+{/block}
+{block name="content"}
+<body>
+{if($arrEnroll)}
+<form class="layui-form">
+    <div class="layui-form-item">
+        <label class="layui-form-label">鉴定名称</label>
+        <div class="layui-input-block">
+            <input type="hidden" name="id" value="{$arrExamEnroll.id}">
+            <select  name="exam_plan_id" class="type" lay-filter="exam_plan_id" lay-verify="required">
+                {foreach name="arrExamPlan" id="v"}
+                <option value="{$v.id}" {if($arrEnroll.exam_plan_id==$v.id)} selected {/if} > {$v.title?$v.title:''}</option>
+                {/foreach}
+            </select>
+            <div class="layui-form-mid layui-word-aux">请先选择鉴定名称</div>
+
+        </div>
+    </div>
+
+    <div class="layui-form-item" id="examplan">
+        <label class="layui-form-label">报考职业工种</label>
+        <div class="layui-input-block">
+            <select  name="work_id" id="work_id" lay-filter="work_id" lay-verify="required">
+                <option value="{$arrExamEnroll.wid}"> {$arrExamEnroll.code?$arrExamEnroll.code:''}   {$arrExamEnroll.workname?$arrExamEnroll.workname:''}</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">报考职业方向</label>
+        <div class="layui-input-block">
+            <select  name="work_direction_id" class="type" id="work_direction_id" lay-filter="work_direction_id" lay-verify="required">
+                <option value="{$arrExamEnroll.did}"> {$arrExamEnroll.directionname?$arrExamEnroll.directionname:''}</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">报考职业级别</label>
+        <div class="layui-input-block">
+            <select  name="work_level_id" class="type" id="work_level_id" lay-filter="work_level_id" lay-verify="required">
+                <option value="{$arrExamEnroll.lid}"> {$arrExamEnroll.level?$arrExamEnroll.level:''}</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">考试类型</label>
+        <div class="layui-input-block">
+            <select  name="exam_type" class="type" lay-filter="exam_type" lay-verify="required">
+                <option value="1" {if($arrExamEnroll.exam_type==1)} selected {/if} >新考</option>
+                <option value="2" {if($arrExamEnroll.exam_type==2)} selected {/if} >补考</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">考生来源</label>
+        <div class="layui-input-block">
+            <select  name="source" class="type" id="source" lay-filter="source" disabled>
+                <option value="4"> 个人</option>
+            </select>
+
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">领证方式</label>
+        <div class="layui-input-block">
+            <select  name="cert_way" class="type" lay-filter="cert_way" lay-verify="required">
+                <option value="1" {if($arrExamEnroll.cert_way==1)} selected {/if} >自取</option>
+                <option value="2" {if($arrExamEnroll.cert_way==2)} selected {/if} >邮寄到付</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">当前证书级别</label>
+        <div class="layui-input-block">
+            <input type="text"  name="current_level" required  lay-verify="required" value="{$arrExamEnroll.current_level?$arrExamEnroll.current_level:''}" placeholder="请输入级别" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" id="addorganize" lay-submit lay-filter="formSubmit">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+    <div type="hidden" class="hidden"></div>
+</form>
+{else\}
+<center>
+    <h2>报名计划不能修改</h2>
+</center>
+{/if}
+</body>
+{/block}
+{block name="script"}
+<script src="__PUBLIC__/layui/assets/jquery-1.12.4.js"></script>
+
+<script src="__PUBLIC__/layui/layui.js"></script>
+
+<script>
+    layui.use('element', function(){
+        var element = layui.element;
+    });
+
+    layui.use(['form', 'layer','jquery'], function () {
+        var form = layui.form;
+        var $ = layui.jquery;
+        //form表单验证
+        form.verify({
+            work_direction_id: function (value) {
+                if (value == "") {
+                   layui.msg("必须选择");
+                }
+            },
+        });
+
+        //获取工种
+        form.on('select(exam_plan_id)', function(data){
+            var exam_plan_id = data.value;
+            $.ajax({
+                url:'/api/ExamPlan/selbyid',
+                type:'post',
+                dataType:'json',
+                data:{
+                    exam_plan_id:exam_plan_id,
+                },
+                success:function (data) {
+                    if (data.code==1){
+                        $("#work_id").html("");
+                        var work_id = document.getElementById ("work_id");
+                        for (var i=0;i<data.data.length;i++){
+                            var opt = document.createElement("option");
+                            opt.value = data.data[i]['wid'];
+                            opt.innerText = data.data[i]['code'] +"   "+ data.data[i]['name'];
+                            work_id.appendChild (opt);
+                            form.render('select');
+                        }
+
+                    }else{
+                        $("#work_id").html("");
+                        form.render('select');
+                        layer.msg(data.msg)
+                    }
+                }
+            });
+            //防止页面跳转
+            return false;
+        });
+
+        //获取职业方向
+        form.on('select(work_id)', function(data){
+            var work_id = data.value;
+            $.ajax({
+                url:'/api/Work/selbyid',
+                type:'post',
+                dataType:'json',
+                data:{
+                    work_id:work_id,
+                },
+                success:function (data) {
+                    // alert(data)
+                    if (data.code==1){
+                        $("#work_direction_id").html("");
+                        var work_direction_id = document.getElementById ("work_direction_id");
+                        for (var i=0;i<data.data.length;i++){
+                            var opt = document.createElement("option");
+                            opt.value = data.data[i]['did'];
+                            opt.innerText = data.data[i]['dname'];
+                            work_direction_id.appendChild (opt);
+                            form.render('select');
+                        }
+
+                    }else{
+                        $("#work_direction_id").html("");
+                        form.render('select');
+                        layer.msg(data.msg)
+                    }
+                }
+            });
+            //防止页面跳转
+            return false;
+        });
+
+        //获取职业级别
+        form.on('select(work_direction_id)', function(data){
+            var work_direction_id = data.value;
+            $.ajax({
+                url:'/api/Work/getLevelByid',
+                type:'post',
+                dataType:'json',
+                data:{
+                    work_direction_id:work_direction_id,
+                },
+                success:function (data) {
+                    // alert(data)
+                    if (data.code==1){
+                        $("#work_level_id").html("");
+                        var work_level_id = document.getElementById ("work_level_id");
+                        for (var i=0;i<data.data.length;i++){
+                            var opt = document.createElement("option");
+                            opt.value = data.data[i]['lid'];
+                            opt.innerText = data.data[i]['level'];
+                            work_level_id.appendChild (opt);
+                            form.render('select');
+                        }
+
+                    }else{
+                        $("#work_level_id").html("");
+                        form.render('select');
+                        layer.msg(data.msg)
+                    }
+                }
+            });
+            //防止页面跳转
+            return false;
+        });
+
+        //添加表单监听事件
+        form.on('submit(formSubmit)', function (data) {
+            data=data.field;
+            console.log(data);
+            $.ajax({
+                url:'/api/ExamEnroll/update',
+                type:'post',
+                data:data,
+                dataType:'json',
+                success:function (data) {
+                    if (data.code==1){
+                        layer.msg(data.msg,{
+                            icon: 1,//提示的样式
+                            time:  2000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                            end: function () {
+                                //当你在iframe页面关闭自身时
+                                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                parent.layer.close(index); //再执行关闭
+                                parent.location.reload();
+                            }
+                        });
+                    }else{
+                        layer.msg(data.msg);
+                    }
+                }
+            });
+            //防止页面跳转
+            return false;
+        });
+
+    });
+
+
+</script>
+{/block}

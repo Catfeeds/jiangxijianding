@@ -1,0 +1,376 @@
+{extend name="common@layout/layout" /}
+{block name="title"}管理中心{/block}
+{block name="content"}
+
+
+{block name="css"}
+<link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css">
+<style type="text/css">
+    .wen{
+        display: block;
+        width: 300px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+</style>
+{/block}
+{block name='crumbs'}
+<span class="layui-breadcrumb">
+  <a href="/admin" class="county">
+    <i class="layui-icon layui-icon-home"></i>
+    &nbsp;首页
+  </a>
+     <a><cite>收发文管理</cite></a>
+  <a><cite>消息列表</cite></a>
+
+</span>
+{/block}
+{block name="content"}
+  <div class="layui-tab-content">
+
+
+    <ul class="layui-tab-title">
+        <li  name="dian" id='ddd'  value="0" {empty name="$count"}class="layui-this" {/empty}>发送消息列表</li>
+
+        <li name="dian" id='aaa' value="1" {notempty name="$count"} class="layui-this"  {/notempty}> {if !empty($count)}未读消息列表<span class="layui-badge">{$count}</span>{else}未读消息列表{/if}</li>
+    </ul>
+
+        <div class="layui-tab-item fa" {empty name="$count"} style="display: block" {/empty}>
+            <div class="layui-fluid">
+                <div class="layui-card">
+                    <div class="layui-form layui-card-header layuiadmin-card-header-auto" style="margin-top: 30px;">
+                        <div class="layui-form-item">
+                            <button class="layui-btn sousuo" lay-submit lay-filter="formDemo"  value="1"><i class="layui-icon layui-icon-search layuiadmin-button-btn"></i></button>
+                            <button class="layui-btn" id="addExamInfo" >
+                                <i class="layui-icon">&#xe608;</i> 发送消息
+                            </button>
+                            <label class="layui-form-label" style="margin-left: -2%">消息标题</label>
+                            <div class="layui-input-inline">
+
+                                <input type="text" name="title" id="title1"  placeholder="请输入标题关键字" autocomplete="off" class="layui-input" value="{$title1}">
+                            </div>
+                            <label class="layui-form-label" >日期范围</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" name="test6" id="test6" placeholder=" ~ " value="{$time1}">
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-card-body">
+                    <table class="layui-table">
+                        <colgroup>
+                            <col width="5%">
+                            <col width="30%">
+                            <col>
+                            <col>
+                            <col>
+                            <col>
+                            <col>
+                            <col>
+                            <col>
+                            <col>
+                            <col width="340">
+                        </colgroup>
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th>消息标题</th>
+                            <th>收件科室</th>
+
+                            <th>发送时间</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {volist name='data' id='v'}
+                        <tr>
+
+                            <td>{$i}</td>
+                            <td><a class="wen" title="{$v.title}">{$v.title}</a></td>
+                            <td><button class="layui-btn layui-btn-xs shoujian" data-value="{$v.id}">
+                                点击查看
+                            </button></td>
+                             <td>{$v.create_time}</td>
+                            <td>
+                                <button class="layui-btn layui-btn-normal layui-btn-xs edit" data-value="{$v.id}"><i class="layui-icon"></i></button>
+                                <button class="layui-btn layui-btn-danger layui-btn-xs delete" data-value="{$v.id}"><i class="layui-icon"></i></button>
+                                <button class="layui-btn layui-btn-xs yulan" data-value="{$v.id}" ar="1" fu="{$v.fujian}">  <span style="color: white">预览</span> </button>
+
+                            </td>
+                        </tr>
+                         {/volist}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="layui-fluid tp-pages">
+                {$data->render()}
+            </div>
+        </div>
+        <div class="layui-tab-item wei" {notempty name="$count"} style="display: block"{/notempty}> <div class="layui-fluid">
+            <div class="layui-card">
+                <div class="layui-form layui-card-header layuiadmin-card-header-auto" style="margin-top: 30px;">
+                    <div class="layui-form-item">
+                        <button class="layui-btn sousuo" lay-submit lay-filter="formDemo" value="2" ><i class="layui-icon layui-icon-search layuiadmin-button-btn"></i></button>
+                        <label class="layui-form-label" style="margin-left: -2%">消息标题</label>
+                        <div class="layui-input-inline">
+
+                            <input type="text" name="title" id="title2"  placeholder="请输入标题关键字" autocomplete="off" class="layui-input"  value="{$title2}">
+                        </div>
+                        <label class="layui-form-label">日期范围</label>
+                        <div class="layui-input-inline">
+                            <input type="text" class="layui-input"  name="text6" id='test66'  placeholder=" ~ " value="{$time2}">
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-card-body">
+                <table class="layui-table">
+                    <colgroup>
+                        <col width="5%">
+                        <col width="35%">
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                        <col width="340">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>消息标题</th>
+                        <th>发送人</th>
+                        <th>状态</th>
+                        <th>发送时间</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                   {volist name='infos' id='vo'}
+                    <tr>
+
+                        <td>{$i}</td>
+                        <td>{$vo.title}</td>
+                        <td>{$vo.name}</td>
+                        <td>{$vo.status.text}</td>
+                        <td>{$vo.create_time}</td>
+                        <td>
+                            {if $vo.status.val==3}
+                             {if $vo.fujian==1}
+                            <button class="layui-btn layui-btn-xs  layui-btn-disabled">下载</button>
+                             {else /}
+                            <button class="layui-btn layui-btn-xs  layui-btn-disabled">查看</button>{/if}
+                            {else/}
+                             {if $vo.fujian==1}
+                            <button class="layui-btn layui-btn-xs yulan" data-value="{$vo.id}" ar="2" fu="{$vo.fujian}"><span style="color: white">下载</span></button>
+                             {else /}
+                            <button class="layui-btn layui-btn-xs yulan" data-value="{$vo.id}" ar="2" fu="{$vo.fujian}"><span style="color: white">查看</span></button>
+                            {/if}{/if}
+                        </td>
+                    </tr>
+                    {/volist}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+            <div class="layui-fluid tp-pages">
+            {$infos->render()}
+            </div>
+</div>
+{/block}
+
+{block name="script"}
+<script src="__PUBLIC__/js/jquery.min.js"></script>
+<!--<script src="__PUBLIC__/layui/layui.js"></script>-->
+
+<script type="text/javascript">
+
+
+    //添加栏目信息
+    layui.use(['form', 'layer','jquery','laydate'], function () {
+        var form  = layui.form;
+        var $  = layui.jquery;
+
+        var laydate = layui.laydate;
+        if(getQueryString('status')==2){
+            $('#aaa').addClass('layui-this');
+            $('#ddd').removeClass('layui-this');
+            $('.fa').css('display','none');
+            $('.wei').css('display','block');
+        }else if(getQueryString('status')==1){
+            $('#aaa').removeClass('layui-this');
+            $('#ddd').addClass('layui-this');
+            $('.fa').css('display','block');
+            $('.wei').css('display','none');
+        }
+        $("#addExamInfo").click(function () {
+            var id = $("#addExamInfo").val();
+            layer.open({
+                type: 2,
+                anim:1,
+                skin: 'layui-layer-molv',  //加上边框
+                    area: ['50%', '90%'], //宽高
+                    title: "发送消息信息",
+                    content: "/cms/notice/add",  //调到新增页面
+                    yes: function (index, layero) {
+                        //do something
+                        layer.close(index); //如果设定了yes回调，需进行手工关闭
+                    }
+                });
+            }
+    );
+        function getQueryString(name){
+            var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if(r!=null)return  unescape(r[2]); return null;
+        }
+        $('.shoujian').click(function(){
+            var id = $(this).data('value');
+            layer.open({
+                type:2,
+                anim:1,
+                skin: 'layui-layer-molv',
+                area:['50%','90%'],
+                title:"收件人及状态",
+                content:"/cms/notice/show?id="+id,
+                yes:function(index,layero)
+                {
+                    layer.close(index);
+                }
+            })
+        });
+       $('li[name=dian]').click(function()
+       {
+           var di = $(this).val();
+
+           if(di == 0)
+           {
+               $('.fa').css('display','block');
+               $('.wei').css('display','none');
+                location.href = '/cms/notice/index?status=1';
+
+           }else {
+               $('.fa').css('display','none');
+               $('.wei').css('display','block');
+               location.href = '/cms/notice/index?status=2';
+
+           }
+
+
+       });
+
+        laydate.render({
+            elem: '#test6'
+            ,range: '~'
+        });
+        laydate.render({
+            elem: '#test66'
+            ,range: '~'
+        });
+        $(".sousuo").click(function()
+        {
+
+            var status = $(this).val();
+            if(status==2)
+            {
+                var time = $('#test66').val();
+                var title = $('#title2').val();
+            }else if(status==1) {
+                var title = $('#title1').val();
+                var time = $('#test6').val();
+            }
+
+            location.href = '/cms/notice/index?time='+time+"&title="+title+"&status="+status;
+        })
+    });
+
+    //删除报考信息
+    layui.use(['form', 'layer','jquery'], function () {
+        var layer = layui.layer;
+        var $  = layui.jquery;
+        $(".delete").click(function () {
+            var id = $(this).data('value');
+
+            layer.confirm("确认删除?", function () {
+                $.ajax({
+                    url: "/api/OaNotice/delete",
+                    data: {'id': id},
+                    type: "post",
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.code == 1) {
+                            layer.msg(data.msg);
+                            location.reload();
+                        } else {
+                            layer.msg(data.msg);
+                        }
+                    }
+                })
+            })
+        });
+    });
+
+    //修改栏目信息
+    layui.use(['form', 'layer','jquery'], function () {
+        var form  = layui.form;
+        var $  = layui.jquery;
+        $(".edit").click(function () {
+            var id = $(this).data('value');
+            layer.open({
+                type: 2,
+                anim:1,
+                skin: 'layui-layer-molv',  //加上边框
+                area: ['75%', '90%'], //宽高
+                title: "修改消息信息",
+                content: "/cms/notice/update?id="+id,  //调到新增页面
+                yes: function(index, layero){
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+        $(".yulan").click(function()
+        {
+            var id = $(this).data('value');
+            var type = $(this).attr('ar');
+            var fujian = $(this).attr('fu');
+            layer.open({
+                type:2,
+                anim:1,
+                skin: 'layui-layer-rim',
+                area:['90%','90%'],
+                title:'预览',
+                content:"/cms/notice/preview?id="+id+"&type="+type+"&fujian="+fujian,
+                yes:function(index,layero)
+                {
+                    layer.close(index);
+                },
+                cancel:function(){
+                    if(type==2)
+                   {
+                       $('#aaa').addClass('layui-this');
+                       $('#ddd').removeClass('layui-this');
+                       $('.fa').css('display','none');
+                       $('.wei').css('display','block');
+                   }
+                    location.reload();
+                }
+            })
+        })
+
+    });
+
+
+
+
+</script>
+{/block}

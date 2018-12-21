@@ -1,0 +1,78 @@
+{include file='content/daohang'}
+<div class=" xiangqing">
+    <div class="layui-col-xs9">
+        <style type="text/css">
+            .zuixin ul li {
+                line-height: 30px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .zuixin ul li span {
+                width: 20px;
+                height: 20px;
+                display: inline-block;
+                background: #C52730;
+                color: white;
+                text-align: center;
+                margin-right: 10px;
+                margin-top: 10px;
+                line-height: 20px;
+            }
+            img {
+                border: 0;
+                max-width: 100%;
+            }
+        </style>
+        <h3 class="baoming_title">
+            <span class="baoming_title_span" >{if $data.guide_id==37}{$data.exam_type}{else /}{$data.guide_name}{/if}</span>
+            <span class="layui-breadcrumb rightfloat" lay-separator=">">
+				  <a target="_blank" href="/">首页</a>
+				  <a  href="/cms/index/category?id={$data.guide_id}">{if empty($contact)}{$data.guide_name}{else /}{$contact}{/if}</a>
+				  <a><cite>{if $data.guide_id==37}{$data.exam_type}{else /}{$data.guide_name}{/if}</cite></a>
+				</span>
+        </h3>
+        <div class="xiangqing_header">
+            <h2 style="color:#F00;">{if $data.red==1}{$data.title}
+                {else} {$data.title} {/if}
+            </h2>
+            <p>来源：{$data.source}</p>
+            <p>时间:{$data.time}</p>
+        </div>
+        <div class="baoming_main">
+          {$data.content}
+
+        </div>
+       </div>
+
+        <div class="layui-col-xs3 baomingrukou">
+            <h3 class="baoming_title"><span class="baoming_title_span">{$data.guide_name}</span></h3>
+            <div class="baomingrukou_main zuixin">
+            <ul>
+                {volist name='articles' id='vv' key='k'}
+                <li><a  href="{$vv.url}"><span>{$k}</span>{$vv.title}</a></li>
+                {/volist}
+            </ul>
+            </div>
+
+        </div>
+
+</div>
+
+{include file="content/foot"}
+</body>
+
+</html>
+
+<script src="/static/layui/layui.js" type="text/javascript" charset="utf-8"></script>
+<script src="/static/layui/layui.all.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use('jquery', function(){
+        $ = layui.jquery;
+        $.get('daohang.html', function(data) {
+            $(".daohang").html(data);
+        });
+
+    });
+</script>

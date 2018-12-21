@@ -1,0 +1,61 @@
+{extend name="common@layout/nonelayout" /}
+
+{block name="content"}
+<div class="layui-tab-content">
+
+    <table border="1" class="layui-table" lay-even>
+        <colgroup>
+            <col width="210">
+            <col>
+            <col>
+            <col>
+            <col>
+            <col>
+            <col>
+        </colgroup>
+        <thead>
+        <tr>
+            <th>工种</th>
+            <th>证书编号</th>
+            <th>级别</th>
+            <th>证书创建时间</th>
+            <th>证书到期时间</th>
+            <th>添加时间</th>
+        </tr>
+        </thead>
+        <tbody>
+        {volist name='list' id='vo'}
+        <tr>
+            <th>{$vo->work->name}</th>
+            <th>{$vo.card_no}</th>
+            <th>{$vo.card_level}</th>
+            <th>{$vo.card_create_time}</th>
+            <th>{$vo.card_expire_time}</th>
+            <th>{$vo.create_time}</th>
+        </tr>
+        {/volist}
+        </tbody>
+
+    </table>
+</div>
+{/block}
+
+{block name='script'}
+<script>
+    layui.use(['form', 'laydate'], function () {
+        var form = layui.form, $ = layui.jquery;
+        //修改
+        $(".edit-manage").click(function () {
+            var id = $(this).data('value');
+            layer.open({
+                type: 2,
+                anim: 1,
+                skin: 'layui-layer-molv',
+                area: ['70%', '90%'],
+                title: "修改专家工种权限",
+                content: urladdr.editExpertManage + id,  //调到新增页面
+            });
+        });
+    });
+</script>
+{/block}

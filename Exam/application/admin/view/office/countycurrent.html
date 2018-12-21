@@ -1,0 +1,113 @@
+{extend name="common@layout/layout" /}
+{block name='title'}科室管理{/block}
+
+{block name='crumbs'}
+<span class="layui-breadcrumb" lay-separator="">
+  <a href="/admin" class="county">
+    <i class="layui-icon layui-icon-home"></i>
+    &nbsp;首页
+  </a>
+  {eq name='flag' value='1'}<a href="{:url('province')}"><cite>省科室</cite></a>{/eq}
+  {neq name='flag' value='3'}<a href="{:url('city',['cityId'=>input('route.cityId')])}"><cite>市科室</cite></a>{/neq}
+  <a><cite>县科室</cite></a>
+</span>
+{/block}
+{block name='content'}
+<div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+    <ul class="layui-tab-title">
+        <li class="layui-this"><a href="">县级中心科室</a></li>
+    </ul>
+</div>
+<div class="layui-tab-content">
+
+    <div class="layui-form layui-card-header layui-inline" style="padding-bottom: 10px;">
+        <form action="{:request()->baseurl()}" method="post">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">科室名称</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="name" autocomplete="off" placeholder="请输入"
+                               value="{$Think.session.search.name}" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn layuiadmin-btn-useradmin" lay-submit>
+                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <button class="layui-btn add-office" data-value="{$cityId}" style="float: right;margin-bottom: 5px;">创建科室</button>
+    <table class="layui-table" lay-even>
+        <tr>
+            <td>ID</td>
+            <td>科室名称</td>
+            <td>状态</td>
+            <td>创建时间</td>
+            <td width="85">操作</td>
+        </tr>
+        {volist name='list' id='vo'}
+        <tr>
+            <td>{$i}</td>
+            <td>{$vo.name}</td>
+            <td>{$vo.status?'<span style="color: green;font-weight: 700;">启用</span>':'<span
+                    style="color: red;font-weight: 700;">禁用</span>';}
+            </td>
+            <td>{$vo.create_time}</td>
+            <td>
+                <button class="layui-btn layui-btn-xs">修改</button>
+                <button data-value="{$vo.id}" class="layui-btn layui-btn-xs layui-btn-danger delete-office">删除</button>
+            </td>
+        </tr>
+        {/volist}
+    </table>
+    <div class="layui-fluid tp-pages">
+        {$list->render()}
+    </div>
+    <div style="clear: both;"></div>
+</div>
+{/block}
+
+{block name='script'}
+<script>
+    layui.use(['jquery', 'layer'], function () {
+        var $ = layui.jquery;
+        //添加
+        $('.add-office').on('click', function () {
+            center_id = $(this).data('value');
+            layer.open({
+                type: 2,
+                anim: 1,
+                skin: 'layui-layer-molv',
+                area: ['500px', '330px'],
+                title: "添加科室",
+                content: urladdr.addOffice + center_id,
+            });
+        });
+        //删除
+        $('.delete-office').on('click', function () {
+            id = $(this).data('value');
+            layer.confirm('是否确认该操作？', {btn: ['确定', '取消'], title: "提示"}, function () {
+                $.ajax({
+                    type: "POST",
+                    url: "/api/office/delete",
+                    data: {'id': id},
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.code > 0) {
+                            layer.msg(data.msg, {icon: 1, time: 1000}, function () {
+                                layer.close(layer.index);
+                                window.parent.location.reload();
+                            });
+                        } else {
+                            layer.msg(data.msg, {icon: 5});
+                        }
+                    }
+                });
+            });
+        });
+
+    });
+</script>
+{/block}

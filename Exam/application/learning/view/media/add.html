@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>表单组合</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css">
+    {load href="__STATIC__/css/common/page.css"/}
+    <style>
+        .form-control {
+            width: 31px;
+            height: 28px;
+            margin-left: -24px;
+            border-radius: 2px;
+            margin-top: 3px;
+            border: 1px solid #D8D8D8;
+            margin-left: -29px;
+        }
+        .layui-form-radio>i {
+            margin-right: 8px;
+            font-size: 15px;
+            color: #c2c2c2;
+        }
+        .labe-width {
+            width: 102px;
+        }
+        .setvolume {
+            width: 40px;
+            float: right;
+            margin-top: -8px;
+        }
+        .setvolume_font {
+            float: left;
+            margin-top: 9px;
+            margin-left: -31px;
+        }
+        .setvolume_font2 {
+            float: right;
+            margin-top: -30px;
+            margin-right: -14px;
+        }
+        .setvolume_title {
+            height: 41px;
+        }
+        .spancol {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<form class="layui-form">
+    <div class="layui-fluid">
+        <div class="layui-card">
+            <div class="layui-card-body" style="padding: 15px;">
+                <form class="layui-form" action="" lay-filter="component-form-group">
+                    <input type="hidden" name="id" value="">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">试题名称</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="file_name" lay-verify="required" value="" autocomplete="off" placeholder="请输入试题名称" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">用户类型</label>
+                        <div class="layui-input-block c">
+                            <input type="radio" name="type" value="1" title="考评员学习资料" checked>
+                            <input type="radio" name="type" value="2" title="用户学习资料" >
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button type="submit" class="layui-btn" lay-submit lay-filter="formSubmit">提交</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</form>
+
+{load href="__PUBLIC__/layui/layui.js"/}
+{load href="__PUBLIC__/layui/lay/modules/code.js"/}
+<script>
+    layui.use(['form', 'laydate','jquery','layer'],
+        function() {
+            var form = layui.form,
+                layer = layui.layer,
+
+                laydate = layui.laydate;
+            var $ = layui.jquery;
+
+            //时间
+            var myDate = new Date();
+            laydate.render({
+                elem: '#print'
+                ,type: 'datetime'
+                ,min: myDate.toLocaleDateString()
+                ,range: '到'
+                ,format: 'yyyy-MM-dd HH:mm:ss'
+            });
+
+            //添加表单监听事件
+            form.on('submit(formSubmit)', function (data) {
+                data=data.field;
+                $.ajax({
+                    url:'/api/LearningMedia/addText',
+                    type:'post',
+                    data:data,
+                    dataType:'json',
+                    success:function (data) {
+                        if (data.code==1){
+                            parent.id = data.data.id;
+                            $('#testListAction', window.parent.document).click();
+                            return false;
+                        }else{
+                            layer.msg(data.msg);
+                        }
+                    }
+                });
+                //防止页面跳转
+                return false;
+            });
+        });
+
+</script>
+</body>
+</html>

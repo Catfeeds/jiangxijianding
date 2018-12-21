@@ -1,0 +1,96 @@
+
+{extend name="layout"}
+{block name="css"}
+{/block}
+{block name="content"}
+<body>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+            <div class="layui-form-item">
+                <!--<button class="layui-btn" id="addExamInfo">-->
+                <!--<i class="layui-icon">&#xe608;</i> 添加-->
+                <!--</button>-->
+            </div>
+        </div>
+        <div class="layui-card-body">
+            <table class="layui-table">
+                <colgroup>
+                    <col width="5%">
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>鉴定计划</th>
+                    <th>工种</th>
+                    <th>方向</th>
+                    <th>级别</th>
+                    <th>理论</th>
+                    <th>实操</th>
+                    <th>综合</th>
+                </tr>
+                </thead>
+                <tbody>
+                {volist name="gradedata" id="vo"}
+                <tr>
+                    <td>{$vo['id']}</td>
+                    <td>{$vo['title']}</td>
+                    <td>{$vo['workname']}</td>
+                    <td>{$vo['directionname']}</td>
+                    <td>{$vo['level']}</td>
+                    <td>{$vo['theory_score']}</td>
+                    <td>{$vo['watch_score']}</td>
+                    <td>{$vo['synthesize_score']}</td>
+                </tr >
+                </tbody>
+                {/volist}
+            </table>
+        </div>
+    </div>
+</div>
+
+
+</body>
+{/block}
+{block name="script"}
+<script type="text/javascript">
+    layui.use('element', function(){
+        var element = layui.element;
+    });
+
+    layui.use(['form', 'layer','jquery'], function () {
+        $('.applyinvoice').on('click', function () {
+            id = $(this).data('value');
+            layer.open({
+                type: 2,
+                area: ['500px', '650px'],
+                title: "填写发票信息",
+                content: '/examinee/Bill/applyinfo?id='+id,
+            });
+            return false;
+        });
+
+        $('.printbill').on('click', function () {
+            id = $(this).data('value');
+            layer.open({
+                type: 2,
+                area: ['500px', '650px'],
+                title: "发票申请",
+                content: '/examinee/Bill/printbill?id='+id,
+            });
+            return false;
+        });
+    });
+
+
+
+
+</script>
+{/block}

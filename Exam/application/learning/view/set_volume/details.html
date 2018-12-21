@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css">
+
+<body>
+
+{volist name="data" id="vo" }
+<ul class="layui-tab-content" style="width: 60%;margin: 0 auto;">
+    {switch name="$vo.type" }
+    {case value="1" }
+    <div class="test">
+        <div class="warp_test">
+            <table class="outer_table">
+                <tbody>
+                <tr>
+                    <td><h5> {$i}、 {$vo.topic_name}</h5><br>
+                        <p>A、{$vo.option_a}</p><p>B、{$vo.option_b}</p><p>C、{$vo.option_c}</p><p>D、{$vo.option_d}</p><br>
+                        <table cellpadding="0" cellspacing="0" class="choice_table">
+                            <tbody>
+                            <tr>
+                                <td>
+                                    正确答案为：{$vo.answer}
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table></td>
+                    <td align="right"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div><hr>
+    {/case}
+    {case value="2"}
+    <div class="test">
+        <div class="warp_test">
+            <table class="outer_table">
+                <tbody>
+                <tr>
+                    <td><h5> {$i}、 {$vo.topic_name} </h5><br>
+                        <p>A、{$vo.option_a}</p><p>B、{$vo.option_b}</p><p>C、{$vo.option_c}</p><p>D、{$vo.option_d}</p><br>
+                        <table cellpadding="0" cellspacing="0" class="choice_table">
+                            <tbody>
+                            <tr>
+                                <td>
+                                    正确答案为：{$vo.answer}
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table></td>
+                    <td align="right"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div><hr>
+    {/case}
+    {case value="3"}
+    <div class="test">
+        <div class="warp_test">
+            <table class="outer_table">
+                <tbody>
+                <tr>
+                    <td><h5> {$i}、 {$vo.topic_name} </h5><br>
+                        <table cellpadding="0" cellspacing="0" class="choice_table">
+                            <tbody>
+                            <tr>
+                                <td>
+                                    正确答案为：{$vo.answer}
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table></td>
+                    <td align="right"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div><hr>
+    {/case}
+    {/switch}
+</ul>
+{/volist}
+
+</body></html>
+{load href="__PUBLIC__/layui/layui.js"/} {load href="__PUBLIC__/layui/lay/modules/code.js"/} {load href="__PUBLIC__/js/jquery.min.js"}
+<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+<script>
+    layui.use(['form', 'layedit', 'laydate'],
+    function() {
+        var form = layui.form,
+            layer = layui.layer,
+            layedit = layui.layedit,
+            laydate = layui.laydate;
+    });
+
+    layui.use('element',
+        function() {
+            var element = layui.element;
+        });
+    layui.use(['form', 'layer', 'jquery'],
+        function() {
+            var form = layui.form;
+            var $ = layui.jquery;
+        });
+</script>

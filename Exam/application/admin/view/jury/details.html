@@ -1,0 +1,242 @@
+{extend name="common@layout/nonelayout" /}
+{block name="css"}{/block}
+{block name="content"}
+<body>
+<form class="layui-form"  style="white-space:nowrap;">
+
+    {notempty name="getArea"}
+        {notempty name="examArea"}
+    <select name="work_type" id="work_type" lay-verify="required" autocomplete="off"  lay-filter="work_type">
+        <option value="">请选择考点</option>
+            {volist name="examArea" id="vo"}
+                {if $vo.organize_id}
+                <option value="{$vo.organize_id}" title="2">{$vo.name}
+                    {switch name="$vo.type" }
+                    {case value="1"}鉴定所站{/case}
+                    {case value="2"}院校{/case}
+                    {case value="3"}机构{/case}
+                    {default /}0
+                    {/switch}</option>
+                {else}
+                <option value="{$vo.center_id}," title="3">{$vo.exam_site}</option>
+                {/if}
+            {/volist}
+    </select>
+    <button class="layui-btn" style="margin-top: 20px;width: 23%; margin-left: 40%;" lay-submit lay-filter="choiceJury">确认考点</button>
+    <input type="hidden" value="{$exam_plan_id}" id="exam_plan_id">
+    <input type="hidden" id="batch" value="">
+
+    {notempty name="staff_log"}
+    <table class="layui-table">
+        <center><h3>已分配列表</h3></center>
+    <tr>
+        <th width="400px">姓名</th>
+        <th width="400px">分配地点</th>
+        <th width="400px">分配角色</th>
+        <th width="400px">分配时间</th>
+    </tr>
+        {volist name="staff_log" id="vo"}
+        <tr>
+            <td width="400px">{$vo.name}</td>
+            <td width="400px">{volist name="examArea" id="v"}{if($vo.site_type == 2 && $vo.site_id == $v.organize_id)}
+                {$v['name']}
+                {switch name="$v.type" }
+                {case value="1"}鉴定所站{/case}
+                {case value="2"}院校{/case}
+                {case value="3"}机构{/case}
+                {default /}0
+                {/switch}{/if}{if($vo.site_type == 3 && $vo.site_id == $v.center_id)}{$v['exam_site']}{/if}{/volist}</td>
+            <td width="400px">{$vo.type}</td>
+            <td width="400px">{$vo.create_time}</td>
+        </tr>
+        {/volist}
+
+    </table>
+    {/notempty}
+        {/notempty}
+        {empty name="examArea"}
+                <center><h2><span style="color: red">暂无地区可分配</span></h2></center>
+        {/empty}
+
+    {else}
+
+    <form class="layui-form">
+        <table border="1" class="layui-table" width="100px" >
+            <h3 style="text-align: center">鉴定计划详情</h3>
+            <tr>
+                <td>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">报名时间</label>
+                    </div>
+                </td>
+                <td>
+                    {volist name="arrWork" length='1' id="vo"}
+                    {$vo.enroll_starttime}
+                    {/volist} 到
+                    {volist name="arrWork" length='1' id="vo"}
+                    {$vo.enroll_endtime}
+                    {/volist}
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label" >审核截止时间</label>
+                    </div>
+                </td>
+                <td>
+                    {volist name="arrWork" length='1' id="vo"}
+                    {$vo.audit_endtime}
+                    {/volist}
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">缴费截止时间</label>
+                    </div>
+                </td>
+                <td>
+                    {volist name="arrWork" length='1' id="vo"}
+                    {$vo.pay_endtime}
+                    {/volist}
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">打印准考证时间</label>
+                    </div>
+                </td>
+                <td>
+                    {volist name="arrWork" length='1' id="vo"}
+                    {$vo.print_starttime}
+                    {/volist} 到
+                    {volist name="arrWork" length='1' id="vo"}
+                    {$vo.print_endtime}
+                    {/volist}
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">考试时间</label>
+                    </div>
+                </td>
+                <td>
+                    {volist name="arrWork" length='1' id="vo"}
+                    {$vo.exam_time}
+                    {/volist}
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">工种类型</label>
+                    </div>
+                </td>
+
+                <td>
+
+                    {volist name="arrWork" id="vo"}
+                    {$vo.typename;break;}
+                    {/volist}
+                </td>
+                <td></td>
+
+
+            </tr>
+
+
+            <tr>
+                <td>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">工种名称</label>
+                    </div>
+                </td>
+                <td>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">工种方向</label>
+                    </div>
+                </td>
+                <td>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">工种级别</label>
+                    </div>
+                </td>
+            </tr>
+            {volist name="arrWork" id="vo"}
+            <tr>
+                <td>
+                    {$vo.workname}
+                </td>
+                <td>
+                    {volist name="vo.wdname" id="v"}
+                    {$v}
+                    <br>
+                    {/volist}
+                </td>
+                <td>
+                    <!--<span class="layui-bg-orange">-->
+                    {volist name="vo.level" id="v"}
+                    {$v}
+                    {/volist}
+                    <!--</span>-->
+                </td>
+                {/volist}
+            </tr>
+        </table>
+
+    </form>
+
+    {/notempty}
+
+
+
+</form>
+
+</body>
+{/block}
+{/extend}
+{block name="script"}
+<script>
+    layui.use(['form', 'layer','jquery'], function () {
+        var form = layui.form;
+        var $ = layui.jquery;
+        //监听下拉菜单 赋值
+        form.on('select(work_type)', function (data) {
+            category = data.value;
+            categoryName = data.elem[data.elem.selectedIndex].title;
+            form.render('select');
+            $("#batch").val(categoryName);
+        });
+        //监听提交
+        form.on('submit(choiceJury)', function (data) {
+            var code = $("#work_type").val();
+            var area_type = $("#batch").val();
+            // alert(area_type);
+            var exam_plan_id = $("#exam_plan_id").val();
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['1000px', '90%'], //宽高
+                title: "选择考评人员",
+                content: urladdr.choiceJury+"?code="+code+"&typeArea="+area_type+"&exam_plan_id="+exam_plan_id,  //考评人员页面
+                yes: function(index, layero){
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+            //防止页面跳转
+            return false;
+        });
+    });
+
+</script>
+{/block}
+

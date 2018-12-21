@@ -1,0 +1,43 @@
+{extend name="layout"}
+{block name="title"}{/block}
+{block name="css"}
+{/block}
+{block name="content"}
+<p class="alone-download-btn">
+    <a href="{:url('/learning/topic/officialChoose')}" class="layui-btn layui-btn-primary alone-download-right" style="margin-top: 20%;margin-left: 33%;">
+        考&nbsp;&nbsp;&nbsp;&nbsp;生
+    </a>
+    <button class="layui-btn layui-btn-primary alone-download-right reset" style="margin-top: 20%;margin-left: 18%;">
+        考评人员
+    </button>
+</p>
+{/block}
+{block name="script"}
+<script>
+    layui.use(['form', 'layer', 'jquery'], function () {
+        var form = layui.form, $ = layui.jquery;
+        $(".reset").click(function () {
+
+            $.ajax({
+                url:'/api/LearningTopicOfficial/selectLevel',
+                type:'post',
+                data:{
+                    work: 0,
+                    direction: 0,
+                    level: 0
+                },
+                dataType:'json',
+                success:function (data) {
+
+                    if (data.code==1){
+                        window.parent.location.href='/learning/topic/official?work=0&level=0&direction=0';
+                    }else{
+                        layer.msg(data.msg);
+                    }
+                }
+            });
+            return false;
+        });
+        });
+</script>
+{/block}

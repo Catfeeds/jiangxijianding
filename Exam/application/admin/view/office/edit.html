@@ -1,0 +1,60 @@
+{extend name="common@layout/nonelayout" /}
+
+{block name="content"}
+<div class="layui-tab-content">
+    <form class="layui-form">
+        <table border="1" class="layui-table">
+            <colgroup>
+                <col width="50">
+                <col width="100">
+                <col width="50">
+                <col width="100">
+            </colgroup>
+            <tr>
+                <th width="100">科室名称:</th>
+                <td colspan="3">
+                    <input type="hidden" name="id" value="{$res.id}"/>
+                    <input type="text" name="name" value="{$res.name}" required lay-verify="required" placeholder="科室名称"
+                           autocomplete="off" class="layui-input">
+                </td>
+            </tr>
+            <tr>
+                <th width="100">状态:</th>
+                <td colspan="3">
+                    <input type="radio" name="status" value="1" title="启用" {$res.status==1?'checked':'';}>
+                    <input type="radio" name="status" value="0" title="禁用" {$res.status==0?'checked':'';}>
+                </td>
+            </tr>
+        </table>
+        <button class="layui-btn" style="position: absolute;right: 10px;bottom:10px;" id="" lay-submit
+                lay-filter="formSubmit">确认提交
+        </button>
+    </form>
+</div>
+{/block}
+
+{block name='script'}
+<script>
+    layui.use(['form', 'laydate'], function () {
+        var form = layui.form, $ = layui.jquery;
+        //监听提交
+        form.on('submit(formSubmit)', function (data) {
+            var formData = data.field, button = $(this);
+            button.addClass('layui-btn-disabled').attr('disabled', true);
+            $.post(urladdr.doEditOffice, formData, function (data) {
+                if (data.code > 0) {
+                    layer.msg(data.msg, {icon: 1, time: 1000}, function () {
+                        layer.close(layer.index);
+                        window.parent.location.reload();
+                    });
+                } else {
+                    layer.msg(data.msg, {icon: 5}, function () {
+                        button.removeClass('layui-btn-disabled').removeAttr('disabled');
+                    });
+                }
+            });
+            return false;
+        });
+    });
+</script>
+{/block}

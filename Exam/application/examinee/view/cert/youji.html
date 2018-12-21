@@ -1,0 +1,108 @@
+
+{extend name="nonelayout"}
+{block name="css"}
+{/block}
+{block name='content'}
+    <div class="YouJi_main">
+        <h2 class="tanchuang_title">邮寄地址确认</h2>
+        <div class="youji_main">
+            <p><img src="__PUBLIC__/front/img/map.png"/></p>
+            <p class="graycolor">地址</p>
+            <p>{$userinfo.address}</p>
+            <p class="fengexian"></p>
+            <p><img src="__PUBLIC__/front/img/phone.png"/></p>
+            <p class="graycolor">电话</p>
+            <p>{$userinfo.phone}</p>
+
+        </div>
+        <p class="graycolor" style="text-align: center;">温馨提示：邮费到付</p>
+        <div class="double_btn double_qxyj">
+            <div class="dayin_btn payment margin_right_15 formit" data-value="{$userinfo.id}">确定</div>
+            <div class="kong_btn payment layui-layer-close edit">修改</div>
+        </div>
+    </div>
+
+<div class="XiuGaiDiZhi layui-form" style="display: none;">
+    <h2 class="tanchuang_title">地址修改</h2>
+    <div class="XiuGaiDiZhi_main">
+        <div class="layui-form-item">
+            <label class="layui-form-label">邮寄地址</label>
+            <div class="layui-input-block">
+                <input type="text" name="address" id="address" placeholder="请输入地址" required lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">电话</label>
+            <div class="layui-input-block">
+                <input type="text" name="phone" id="phone" placeholder="请输入电话" required lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="double_btn double_qx">
+        <div class="dayin_btn payment margin_right_15 editMail" data-value="{$userinfo.id}">确定</div>
+        <div class="gray_btn payment">取消</div>
+    </div>
+</div>
+{/block}
+{block name='script'}
+<script type="text/javascript">
+    layui.use(['form', 'layer','jquery','element'], function () {
+        var $ = layui.jquery, layer = layui.layer;
+
+        $(".formit").on('click',function () {
+            id = $(this).data('value');
+            $.post('/api/Certificate/certMail', {'id': id}, function (data) {
+                layer.msg(data.msg, {icon: data.code}, function () {
+                    //当你在iframe页面关闭自身时
+                    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                    parent.layer.close(index); //再执行关闭
+                    parent.location.reload();
+                });
+            });
+            return false;
+        })
+
+    $('.cancel').on('click',function () {
+        //当你在iframe页面关闭自身时
+        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+        parent.layer.close(index); //再执行关闭
+        parent.location.reload();
+    })
+
+    $('.edit').on('click',function () {
+        layer.open({
+            type: 1,
+            title: false,
+            shadeClose: false,
+            shade: 0.8,
+            area: ['340px', '310px'],
+            content: $('.XiuGaiDiZhi'),
+            cancel: function(index, layero) {
+                $(".XiuGaiDiZhi").css('display', 'none');
+            }
+        });
+    })
+        
+        $('.editMail').on('click',function () {
+            var id = $(this).data('value');
+            var address = $('#address').val();
+            var phone = $('#phone').val();
+            $.post('/api/Certificate/editCertMail', {'id': id,'address':address,'phone':phone}, function (data) {
+                layer.msg(data.msg, {icon: data.code}, function () {
+                    //当你在iframe页面关闭自身时
+                    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                    parent.layer.close(index); //再执行关闭
+                    parent.location.reload();
+                });
+            });
+            return false;
+        })
+    });
+
+
+
+</script>
+{/block}
+
+
+

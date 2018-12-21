@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <!--每个数据项内标签名有哪些，多个用|分割-->
+    <fields>item|time</fields>
+    <!--每个数据项标签名要和文件名一致-->
+    <reject_enroll>
+        <item>材料审核退回11</item>
+        <time>1545125140</time>
+    </reject_enroll>
+    <reject_enroll>
+        <item>材料审核退回222</item>
+        <time>1545125140</time>
+    </reject_enroll>
+    <reject_enroll>
+        <item>材料审核退回333</item>
+        <time>1545125140</time>
+    </reject_enroll>
+    <reject_enroll>
+        <item>材料审核退回444</item>
+        <time>1545125140</time>
+    </reject_enroll>
+</root>

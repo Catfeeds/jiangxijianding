@@ -1,0 +1,163 @@
+{extend name="common@layout/layout" /}
+{block name="title"}临时人员分配{/block}
+{block name="css"}
+<style>
+    .layui-form-label {
+        width: 70px !important;
+        padding: 9px 15px 10px 0 !important;
+    }
+    .layui-inline {
+        margin-right: 0 !important;
+    }
+    .title {
+        display: block;
+        width: 150px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+</style>
+{/block}
+{block name='crumbs'}
+<span class="layui-breadcrumb">
+  <a href="/admin" class="county">
+    <i class="layui-icon layui-icon-home"></i>
+    &nbsp;首页
+  </a>
+  <a><cite>临时人员分配</cite></a>
+</span>
+{/block}
+{block name="content"}
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+
+                <form action="/admin/temporary/index" method="post">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">标题</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="title" id="titleSea" sub="{$map['title']}" value="{$map['title']}" placeholder="请输入" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">工种类型</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="worktype" id="workTypeSea" sub="{$map['worktype']}" value="{$map['worktype']}" placeholder="请输入" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <input type="submit" class="layui-btn layuiadmin-btn-order" value="搜索" id="searchBtn">
+                    </div>
+                </form>
+
+            </div>
+            <table class="layui-table">
+                <thead>
+                <tr>
+                    <th width="50px">ID</th>
+                    <th>标题</th>
+                    <th width="70px">工种类型</th>
+                    <th>开始报名时间</th>
+                    <th>报名截止时间</th>
+                    <th width="100px">考试时间</th>
+                    <th>年份</th>
+                    <th>创建人</th>
+                    <th width="50px">状态</th>
+                    <th width="130px">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {volist name="arrExamPlan" id="vo"}
+                <tr>
+                    <td id="id">{$i}</td>
+                    <td><a  class="title" href="#" title="{$vo['title']}">{$vo['title']}</a></td>
+                    <td>{$vo['work_type_name']}</td>
+                    <td>{$vo['enroll_starttime']}</td>
+                    <td>{$vo['enroll_endtime']}</td>
+                    <td>{$vo['exam_time']}</td>
+                    <td>{$vo['year']}</td>
+                    <td>{$vo['create_name']}</td>
+                    <td>{if ($vo['status']==1)}已发布{else if($vo['status']==1)/}未发布{/if}</td>
+                    <td>
+                        {if $vo->exam_time<$now}
+                        <button class="layui-btn layui-btn-sm layui-disabled" style="background-color: red">
+                            分配
+                        </button>
+                        {else}
+                        <button exam_plan_id="{$vo['id']}" class="layui-btn layui-btn-sm choice">
+                            分配
+                        </button>
+                        {/if}
+                        <button exam_plan_id="{$vo['id']}" class="layui-btn layui-btn-sm detil">
+                            详情
+                        </button>
+                    </td>
+                </tr>
+                {/volist}
+
+                </tbody>
+            </table>
+<div class="layui-form-item">
+
+            <div class="layui-fluid tp-pages">
+                {$arrExamPlan->render()}
+            </div>
+        </div>
+
+{/block}
+{/extend}
+{block name="script"}
+
+<script>
+    layui.use('element', function(){
+        var element = layui.element;
+    });
+    layui.use(['form', 'layer','jquery'], function () {
+        var form = layui.form;
+        var $ = layui.jquery;
+
+        $(".pager li a").click(function () {
+            var title = $("#titleSea").attr('sub');
+            var worktype = $("#workTypeSea").attr('sub');
+            var jury = $("#jurySea").attr('sub');
+            if (title == '' && worktype == '' && jury == '') {
+
+            } else {
+                var a = $(this).attr("href");
+                var url = a + "&title=" + title + "&worktype=" + worktype+"&jury="+jury;
+                $(this).attr("href", url);
+            }
+        });
+
+        $(".detil").click(function () {
+            var id =$(this).attr("exam_plan_id");
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['60%', '90%'], //宽高
+                title: "鉴定计划详情",
+                content: urladdr.detailsTemporary+"?id="+id,  //调到详情页面
+                yes: function(index, layero){
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+
+        $(".choice").click(function () {
+            var id =$(this).attr("exam_plan_id");
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['60%', '90%'], //宽高
+                title: "选择地区",
+                content: urladdr.detailsTemporary+"?id="+id+"&getArea=1",  //调到选择地区页面
+                yes: function(index, layero){
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+
+
+    });
+</script>
+{/block}

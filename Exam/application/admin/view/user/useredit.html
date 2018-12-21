@@ -1,0 +1,121 @@
+{extend name="common@layout/nonelayout" /}
+{block name='css'}
+<style>
+    .layui-form-checkbox span {
+        height: auto;
+    }
+
+    .none-input-input {
+        line-height: 38px;
+        padding-left: 10px;
+        border: 1px solid rgb(230, 230, 230);;
+    }
+</style>
+{/block}
+{block name='content'}
+<div style="width: 97%;margin-top: 20px;">
+    <form class="layui-form" action="">
+        <div class="layui-form-item">
+            <label class="layui-form-label">员工编号</label>
+            <div class="layui-input-inline">
+                <input type="text" disabled required lay-verify="required" placeholder="{$res['username']}"
+                       value="{$res['username']}" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux">创建后无法修改</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">真实姓名</label>
+            <div class="layui-input-block">
+                <input disabled type="text" name="name" value="{$res['name']}" required lay-verify="required"
+                       placeholder="真实姓名"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">所属科室</label>
+            <div class="layui-input-block">
+                <select name="county_type">
+                    {volist name="office" id='vo'}
+                    <option value="{$vo.id}" {$res.office_id==$vo.id?'selected':'disabled';}>{$vo.name}</option>
+                    {/volist}
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">手机号码</label>
+            <div class="layui-input-block">
+                <input disabled type="text" maxlength="11" name="phone" value="{$res['phone']}" required
+                       lay-verify="phone" placeholder="电话" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">添加时间</label>
+            <div class="layui-input-block">
+                <div class="none-input-input">
+                    {$res.create_time}
+                </div>
+
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">最后登录</label>
+            <div class="layui-input-block">
+                <div class="none-input-input">
+                    {$res.update_time}
+                </div>
+
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">拥有角色</label>
+            <div class="layui-input-block">
+                {volist name='role' id='vo'}
+                <input type="checkbox" name="role_id[{$vo.id}]" title="{$vo.name}" lay-skin="primary" {notempty
+                       name="$vo.checked" }checked{else}disabled{/notempty}>
+                {/volist}
+            </div>
+        </div>
+        <input type="hidden" name="id" id="id" value="{$res['id']}">
+
+        <button class="layui-btn layui-btn-warm edit lhj-sub">修改信息</button>
+        <button class="layui-btn submit lhj-sub" style="display:none;" lay-submit lay-filter="formSubmit">确认提交
+    </form>
+</div>
+{/block}
+
+{block name='script'}
+<script>
+    //Demo
+    layui.use('form', function () {
+        var form = layui.form, $ = layui.jquery;
+        $('.edit').on('click', function () {
+            $(this).hide();
+            $('input').removeAttr('disabled');
+            $('option').removeAttr('disabled');
+            form.render();
+            $('.submit').show();
+            return false;
+        });
+        //监听提交
+        form.on('submit(formSubmit)', function (data) {
+            var formData = data.field, button = $(this);
+            button.addClass('layui-btn-disabled').attr('disabled', true);
+            $.post(urladdr.doeditAdmin, formData, function (data) {
+                if (data.code === 1) {
+                    layer.msg(data.msg, {icon: 1, time: 1000}, function () {
+                        layer.close(layer.index);
+                        window.parent.location.reload();
+                    });
+                } else {
+                    layer.msg(data.msg, {icon: 5}, function () {
+                        button.removeClass('layui-btn-disabled').removeAttr('disabled');
+                    });
+                }
+            });
+            return false;
+        });
+    });
+</script>
+{/block}

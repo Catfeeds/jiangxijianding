@@ -1,0 +1,134 @@
+{extend name="/layout/nonelayout"}
+{block name="css"}
+{/block}
+{block name="content"}
+<body>
+<form class="layui-form" >
+<table border="1" class="layui-table" width="100px" >
+    <tr>
+    <div class="layui-form-item">
+        <td>
+            <label class="layui-form-label">申请标题</label>
+            <div class="layui-input-inline">
+                <div class="layui-form-mid layui-word-aux">
+                    <!--<span style="color: skyblue">-->
+                    {volist name="arrWork" length='1' id="vo"}
+                        {$vo.title}
+                    {/volist}
+                    <!--</span>-->
+                </div>
+            </div>
+        </td>
+        <td>
+        <label class="layui-form-label">参加人数</label>
+        <div class="layui-input-inline">
+            <div class="layui-form-mid layui-word-aux">
+                <!--<span style="color: skyblue">-->
+                {volist name="arrWork" length='1' id="vo"}
+                {$vo.exam_num}
+                {/volist}
+                <!--</span>-->
+            </div>
+        </div>
+        </td>
+        <td>
+        <label class="layui-form-label">考试时间</label>
+        <div class="layui-input-inline">
+            <div class="layui-form-mid layui-word-aux">
+                <!--<span style="color: skyblue">-->
+                {volist name="arrWork" length='1' id="vo"}
+                {$vo.exam_time}
+                {/volist}
+                <!--</span>-->
+            </div>
+        </div>
+        </td>
+    </div>
+    </tr>
+    <tr>
+     <div class="layui-form-item">
+        <td>
+        <label class="layui-form-label">申请原因</label>
+        <div class="layui-input-inline">
+            <div class="layui-form-mid layui-word-aux">
+                <!--<span style="color: skyblue">-->
+                {volist name="arrWork" length='1' id="vo"}
+                    {$vo.reason}
+                {/volist}
+                <!--</span>-->
+            </div>
+        </div>
+        </td>
+        <td>
+            <label class="layui-form-label">申请附件</label>
+            <div class="layui-input-inline">
+                <div class="layui-form-mid layui-word-aux">
+                    <!--<span style="color: skyblue">-->
+                    {volist name="arrWork" length='1' id="vo"}
+                        <a href="{$vo.appendix}" target="_block">预览</a>
+                    {/volist}
+                    <!--</span>-->
+                </div>
+            </div>
+        </td>
+    </div>
+    </tr>
+    
+   
+       <tr>
+            <!--<span style="color: skyblue">-->
+            {volist name="arrWork" length='1' id="vo"}
+            {if($vo.reasons != '')}  
+            <div class="layui-form-item"><td>
+                <label class="layui-form-label">不通过原因</label>
+                <div class="layui-input-inline">
+                    <div class="layui-form-mid layui-word-aux">
+                        {$vo.reason} 
+                    </div>
+                </div>
+            </td>
+            </div>
+                {/if}
+                    
+                {/volist}
+                <!--</span>-->
+        </tr>
+    <!-- </table>
+        <table border="1" class="layui-table" width="100px" > -->
+        <tr>
+            <td>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width: 50%">工种名称</label>
+                </div>
+            </td>
+            <td>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width: 50%">工种级别</label>
+                </div>
+            </td>
+        </tr>
+        
+        {volist name="arrWork" id="vo"}
+        <tr>
+            <td>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width: 50%">{$vo.wdname[0]}</label>
+                </div>
+            </td>
+            <td>
+                {volist name="vo.level" id="v"}
+                            {$arr[$v]}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        {/volist}
+            </td>
+        </tr>
+        {/volist}
+            
+    </table>
+           
+
+
+</form>
+</body>
+{/block}
+{/extend}
+{block name="script"}{/block}

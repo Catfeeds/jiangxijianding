@@ -1,0 +1,135 @@
+
+{block name="css"}
+<link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css">
+{/block}
+{block name="content"}
+<body >
+<div  class="layui-body">
+    <header ><h1>上传图片</h1></header>
+    <form class="layui-form" >
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">图片标题</label>
+            <div class="layui-input-inline">
+                <input type="text" id="title" name="title" required lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">状态</label>
+            <div class="layui-input-block">
+                <input type="radio" name="type" class="type" value="1" title="网站轮播图" >
+            </div>
+            <div class="layui-input-block">
+                <input type="radio" name="type" class="type" value="2" title="app轮播图"  >
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">轮播图播放顺序</label>
+            <div class="layui-input-inline">
+                <input type="number" id="sort" name="sort" required lay-verify="required" placeholder="请输入数字" min="0" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">链接地址</label>
+            <div class="layui-input-inline">
+                <input type="text" id="inter" name="inter" required lay-verify="required" placeholder="请输入链接地址" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <input type="hidden" id="url" name="url">
+                <button type="button" class="layui-btn layui-btn-lg audit" id="testl" >
+                    <i class="layui-icon">&#xe67c</i>上传图片
+                </button>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <img src="" alt="">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="sub">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+
+    </form>
+</div>
+</body>
+{/block}
+
+{block name="script"}
+<script src="__PUBLIC__/js/jquery.min.js"></script>
+<script src="__PUBLIC__/layui/layui.js"></script>
+
+
+<script type="text/javascript">
+    layui.use(['form', 'layer','jquery'], function () {
+        var form  = layui.form;
+        var $  = layui.jquery;
+       form.on('radio',function(data){
+           var di = data.value;
+           if(di == 1)
+           {
+               layer.msg('图片上传大小最好是380px*285px',{icon:1,time:2000})
+           }else
+               {
+                   layer.msg('图片上传大小最好是374pt*174pt',{icon:1,time:2000})
+               }
+       })
+        //添加表单监听事件
+        form.on('submit(sub)',function (data) {
+            data = data.field;
+            $.post("/cms/guide/upadd",data,function (data) {
+                if (data.status == 1){
+                    layer.msg(data.msg, {
+                        icon: 1,//提示的样式
+                        time: 2000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                        end: function () {
+                            //当你在iframe页面关闭自身时
+                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                            parent.layer.close(index); //再执行关闭
+                            parent.location.reload();
+                        }
+                    })
+                }else{
+                    layer.msg(data.msg);
+                }
+            })
+            //防止页面跳转
+            return false;
+        });
+
+
+    });
+    layui.use('upload',function(){
+        var upload = layui.upload;
+        //执行实例
+        var uploadInst = upload.render({
+            elem: '#testl'
+            ,url:'/cms/guide/upload'
+            ,drag:true
+            ,done:function(res,index,upload)
+            {
+                if(res.code==1)
+                {layer.msg(res.msg, {
+                    icon: 1,//提示的样式
+                    time: 2000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+
+                })
+                    $('#url').attr('value',res.index);
+                    $('img').attr('src',res.index);
+
+                }else{
+                    layer.msg(res.msg);
+                }
+            }
+
+        })
+    })
+
+</script>
+{/block}

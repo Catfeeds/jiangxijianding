@@ -1,0 +1,371 @@
+{extend name="/layout/nonelayout"}
+{block name="css"}
+{/block}
+{block name="content"}
+<body>
+<form class="layui-form" style="width: 100%">
+    <table border="1" class="layui-table" style="width: 100%">
+        <tr>
+            <td>证件号:</td>
+            <td><input type="text" value="{$logininfo.userpid?$logininfo.userpid:''}" class="layui-input" name="id_card"></td>
+            <td>证件类型:</td>
+            <td>
+                <select  name="id_type"  >
+                    <option value="1" {if($logininfo['id_type']== 1)} selected {/if} >身份证</option>
+                    <option value="2" {if($logininfo['id_type']== 2)} selected {/if} >护照</option>
+                    <option value="3" {if($logininfo['id_type']== 3)} selected {/if} >军官证</option>
+                    <option value="4" {if($logininfo['id_type']== 4)} selected {/if} >港澳台证</option>
+                </select>
+            </td>
+            <td colspan="1" rowspan="2"><img src="{$logininfo.avatar?$logininfo.avatar:''}"> </td>
+        </tr>
+        <tr>
+            <td>姓名:</td>
+            <td><input type="text" class="layui-input" value="{$logininfo.username?$logininfo.username:''}"  name="name"></td>
+            <td>手机:</td>
+            <td><input type="phone" class="layui-input" name="mobile" value="{$logininfo.mobile?$logininfo.mobile:''}"></td>
+        </tr>
+
+        <tr>
+            <td>鉴定名称:</td>
+            <td colspan="2">
+                <input type="hidden" name="id" value="{$arrExamEnroll.id}" >
+                <input type="hidden" id='exam_plan_id' value="{$arrExamEnroll.exam_plan_id}">
+                {$arrExamEnroll.title}
+            </td>
+            <td>鉴定类别:</td>
+            <td>
+                <input type="hidden" id='work_type' value="{$arrExamPlan.work_type}">
+                {$arrExamEnroll.work_type_name}
+            </td>
+
+        </tr>
+        <tr>
+            <td>报考职业(工种):</td>
+            <td colspan="2">
+                <select  name="work_id" id="work_id" lay-filter="work_id" lay-verify="required|work_id">
+                    {volist name='work' id="vo"}
+                    <option value="{$vo['work_id']}" {if($vo['work_id']== $arrExamEnroll.wid)} selected {/if} >{$vo['wname']}</option>
+                    {/volist}
+                </select>
+            </td>
+            <td>报考职业方向:</td>
+            <td >
+                <select  name="work_direction_id" class="type" id="work_direction_id" lay-filter="work_direction_id" lay-verify="required|work_direction_id">
+                    <option value="{$arrExamEnroll.did}"> {$arrExamEnroll.directionname}</option>
+                </select>
+            </td>
+        </tr>
+        <input type="hidden" name="login_id" value="{$logininfo['user_login_id']}">
+        <tr>
+            <td>鉴定级别:</td>
+            <td colspan="4">
+                <select  name="work_level_subject_level" class="type" id="work_level_subject_level" lay-filter="work_level_subject_level" lay-verify="required|work_level_subject_level">
+                    <option value="{$arrExamEnroll.work_level_subject_level}"> {$arrExamEnroll->work_level_subject_level} </option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>考试类型:</td>
+            <td colspan="2">
+                <select  name="exam_type" class="type" lay-filter="exam_type" lay-verify="required|exam_type" disabled="disabled">
+                    <option value="1" {if($arrExamEnroll.exam_type==1)} selected{/if} >新考</option>
+                    <option value="2" {if($arrExamEnroll.exam_type==2)} selected{/if} >补考</option>
+                </select>
+            </td>
+            <td>考生来源:</td>
+            <td>
+                <input type="hidden" name="source" value="{$arrExamEnroll.source}">
+                {switch name="$arrExamEnroll.source"}
+                {case value="1"}鉴定所{/case}
+                {case value="2"}院校{/case}
+                {case value="3"}机构{/case}
+                {case value="-1"}其他{/case}
+                {default /}其他
+                {/switch}
+            </td>
+        </tr>
+        <tr>
+            <td>申报单位:</td>
+            <td colspan="2"></td>
+            <td>现场审核地点:</td>
+            <td>
+                <select  name="audit_site" class="type" id="audit_site" lay-filter="audit_site" lay-filter="required|audit_site">
+                    <option value="{$arrExamEnroll.audit_site}"> {$arrExamEnroll.audit_site} </option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>参加考试日程:</td>
+            <td colspan="2"><span id="exam_time"></span></td>
+            <td>参加考试地点:</td>
+            <td>
+                <select  name="exam_site" class="type" id="exam_site" lay-filter="exam_site" lay-filter="required|exam_site">
+                    <option value="{$arrExamEnroll.exam_site}"> {$arrExamEnroll.exam_site} </option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="5">
+                <button class="layui-btn" id="addorganize" lay-submit lay-filter="formSubmit">确认并立即修改</button>
+            </td>
+        </tr>
+
+    </table>
+</form>
+</body>
+{/block}
+{/extend}
+{block name="script"}
+
+<script>
+    layui.use('element', function(){
+        var element = layui.element;
+    });
+
+    layui.use(['form', 'layer','jquery'], function () {
+        var form = layui.form;
+        var $ = layui.jquery;
+//         //form表单验证
+//         form.verify({
+//             exam_plan_id: function (value) {
+//                 if (value == "") {
+//                     return "鉴定名称必填";
+//                 }
+//             },
+//             work_id: function (value) {
+//                 if (value == "") {
+//                     return "报考职业工种必填";
+//                 }
+//             },
+//             work_direction_id: function (value) {
+//                 if (value == "") {
+//                     return "职业方向必填";
+//                 }
+//             },
+//             work_level_subject_level: function (value) {
+//                 if (value == "") {
+//                     return "鉴定级别必填";
+//                 }
+//             },
+// //            work_type_id: function (value) {
+// //                if (value == "") {
+// //                    return "职业类别必填";
+// //                }
+// //            },
+//             exam_type: function (value) {
+//                 if (value == "") {
+//                     return "考试类型必填";
+//                 }
+//             },
+//         });
+
+
+        //根据鉴定名称获取工种
+        form.on('select(exam_plan_id)', function(data){
+            var exam_plan_id = data.value;
+            $.ajax({
+                url:urladdr.examSelbyid,
+                type:'post',
+                dataType:'json',
+                data:{
+                    exam_plan_id:exam_plan_id,
+                },
+                success:function (data) {
+                    if (data.code==1){
+                        $("#work_id").html("");
+                        $("#work_direction_id").html("");
+                        $("#work_type_id").html("");
+                        $("#work_level_subject_level").html("");
+                        $("#exam_time").html("");
+                        $("#audit_site").html("");
+                        $("#exam_site").html("");
+                        var work_id = document.getElementById ("work_id");
+                        var work_type_id = document.getElementById ("work_type_id");
+                        var exam_time = document.getElementById ("exam_time");
+                        for(var i in data.data[0]) {
+                            var opt = document.createElement("option");
+                            opt.value = data.data[0][i]['wid'];
+                            opt.innerText = data.data[0][i]['code'] +"   "+ data.data[0][i]['name'];
+                            work_id.appendChild (opt);
+                            form.render('select');
+                        };
+                        //返回鉴定类别
+                        var optworktype = document.createElement("option");
+                        optworktype.value = data.data[1]['work_type'];
+                        optworktype.innerText = data.data[1]['work_type_name'];
+                        work_type_id.appendChild (optworktype);
+                        form.render('select');
+                        //返回考试时间
+                        // exam_time.innerText = data.data[1]['exam_time'];
+                        // exam_time.appendChild (exam_time);
+                    }else{
+                        $("#work_id").html("");
+                        $("#work_direction_id").html("");
+                        $("#work_type_id").html("");
+                        $("#work_level_subject_level").html("");
+                        $("#subject_id").html("");
+                        $("#audit_site").html("");
+                        $("#exam_site").html("");
+                        form.render('select');
+                        layer.msg(data.msg)
+                    }
+                }
+            });
+            //防止页面跳转
+            return false;
+        });
+
+        //获取职业方向和级别
+        form.on('select(work_id)', function(data){
+            var work_id = data.value;
+            var exam_plan_id = $("#exam_plan_id").val();
+            var work_type    = $('#work_type').val();
+            $.ajax({
+                url:'/api/ExamEnroll/getlevelByworkid',
+                type:'post',
+                dataType:'json',
+                data:{
+                    work_type:work_type,
+                    work_id:work_id,
+                    alltype_id:exam_plan_id,
+                },
+                success:function (data) {
+                    if (data.code==1){
+                        $("#work_direction_id").html("");
+                        $("#work_level_subject_level").html("");
+                        var work_direction_id = document.getElementById ("work_direction_id");
+                        var work_level_subject_level = document.getElementById ("work_level_subject_level");
+                        for(var i=0;i< data.data[0].length;i++) {
+                            var opt = document.createElement("option");
+                            opt.value = data.data[0][i]['id'];
+                            opt.innerText = data.data[0][i]['wdname'];
+                            work_direction_id.appendChild (opt);
+                            form.render('select');
+                        }
+                        var arr=['高级技师','技师','高级','中级','初级'];
+                        for(var i=0;i< data.data[1].length;i++) {
+                            var optLevel = document.createElement("option");
+                            optLevel.value = data.data[1][i]['wllevel'];
+                            optLevel.innerText = arr[data.data[1][i]['wllevel']-1];
+                            work_level_subject_level.appendChild (optLevel);
+                            form.render('select');
+                        }
+                        var optSubject = document.createElement("option");
+                        optSubject.innerText = data.data[2];
+                        // subject_id.appendChild (optSubject);
+                        // form.render('select');
+
+                    }else{
+                        $("#work_direction_id").html("");
+                        $("#work_level_subject_level").html("");
+                        form.render('select');
+                        layer.msg(data.msg)
+                    }
+                }
+            });
+            //防止页面跳转
+            return false;
+        });
+
+        //获取现场审核地点 参加考试地点
+        form.on('select(work_level_subject_level)', function(data){
+            var exam_plan_id = $("#exam_plan_id").val();
+            var work_type_id = $("#work_type").val();
+            var work_level_subject_level = $("#work_level_subject_level").val();
+            $.ajax({
+                url:urladdr.selAuditExamSite,
+                type:'post',
+                dataType:'json',
+                data:{
+                    exam_plan_id:exam_plan_id,
+                    work_type_id:work_type_id,
+                    work_level_subject_level:work_level_subject_level,
+                },
+                success:function (data) {
+                    if (data.code==1){
+                        $("#audit_site").html("");
+                        $("#exam_site").html("");
+                        var audit_site = document.getElementById ("audit_site");
+                        var exam_site = document.getElementById ("exam_site");
+                        for(var i in data.data[0]) {
+                            var opt = document.createElement("option");
+                            opt.value = data.data[0][i]['name'];
+                            opt.innerText = data.data[0][i]['name'];
+                            audit_site.appendChild (opt);
+                            form.render('select');
+                        }
+                        for(var i in data.data[1]) {
+                            var optLevel = document.createElement("option");
+                            optLevel.value = data.data[1][i]['name'];
+                            optLevel.innerText = data.data[1][i]['name'];
+                            exam_site.appendChild (optLevel);
+                            form.render('select');
+                        }
+                    }else{
+                        $("#audit_site").html("");
+                        $("#exam_site").html("");
+                        form.render('select');
+                        layer.msg(data.msg)
+                    }
+                }
+            });
+            //防止页面跳转
+            return false;
+        });
+
+
+        //添加表单监听事件
+        form.on('submit(formSubmit)', function (data) {
+            data=data.field;
+            if(data.id_type==1 && !(data.id_card.match(/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/)))
+            {
+               layer.msg('身份证号不正确');
+            }
+            if(data.id_type==2 && !(data.id_card.match(/^[a-zA-Z0-9]{3,21}$/)))
+            {
+               layer.msg('护照不正确');
+            }
+            if(data.id_type==3 && !(data.id_card.match(/^[a-zA-Z0-9]{7,21}$/)))
+            {
+               layer.msg('军官证不正确');
+            }
+            if(data.id_type==4 && !(data.id_card.match(/^[a-zA-Z0-9]{5,21}$/)))
+            {
+               layer.msg('港澳台证不正确');
+            }
+            if(!(data.mobile.match(/^1[34578]\d{9}$/)))
+            {
+                layer.msg('手机号格式错误');
+            }
+            $.ajax({
+                url:'/api/ExamEnroll/updateOrganize',
+                type:'post',
+                data:data,
+                dataType:'json',
+                success:function (data) {
+                    if (data.code==1){
+                        layer.msg(data.msg,{
+                            icon: 1,//提示的样式
+                            time:  2000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                            end: function () {
+                                //当你在iframe页面关闭自身时
+                                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                parent.layer.close(index); //再执行关闭
+                                parent.location.reload();
+                            }
+                        });
+                    }else{
+                        layer.msg(data.msg);
+                    }
+                }
+            });
+            //防止页面跳转
+            return false;
+        });
+
+    });
+
+
+</script>
+{/block}

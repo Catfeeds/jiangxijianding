@@ -1,0 +1,412 @@
+
+{block name="css"}
+<link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css">
+{/block}
+{block name="content"}
+<body >
+<div  class="layui-body" style="left: 30px;">
+    <header>
+        <style type="text/css">
+            .layui-form-label
+            {
+                width:16%;
+            }
+            .layui-form-select dl{
+                z-index: 1001;
+            }
+            .layui-form-item
+            {
+                width:70%
+            }
+        </style>
+    </header>
+    <form class="layui-form" style="margin-top: 10px;" >
+        <div class="layui-form-item">
+            <label class="layui-form-label">文章所属栏目 <span style="color:red">*</span></label>
+            <div class="layui-input-inline">
+                <select name="guide_id" lay-verify="required">
+                    <option value="{$data.id}" selected>{$data.guide_name}</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">文章标题 <span style="color:red">*</span></label>
+            <div class="layui-input-inline">
+                <input type="text" id="title" name="title" required lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">标题是否需要加红</label>
+                <div class="layui-input-block">
+                    <input type="radio" name="red" value="0" title="否" checked>
+                    <input type="radio" name="red" value="1" title="是" >
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+            <label class="layui-form-label">文章来源</label>
+            <div class="layui-input-inline">
+                <input type="text" id="source" name="source"  placeholder="请输入来源" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">文章发布时间 <span style="color:red">*</span></label>
+            <div class="layui-input-inline">
+                <input type="text" id="create_time" name="time" required lay-verify="required" placeholder="请选择发布时间" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+            <div class="layui-form-item" id="jian">
+                <label class="layui-form-label">鉴定类型<span style="color:red">*</span></label>
+                <div class="layui-input-inline">
+                    <select name="exam_type" lay-filter="exam_type" id="exam_type" required lay-verify="required" class="type" >
+                        <option value="0" >请选择</option>
+                        {volist name="exam_type" id='v'}
+                        <option value="{$v.id}">{$v.name}</option>
+                         {/volist}
+                    </select>
+
+                </div>
+            </div>
+            <div class="layui-form-item" id="jia" style="display: none;">
+                <label class="layui-form-label">工种类型<span style="color:red">*</span></label>
+                <div class="layui-input-inline">
+                    <select name="work_type" id="work_type" lay-filter="work_type" required lay-verify="required" class="type" >
+                        <option value="0" >请选择</option>
+                        {volist name="work_type" id='vo'}
+                        <option value="{$vo.id}">{$vo.name}</option>
+                        {/volist}
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">鉴定计划<span style="color:red">*</span></label>
+                <div class="layui-input-inline">
+                    <select name="type_exam_id" id="type_exam_id" required lay-verify="required" class="type" >
+
+                    </select>
+                </div>
+            </div>
+        <!--<div class="layui-form-item">-->
+                <!--<label class="layui-form-label">上传附件</label>-->
+
+                <!--<div class="layui-upload">-->
+                    <!--<button type="button" class="layui-btn layui-btn-normal" id="testList">选择多文件</button>-->
+                    <!--<div class="layui-upload-list">-->
+                        <!--<table class="layui-table">-->
+                            <!--<thead>-->
+                            <!--<tr><th>文件名</th>-->
+                                <!--<th>大小</th>-->
+                                <!--<th>状态</th>-->
+                                <!--<th>操作</th>-->
+                            <!--</tr></thead>-->
+                            <!--<tbody id="demoList"></tbody>-->
+                        <!--</table>-->
+                    <!--</div>-->
+                    <!--<button type="button" class="layui-btn" id="testListAction">开始上传</button>-->
+
+                    <!--<button type="button" class="layui-btn" id="back">返回</button>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--<div id="fujian"></div>-->
+
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">文章内容<span style="color:red">*</span></label>
+                <div class="layui-input-block">
+                    <textarea  id="content" name="content" cols="50" rows="15" style="width: 90%;height:300px;margin: 0 auto;" >
+		{if $data.id==12}	<div>
+				<div class="baoming_main">
+					<p>1、根据江西省人力资源和社会保障厅等五部门关于2017年江西省“振兴杯”职业技能大赛的通知（赣人社字〔2018〕168号）要求，对所有参赛选手全部实行网上报名，网报时，请选择相应的报名专题</p>
+					<p>2、考生电子相片用于打印证书，相片应为免冠证件照，规格为90 X 120像素大小，分辨率为300 ；小写jpg格式。</p>
+					<p>3、相同考生在同一考试时间只能申报一个职业工种，考生在填报时应仔细认真，确认无误后再上传电子相片、提交审核，一但提交审核后信息将</p>
+				</div>
+				<h3 class="baoming_title"><span class="baoming_title_span">时间安排</span></h3>
+				<div class="baoming_main_table">
+					<table class="layui-table" border="" cellspacing="" cellpadding="">
+						<colgroup>
+
+						</colgroup>
+						<tbody>
+							<tr>
+								<td>网上注册登记时间</td>
+								<td>现场资格审核时间</td>
+								<td>网上缴费时间</td>
+								<td>准考证打印时间</td>
+								<td>考试时间</td>
+							</tr>
+							<tr>
+								<td>2018.07.02 9：00
+									<p>起</p>2018.09.16 17：00
+									<p>止</p>
+								</td>
+								<td>2018.07.02 9：00
+									<p>起</p>2018.09.16 17：00
+									<p>止</p>
+									<p>（法定假日除外）</p>
+								</td>
+								<td>2018.07.02 9：00
+									<p>起</p>2018.09.16 17：00
+									<p>止</p>
+								</td>
+								<td>2018.07.02 9：00
+									<p>起</p>2018.09.16 17：00
+									<p>止</p>
+								</td>
+								<td>2018.07.02 9：00 </td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<h3 class="baoming_title"><span class="baoming_title_span">注意事项</span></h3>
+				<div class="baoming_main baoming_main_zhuyi">
+					<p>1、请使用IE8.0以上浏览器进行网报，不要使用其他浏览器。</p>
+					<p>2、同时间段的考试，一个身份证只能注册一次，请记住报名序号。不能重复注册。</p>
+					<p>3、在填报个人申报表时，带*号的项必须填写，必填项若出现灰色，请换一个别的工种，触发一下，然后再将填报工种换回你要报考的工种。</p>
+				</div>
+            </div> {else /} {/if}
+			</textarea>
+                </div></div>
+            <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="sub">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+</div>
+    </form>
+</div>
+</body>
+{/block}
+
+{block name="script"}
+<script src="__PUBLIC__/js/jquery.min.js"></script>
+<script src="__PUBLIC__/layui/layui.all.js"></script>
+<script src="__PUBLIC__/ueditor/ueditor.config.js"></script>
+<script src="__PUBLIC__/ueditor/ueditor.all.js"></script>
+
+
+
+<script type="text/javascript">
+  var ue = UE.getEditor('content');
+  function getCOntent()
+  {
+    var content = UE.getEditor('content').getContent();
+    return content;
+  }
+
+    var id = $("#agendaId").val();
+    // layui.use(['upload','layer'], function() {
+    //
+    //     var html='';
+    //     var $ = layui.jquery
+    //             , upload = layui.upload;
+    //     //多文件列表示例
+    //     var demoListView = $('#demoList')
+    //             , uploadListIns = upload.render({
+    //         elem: '#testList'
+    //         , url: 'fujian'
+    //         , accept: 'file'
+    //         , data: {}   //可放扩展数据  key-value
+    //         , multiple: true
+    //         , auto: false
+    //
+    //         , bindAction: '#testListAction'
+    //         , choose: function (obj) {
+    //             var files = this.files = obj.pushFile(); //将每次选择的文件追加到文件队列
+    //             //读取本地文件
+    //
+    //             obj.preview(function (index, file, result) {
+    //                 var tr = $(['<tr id="upload-' + index + '">'
+    //                     , '<td>' + file.name + '</td>'
+    //                     , '<td>' + (file.size / 1014).toFixed(1) + 'kb</td>'
+    //                     , '<td>等待上传</td>'
+    //                     , '<td>'
+    //                     , '<button class="layui-btn layui-btn-mini demo-reload layui-hide">重传</button>'
+    //                     , '<button class="layui-btn layui-btn-mini layui-btn-danger demo-delete">删除</button>'
+    //                     , '</td>'
+    //                     , '</tr>'].join(''));
+    //
+    //                 //单个重传
+    //                 tr.find('.demo-reload').on('click', function () {
+    //                     obj.upload(index, file);
+    //                 });
+    //                 //删除
+    //                 tr.find('.demo-delete').on('click', function () {
+    //                     delete files[index]; //删除对应的文件
+    //                     tr.remove();
+    //                     uploadListIns.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
+    //                 });
+    //
+    //                 demoListView.append(tr);
+    //             });
+    //         }
+    //
+    //         , done: function (res, index, upload) {
+    //             if (res.code == 1){
+    //                 html += '<input type="hidden" name="fujia_id[]" value="'+res.data+'"'+'id="'+res.data+'">'
+    //                 $("#fujian").html(html);
+    //                 var tr = demoListView.find('tr#upload-' + index)
+    //                         , tds = tr.children();
+    //                 tds.eq(2).html('<span style="color: #5FB878;">上传成功</span>');
+    //                 tds.eq(3).html('<button class="layui-btn layui-btn-mini layui-btn-danger fujian-del" value="'+res.data+'">删除</button>'); //清空操作
+    //                delete this.files[index];
+    //                 tr.find('.fujian-del').on('click',function(){
+    //                     var id = $(this).val();
+    //                     $.ajax({
+    //                             url: "/cms/article/Fujiandelete",
+    //                             data: {'id': id},
+    //                             type: "post",
+    //                             dataType: 'json',
+    //                             success: function (data) {
+    //                                 if (data.code == 1) {
+    //                                     layer.msg(data.msg,{'icon':1},function () {
+    //                                         tr.remove();
+    //                                     });
+    //                                 } else {
+    //                                     layer.msg(data.msg,{'icon':5});
+    //                                 }
+    //                             }
+    //                         });return false;
+    //                 })
+    //             }else
+    //                 {
+    //                     layer.msg(res.msg);
+    //                 }
+    //         }
+    //         , error: function (res,index, upload) {
+    //              layer.msg(res.msg);
+    //         }
+    //
+    //     });
+    //
+    // });
+
+    layui.use(['form','layer','layedit','upload','laydate'],function(){
+        var form = layui.form ,$ = layui.jquery;
+        var laydate = layui.laydate;
+        var upload = layui.upload;
+
+        //执行一个laydate实例
+        laydate.render({elem:'#create_time'});
+        //监听复选框
+        form.on('select(exam_type)',function(data){
+            var type = data.value;
+          if(type==1)
+          {
+              $('#jia').show();
+          }else {
+              $('#jia').hide();
+              exam_plan();
+          }
+        });
+        form.on('select(work_type)',function(data){
+
+            exam_plan();
+
+        });
+        //创建一个编辑器
+        //监听开关
+
+        //监听单选按钮
+        function exam_plan(){
+           var exam_type =  $('#exam_type').val();
+           var type_id = exam_type;
+           var type ='exam';
+            if(exam_type==1)
+            {
+                var work_type =  $('#work_type').val();
+                if(work_type=='')
+                {
+                    layer.msg('工中类型不能为空');
+                    return false;
+                }
+                type='work';
+                type_id = work_type;
+            }
+
+            $.post('/api/ExamPlan/plan',{type:type,type_id:type_id},function(data)
+            {
+                var html='';
+
+                for (var i=0;i<data.length;i++)
+                {
+                    html+= ' <option value="'+data[i]['id']+'">'+data[i]["title"]+'</option>';
+                }
+
+                $('#type_exam_id').html(html);
+                form.render();
+
+            })
+        }
+
+        var uploadInst = upload.render({
+            elem: '#testl'
+            ,url:'/cms/guide/upload'
+            ,drag:true
+            ,done:function(res,index,upload)
+            {
+                if(res.code==1)
+                {layer.msg(res.msg, {
+                    icon: 1,//提示的样式
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                });
+                    $('#url').attr('value',res.index);
+                    $('img').attr('src',res.index);
+
+                }else{
+                    layer.msg(res.msg);
+                }
+            }
+
+        });
+        //监听提交
+        form.on('submit(sub)',function(data){
+            var content = getCOntent();
+            var type = $('.type').val();
+            data = data.field;
+            data.content = content;
+            var fujian = $('#fujian').html();
+
+            if(type==0)
+            {
+                layer.msg('鉴定类型必选');
+                return false;
+            }
+
+            if(content=='')
+             {
+                 layer.msg('文章内容不能为空');
+                 return false;
+             }
+            var button = $(this);
+            button.addClass('layui-btn-disabled').attr('disabled',true);
+            $.ajax({
+                url:'/api/CmsArticle/add',
+                type:'post',
+                data:data,
+                dataType:'json',
+                success:function(res)
+                {
+                    if(res.code==1)
+                    {
+                        layer.msg(res.msg,{
+                            icon:1,
+                            time:2000,
+                            end:function(){
+                                var indexof = parent.layer.getFrameIndex(window.name);
+                                parent.layer.close(indexof);
+                                parent.location.reload();
+                            }
+                        });
+                    }else{
+                        layer.msg(res.msg);
+                        button.removeClass('layui-btn-disabled').removeAttr('disabled');
+                    }
+                }
+            });
+            return false;
+        })
+    });
+
+
+</script>
+{/block}

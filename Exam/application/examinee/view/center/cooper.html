@@ -1,0 +1,26 @@
+<style>
+    .xuzhi_main{padding: 20px 50px;}
+    .xuzhi_main p{line-height: 30px;}
+    .headle_title{font-size: 16px;font-weight: 700;text-align: center;line-height: 35px;}
+    .cn_title{font-size: 16px;font-weight: 700;line-height: 35px;}
+</style>
+<div>
+    <span class="title" data-value="{$title}"></span>
+    <!--<div class="header_title"><span>诚信声明</span></div>-->
+    <div class="xuzhi_main">
+        <p class="headle_title">考生诚信考试承诺书</p>
+        <p style="text-indent:2em;">我是参加江西职业技能鉴定计划招生考试的考生。我已认真阅读单位发布的相关招考信息。我已清楚了解，根据《中华人民共和国刑法修正案(九)》，在法律规定的国家考试中，组织作弊的行为；为他人实施组织作弊提供作弊器材或者其他帮助的行为；为实施考试作弊行为，向他人非法出售或者提供考试的试题、答案的行为；代替他人或者让他人代替自己参加考试的行为都将触犯刑法。</p>
+        <p class="redcolor cn_title">我郑重承诺：</p>
+        <p>一、保证在网上报名和现场确认时，严格按照报考条件及相关政策要求选择填报志愿，如实、准确提交报考信息和各项材料。如提供虚假、错误信息或弄虚作假，本人承担由此造成的一切后果。</p>
+        <p>二、自觉服从考试组织管理部门的统一安排，接受监考人员的管理、监督和检查。</p>
+        <p>三、自觉遵守相关法律和考试纪律、考场规则，诚信考试，不作弊。</p>
+    </div>
+</div>
+{load href="__PUBLIC__/layui/css/layui.css"/}
+<script src="__PUBLIC__/layui/assets/jquery-1.12.4.js"></script>
+<script src="__PUBLIC__/layui/layui.js"></script>
+<script>
+    layui.use(['form', 'layer','jquery'], function () {
+        $('title').html($('.title').data('value'));
+    });
+</script>

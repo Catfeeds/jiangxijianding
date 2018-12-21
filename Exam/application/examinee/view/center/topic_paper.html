@@ -1,0 +1,71 @@
+<div>
+    <div class="header_title"><span>模拟考试</span> </div>
+    <div class="baoming_main">
+        <table class="layui-table myorder_table" lay-skin="line">
+            <colgroup>
+                <col>
+                <col>
+                <col>
+                <col width="200">
+            </colgroup>
+            <thead>
+            <tr>
+                <th>试题标题</th>
+                <th>得分</th>
+                <th>考试时间</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>2018秋季A类鉴定</td>
+                <td>99</td>
+                <td>2018.10.02</td>
+                <td class="double_btn">
+                    <div class="blue_btn ajax-linkk" rel="KaiShiDaTi.html">开始考试</div>
+                </td>
+            </tr>
+            <tr>
+                <td>2018秋季A类鉴定</td>
+                <td>99</td>
+                <td>2018.10.02</td>
+                <td class="double_btn">
+                    <div class="dayin_btn">重新考试</div>
+                </td>
+            </tr>
+            <tr>
+                <td>2018秋季A类鉴定</td>
+                <td>99</td>
+                <td>2018.10.02</td>
+                <td class="double_btn">
+                    <div class="dayin_btn">重新考试</div>
+                </td>
+            </tr>
+
+            </tbody>
+        </table>
+    </div>
+</div>
+<script type="text/javascript">
+    layui.use(['form', 'laypage','laydate'], function() {
+        var form = layui.form,
+            $ = layui.jquery;
+        form.render();
+        var laydate = layui.laydate;
+        $ = layui.jquery;
+        form.render();
+
+        var laypage = layui.laypage;
+
+    });
+    $(".ajax-linkk").each(function() {
+        $(this).click(function() {
+            var diZhi = $(this).attr("rel");
+            htmlobj = $.ajax({
+                url: diZhi,
+                async: false
+            });
+            $(".ajax-Box").html(htmlobj.responseText);
+        });
+    });
+</script>

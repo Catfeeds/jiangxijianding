@@ -1,0 +1,122 @@
+{extend name="/layout/layout"}
+{block name="css"}
+{/block}
+{block name="content"}
+
+<body>
+<div class="layui-fluid">
+    <div class="layui-card" style="margin-top: 20px;">
+    {if $type=="/organize/enroll/index"}
+        <div  style="text-align: center; {if($demo=='')}color: white;background-color: #57a4ee;{/if}font-size: 16px;margin-left: 35%; height: 50px;line-height: 50px;border:1px solid #eeeeee;width: 150px;float: left;border-radius:10px 0 0 10px; margin-bottom: 15px"><a href="/organize/enroll/index" ><span style="{if($demo !='')}background-color: white;{else}background-color: #57a4ee;{/if}">正在进行计划</span></a></div>
+
+        <div style="text-align: center; {if($demo!='')}background-color: #57a4ee;color: white;{else /}color: block;{/if}font-size: 16px; height: 50px;line-height: 50px;border:1px solid #eeeeee;width: 150px;float: left;border-radius: 0 10px 10px 0 ;margin-bottom: 15px"><a href="/organize/enroll/index?demo=demo"><span>历史计划</span></a></div>
+    {/if}
+        <div class="layui-card-body" style="clear: both; ">
+            <table class="layui-table">
+                <colgroup>
+                    <col >
+                    <col width="120px">
+                    <col width="120px">
+                    <col width="120px">
+                    <!-- <col width="180"> -->
+                    <col width="80px">
+                    <col width="80px">
+                    <col width="100px">
+                    <col width="150px">
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>计划名称</th>
+                    <th>报名开始时间</th>
+                    <th>报名结束时间</th>
+                    <th>审核截止时间</th>
+                    <th>已审/人</th>
+                    <th>待审/人</th>
+                    <th>报名数/人</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {volist name="examplan" id="vo"}
+                <tr>
+                    <td><a href="javascript:;" list="{$vo['id']}" class='detail'>{$vo['title']}</a></td>
+                    <td>{$vo['enroll_starttime']}</td>
+                    <td>{$vo['enroll_endtime']}</td>
+                    <td>{$vo['audit_endtime']}</td>
+                    <td><a href="/organize/Enroll/index?plan_id={$vo.id}&state=1">{$vo['ready']}</a></td>
+                    <td><a href="/organize/Enroll/index?plan_id={$vo.id}&state=0">{$vo['nopass']}</a></td>
+                    <td>{$vo['num']}</td>
+                    <td>
+                        <a href="{$type}?plan_id={$vo.id}" class="layui-btn layui-btn-sm">详情</a>
+                        {if($demo =='')}
+                        <button class="layui-btn layui-btn-sm enroll" list="{$vo['id']}" title="{$vo['title']}">报名</button>
+                        {if(time()<$vo['audit_endtime'])}
+                        <a href="printEnrollTable?plan_id={$vo.id}" class="layui-btn layui-btn-sm" list="{$vo['id']}">打印报名表</a>
+                        {/if}
+                        {if($vo['print_starttime']>time() && time()<$vo['print_endtime'])}
+                        <a href="printcard?plan_id={$vo.id}" class="layui-btn layui-btn-sm print" list="{$vo['id']}">打印准考证</a>
+                        {/if}
+                        {/if}
+
+                        
+                    </td>    
+                </tr>
+                {/volist}
+
+                </tbody>
+            </table>
+        </div>
+        <div class="layui-fluid tp-pages">
+            {$examplan->render()}
+        </div>
+    </div>
+</div>
+
+</body>
+{/block}
+{/extend}
+{block name="script"}
+<script type="text/javascript">
+
+    layui.use('element', function(){
+        var element = layui.element;
+    });
+
+    $('.enroll').click(function(){
+        var id =$(this).attr('list');
+        var title = $(this).attr('title');
+        layer.open({
+            type: 2,
+            skin: 'layui-layer-rim', //加上边框
+            area: ['40%', '80%'], //宽高
+            title: title+"批量报名",
+            content: "/organize/enroll/batchenroll?plan="+id,  //调到页面
+            yes: function(index, layero){
+                layer.close(index); //如果设定了yes回调，需进行手工关闭
+            }
+        });
+    })
+
+    $('.detail').click(function(){
+        var id =$(this).attr('list');
+        layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['80%', '90%'], //宽高
+                title: "鉴定计划详情",
+                content: "planDetail?id="+id,  //调到详情页面
+                yes: function(index, layero){
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+    })
+
+
+
+    // $('.toggle').click(function(){
+    //     alert(123)
+    // })
+
+</script>
+{/block}

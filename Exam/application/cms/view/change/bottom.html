@@ -1,0 +1,162 @@
+
+<link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css">
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/layui/css/layui.css" />
+
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/cms1.0.css" />
+
+<body style="min-height: 100%;min-width:100%" >
+
+    <header ></header>
+    <form class="layui-form" style="margin-left: 300px;"  >
+        <div class="layui-form-item">
+            <span><h2>建议：至少选择一个栏目</h2></span>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">请选择栏目</label>
+            <div class="layui-input-inline">
+                <input type="hidden" value="1" name="top1[bottom]">
+                <input type="hidden" value="1" name="top1[bottom_order]">
+                <select name="top1[id]" lay-verify="required" id="only1">
+                    <option value="0" selected>请选择栏目</option>
+                    {volist name='data' id='v'}
+                    <option value="{$v.id}" {eq name="$v.bottom_order" value="1"} selected {/eq}>{$v.guide_name}</option>
+                    {/volist}
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">请选择栏目</label>
+            <div class="layui-input-inline">
+                <input type="hidden" value="1" name="top2[bottom]">
+                <input type="hidden" value="2" name="top2[bottom_order]">
+                <select name="top2[id]"  id="only2" lay-select lay-filter="only2">
+                    <option value="0" selected>请选择栏目</option>
+                    {volist name='data' id='v'}
+                    <option value="{$v.id}"  {eq name="$v.bottom_order" value="2"} selected {/eq}>{$v.guide_name}</option>
+                    {/volist}
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">请选择栏目</label>
+            <div class="layui-input-inline">
+                <input type="hidden" value="1" name="top3[bottom]">
+                <input type="hidden" value="3" name="top3[bottom_order]">
+                <select name="top3[id]"  id="only3" lay-select lay-filter="only3">
+                    <option value="0" selected>请选择栏目</option>
+                    {volist name='data' id='v'}
+                    <option value="{$v.id}"  {eq name="$v.bottom_order" value="3"} selected {/eq}>{$v.guide_name}</option>
+                    {/volist}
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="sub">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+
+            </div>
+        </div>
+
+    </form>
+    <div class="layui-col-xs7" style="margin-left: 120px;width: 700px">
+        <div class="tongzhi">
+    <div class="jieshao_header">
+        {volist name='datas' id='vv'}
+        <span class="jieshao_header_left" name="yao" value="{$vv.id}">{$vv.guide_name}</span>
+        {/volist}
+        <span class="header_right"><a id="a" href="/cms/index/category?id=">更多<i class="layui-icon layui-icon-right"></i></a></span>
+    </div>
+    {volist name='info' id='vvv' key='k'}
+    <div name="yao{$vvv.id}" {if($k!="1")} style="display: none" {/if}>
+    <ul>
+        {volist name='vvv.article' id='vvvv'}
+        <li>
+            <a href="{$vvvv.url}" class="yaowan_txt2" title="{$vvvv.title}">{$vvvv.title}</a><span>{:date("Y-m-d",$vvvv.time)}</span>
+        </li>
+        {/volist}
+    </ul>
+    </div>
+    {/volist}
+    </div>
+</body>
+
+
+
+<script src="__PUBLIC__/js/jquery-2.1.4.min.js" type="text/javascript" charset="utf-8"></script>
+
+<script src="__PUBLIC__/js/cms.js" type="text/javascript" charset="utf-8"></script>
+<script src="__PUBLIC__/layui/layui.js"></script>
+
+
+<script type="text/javascript">
+    layui.use(['form', 'layer','jquery'], function () {
+        var form  = layui.form;
+        var $  = layui.jquery;
+        //自定义验证规则
+
+
+        //添加表单监听事件
+        form.on('submit(sub)',function (data) {
+            data = data.field;
+              data.seat = 'bottom';
+            var only2 = $('#only2').val();
+            var only1 = $('#only1').val();
+            var only3 = $('#only3').val();
+
+            if(only1!=0 )
+            {
+                if(only1==only2||only1==only3)
+                {
+                    layer.msg('栏目不能重复');
+                    return false;
+                }
+            }else if(only2!=0)
+            {
+                if(only2 == only3 || only1==only2)
+                {
+                    layer.msg('栏目不能重复');
+                    return false;
+                }
+            }else if(only3!=0)
+            {
+                if(only3 == only1||only3 == only2)
+                {
+                    layer.msg('栏目不能重复');
+                    return false;
+                }
+            }
+
+            if(only1==0&&only2==0&&only3==0)
+            {
+                layer.msg('请最少选择一个栏目');
+                return false;
+            }
+
+            $.post("/api/CmsOrder/section",data,function (data) {
+                if (data.code == 1){
+                    layer.msg(data.msg, {
+                        icon: 1,//提示的样式
+                        time: 2000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                        end:function()
+                        {
+                            location.reload();
+                        }
+                       });
+
+                }else{
+                    layer.msg(data.msg);
+                }
+            });
+            //防止页面跳转
+            return false;
+        });
+
+    });
+
+
+
+</script>

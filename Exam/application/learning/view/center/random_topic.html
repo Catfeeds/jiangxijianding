@@ -1,0 +1,142 @@
+<div>
+    <div class="header_title"><span>开始练习</span>
+        <p class="margin_right rightfloat ajax-linkk" rel="{:url('/learning/center/onlineTopic')}">学习列表></p>
+    </div>
+    <div class="baoming_main">
+        <div class="layui-col-xs12 layui-col-md12">
+            <div class="layui-col-xs6 layui-col-md6 double_btn tileixing">
+                <div class="margin_right_15"></div>
+                <div class="margin_right_15"></div>
+                <div class="margin_right_15"></div>
+                <div class="margin_right_15"></div>
+
+            </div>
+            <div class="layui-col-xs6 layui-col-md6" id="time"></div>
+        </div>
+        <form class="layui-form">
+            {volist name="$data" id="vo" }
+            {switch name="$vo.type" }
+            {case value="单选题" }
+            <!--单选-->
+            <div class="layui-col-xs12 layui-col-md12 tileixing_main" style="padding-top: 40px;">
+                <ul class="layui-form shiti">
+                    <li>{$i}、 {$vo.topic_name}</li>
+                    <li class="xti"><input type="radio" name="single[{$vo.id}]" value="A" title="A、{$vo.option_a}" ></li>
+                    <li class="xti"><input type="radio" name="single[{$vo.id}]" value="B" title="B、{$vo.option_b}"></li>
+                    <li class="xti"><input type="radio" name="single[{$vo.id}]" value="C" title="C、{$vo.option_c}"></li>
+                    <li class="xti"><input type="radio" name="single[{$vo.id}]" value="D" title="D、{$vo.option_d}"></li>
+                </ul>
+            </div><hr>
+            {/case}
+            {case value="多选题"}
+            <!--多选-->
+            <ul class="layui-form shiti hidebb" style="display: block;">
+                <li>{$i}、 {$vo.topic_name}</li>
+                <li class="xti"><input type="checkbox" name="many[{$vo.id}][]" value="A" title="A、{$vo.option_a}" lay-skin="primary"><div class="layui-unselect layui-form-checkbox layui-form-checked" lay-skin="primary"><span>A、{$vo.option_a}</span><i class="layui-icon layui-icon-ok"></i></div> </li>
+                <li class="xti"><input type="checkbox" name="many[{$vo.id}][]" value="B" title="B、{$vo.option_b}" lay-skin="primary"><div class="layui-unselect layui-form-checkbox layui-form-checked" lay-skin="primary"><span>B、{$vo.option_b}</span><i class="layui-icon layui-icon-ok"></i></div> </li>
+                <li class="xti"><input type="checkbox" name="many[{$vo.id}][]" value="C" title="C、{$vo.option_c}" lay-skin="primary"><div class="layui-unselect layui-form-checkbox layui-form-checked" lay-skin="primary"><span>C、{$vo.option_c}</span><i class="layui-icon layui-icon-ok"></i></div> </li>
+                <li class="xti"><input type="checkbox" name="many[{$vo.id}][]" value="D" title="D、{$vo.option_d}" lay-skin="primary"><div class="layui-unselect layui-form-checkbox layui-form-checked" lay-skin="primary"><span>D、{$vo.option_d}</span><i class="layui-icon layui-icon-ok"></i></div> </li>
+            </ul><hr>
+            {/case}
+            {case value="判断题"}
+            <!--判断-->
+            <ul class="layui-form shiti hidebb" style="display: block;">
+                <li>{$i}、 {$vo.topic_name}</li>
+                <li class="xti"><input type="radio" name="judge[{$vo.id}]" value="A" title="A、对" ><div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i><div>A、对</div></div></li>
+                <li class="xti"><input type="radio" name="judge[{$vo.id}]" value="B" title="B、错" ><div class="layui-unselect layui-form-radio layui-form-radioed"><i class="layui-anim layui-icon layui-anim-scaleSpring"></i><div>B、错</div></div></li>
+            </ul><hr>
+            {/case}
+            {/switch}
+            {/volist}
+            <center>
+                <button type="submit" class="layui-btn layui-btn-danger" lay-submit="" lay-filter="formSubmit">交卷评分</button>
+            </center>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    layui.use(['form', 'table', 'laypage', 'laydate'], function() {
+        var form = layui.form,$ = layui.jquery;
+        form.on('submit(formSubmit)', function (data) {
+            data=data.field;
+            $.ajax({
+                url:'/api/LearningTest/randomTopicAdd',
+                type:'post',
+                data:data,
+                dataType:'json',
+                success:function (data) {
+                    if (data.code==-1) {
+                        layer.msg(data.msg);
+
+                    } else if (data.code==1){
+                        layer.open({
+                            type: 1,
+                            title: '提示',
+                            closeBtn: 1,
+                            shadeClose: false,
+                            skin: 'yourclass',
+                            content: '<div style="text-align: center;font-size: 15px;margin: 20px;">'
+                                + '<b>你的得分是'+data.data.score+'分,再接再厉哦~~</b>' +
+                                '</div>',
+                            cancel: function(index, layero){
+                                if(confirm('确定要离开么')){
+                                    layer.close(index);
+                                    htmlobj = $.ajax({
+                                        url: '/learning/center/randomTopic',
+                                        async: false
+                                    });
+                                    $(".ajax-Box").html(htmlobj.responseText);
+                                }
+                                return false;
+                            }
+                        });
+                    } else {
+                        htmlobj = $.ajax({
+                            url: '/learning/center/onlineTopicAnswer?id='+data.data.ip,
+                            async: false
+                        });
+                        $(".ajax-Box").html(htmlobj.responseText);
+                    }
+                }
+            });
+            return false;
+        });
+
+        form.render();
+        var laydate = layui.laydate;
+        $ = layui.jquery;
+        form.render();
+
+        var laypage = layui.laypage;
+        var table = layui.table;
+
+        table.init('demo', {
+            limit: 10
+        });
+    });
+    $(function() {
+        var libb = $('.tileixing div');
+        var li_cbb = $('.tileixing_main ul');
+        var ZhuanJiaImg = $('.zhuanjiaImg')
+        libb.click(function() {
+            $(this).addClass('dayin_btn').siblings().removeClass('dayin_btn');
+            var h = $(this).index();
+            li_cbb.eq(h).show().siblings().hide();
+        });
+    });
+    $(".queren").click(function(){
+        $(".daanjiexi").show()
+    });
+    $(".ajax-linkk").each(function() {
+        $(this).click(function() {
+            var diZhi = $(this).attr("rel");
+            htmlobj = $.ajax({
+                url: diZhi,
+                async: false
+            });
+            $(".ajax-Box").html(htmlobj.responseText);
+        });
+    });
+</script>

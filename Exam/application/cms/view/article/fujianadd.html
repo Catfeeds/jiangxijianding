@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css">
+<body class="childrenBody">
+<div class="layui-upload">
+    <button type="button" class=" layui-btn layui-btn-normal" id="choiceList">
+        <i class="iconfont icon-e645"></i>选择多文件</button>
+    <input type="hidden" id="article_id" name="article_id" value="{$article_id}">
+    <div class="layui-upload-list layui-upList-minHeight">
+        <table class="layui-table">
+            <thead>
+            <tr><th>文件名</th>
+                <th>大小</th>
+                <th>状态</th>
+                <th>操作</th>
+            </tr></thead>
+            <tbody id="demoList">
+            <tr id="upload">
+                <td>xxx.txt</td>
+                <td>xxxkb</td>
+                <td>等待上传</td>
+                <td>
+                    <button class="layui-btn layui-btn-xs demo-reload layui-hide">重传</button>
+                    <button class="layui-btn layui-btn-xs layui-btn-danger demo-delete" disabled>删除</button>
+                </td></tr> </tbody> </table> </div>
+    <div class="layui-form-item layui-btn-Center">
+        <div class="layui-input-block">
+            <button type="button" class="layui-btn layui-btn-normal" id="choiceListAction">开始上传</button>
+            <button class="btn layui-btn layui-btn-primary js_close" id="quXiao" type="button">取消</button>
+        </div> </div> </div>
+
+</body>
+<script src="__PUBLIC__/js/jquery.min.js"></script>
+<script src="__PUBLIC__/layui/layui.all.js"></script>
+<script>
+    layui.use('upload', function() {
+        var $ = layui.jquery
+                , upload = layui.upload;
+        //多文件列表示例
+        var id = $('#article_id').val();
+        var demoListView = $('#demoList')
+                , uploadListIns = upload.render({
+            elem: '#choiceList'
+            , url: "fujian?id="+id
+            , accept: 'file'
+            , data: {}   //可放扩展数据  key-value
+            , multiple: true
+            , auto: false
+
+            , bindAction: '#choiceListAction'
+            , choose: function (obj) {
+                var files = this.files = obj.pushFile(); //将每次选择的文件追加到文件队列
+                //读取本地文件
+
+                obj.preview(function (index, file, result) {
+
+                    if($('#demoList tr td').eq(0).text()=='xxx.txt')
+                    { $('#demoList').empty(); }
+                    var tr = $(['<tr id="upload-'+ index +'">',
+                        '<td>'+ file.name +'</td>',
+                        '<td>'+ (file.size/1014).toFixed(1) +'kb</td>',
+                        '<td>等待上传</td>', '<td>',
+                        '<button class="layui-btn layui-btn-xs demo-reload layui-hide">重传</button>', '<button class="layui-btn layui-btn-xs layui-btn-danger demo-delete">删除</button>', '</td>', '</tr>'].join(''));
+
+                    //单个重传
+                    tr.find('.demo-reload').on('click', function () {
+                        obj.upload(index, file);
+                    });
+
+                    //删除
+                    tr.find('.demo-delete').on('click', function () {
+                        delete files[index]; //删除对应的文件
+                        tr.remove();
+                        uploadListIns.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
+                    });
+
+                    demoListView.append(tr);
+                });
+            }
+
+            , done: function (res, index, upload) {
+
+                if (res.code == 1){
+
+                    var tr = demoListView.find('tr#upload-' + index)
+                            , tds = tr.children();
+                    tds.eq(2).html('<span style="color: #5FB878;">上传成功</span>');
+                    tds.eq(3).html(' <button class="layui-btn layui-btn-xs layui-btn-danger fujian-del" value="'+res.data+'">删除</button>'); //清空操作
+                    delete this.files[index];
+                    tr.find('.fujian-del').on('click',function(){
+                        var id= $(this).val();
+
+                        $.ajax({
+                            url: "/cms/article/Fujiandelete",
+                            data: {'id': id},
+                            type: "post",
+                            dataType: 'json',
+                            success: function (data) {
+                                if (data.code == 1) {
+                                    layer.msg(data.msg, {'icon': 1}, function () {
+                                        tr.remove();
+                                    });
+                                } else {
+                                    layer.msg(data.msg, {'icon': 5});
+                                }
+                            }
+                        });return false;
+                    })
+
+                }else
+                {
+                    layer.msg(res.msg);
+                }
+            }
+            , error: function (res,index, upload) {
+                var tr = demoListView.find('tr#upload-'+ index)
+                        ,tds = tr.children();
+                tds.eq(2).html('<span style="color: #FF5722;">'+res.msg+'</span>');
+                tds.eq(3).find('.demo-reload').removeClass('layui-hide');
+
+            }
+        });
+
+    })
+</script>
+</html>

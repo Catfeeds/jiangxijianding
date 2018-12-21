@@ -1,0 +1,102 @@
+{extend name="common@layout/layout" /}
+{block name="title"}考场列表{/block}
+{block name="content"}
+<div class="layui-tab-content">
+   <table style="width: 1000px;height: 100px;margin:auto;">
+       <div style="width: 100%;height: 50px;text-align: center">
+           {if condition="$request->param('subject') ==1 "}
+           <div style="width: 30%;height: 50px;text-align: center;float: left">
+               <div style="height: 50px;float: left">理论考试时间：</div>
+               {if condition="$start_time>0 && $end_time>0"}
+                   <div style="float: left;height: 50px;">{$start_time|date="Y年m月d日 H时i分",###} 至 </div>
+                   <div style="float: left;height: 50px;">&nbsp{$end_time|date="Y年m月d日 H时i分",###}</div>
+               {/if}
+           </div>
+           {elseif condition="$request->param('subject') ==2"}
+           <div style="width: 30%;height: 50px;text-align: center;float: left">
+               <div style="height: 50px;float: left">综合考试时间：</div>
+               {if condition="$start_time>0 && $end_time>0"}
+                   <div style="float: left;height: 50px;">{$start_time|date="Y年m月d日 H时i分",###} 至 </div>
+                   <div style="float: left;height: 50px;">&nbsp{$end_time|date="Y年m月d日 H时i分",###}</div>
+               {/if}
+           </div>
+           {elseif condition="$request->param('subject') ==3"}
+           <div style="width: 30%;height: 50px;text-align: center;float: left">
+               <div style="height: 50px;float: left">实操考试时间：</div>
+               {if condition="$start_time>0 && $end_time>0"}
+                   <div style="float: left;height: 50px;">{$start_time|date="Y年m月d日 H时i分",###} 至 </div>
+                   <div style="float: left;height: 50px;">&nbsp{$end_time|date="Y年m月d日 H时i分",###}</div>
+               {/if}
+           </div>
+           {/if}
+       </div>
+       <div style="width: 100px;height: 50px;background-color: #aa7700;text-align: center">违纪{$enroll_dis}</div>
+       <div style="width: 100px;height: 50px;background-color: #aa7700;margin-top: 2px;text-align: center">缺考{$enroll_miss}</div>
+       {volist name='list' id='vo' key='k'}
+            <!--{if condition="($k==6) OR ($k==11) OR ($k==16) OR ($k==21) OR($k==26)"}-->
+            {if condition="!(($k-1)%5)"}
+                <tr>
+            {/if}
+            {if condition="!($k%5)"}
+                {$m++}
+            {/if}
+            {if condition="$k>=(($m-1)*5)+1 and $k<($m*5)+1 and $m%2"}                                                                 <td style="width: 180px;height: 100px;padding:10px;float: left;text-align: center">
+                    <button id="doing" data-setNum="{$vo['id']}" style="width: 150px;height: 80px;{if condition="$vo['type']>0"}background-color:red{/if}" class="layui-btn layui-btn-xs work-show">{$vo['ExamSeatNum']}<br>{$vo['username']}
+                    </button>
+                </td>
+            {/if}
+            {if condition="$k>=(($m-1)*5)+1 and $k<($m*5)+1 and !($m%2)"}                                                              <td style="width: 180px;height: 100px;padding:10px;float: right;text-align: center">
+                    <button id="doing" data-setNum="{$vo['id']}" style="width: 150px;height: 80px;{if condition="$vo['type']>0"}background-color:red{/if}" class="layui-btn layui-btn-xs work-show">{$vo['ExamSeatNum']}<br>{$vo['username']}
+                    </button>
+                </td>
+            {/if}
+            <!--{if condition="$k<6"}-->
+                    <!--<td style="width: 180px;height: 100px;padding:10px;float: left;text-align: center">-->
+                        <!--<button id="doing" data-setNum="{$vo['id']}" style="width: 150px;height: 80px;{if condition="$vo['type']>0"}background-color:red{/if}" class="layui-btn layui-btn-xs work-show">{$vo['ExamSeatNum']}<br>{$vo['username']}</button>-->
+                    <!--</td>-->
+            <!--{elseif condition="$k>=6 and $k<11"}-->
+                    <!--<td style="width: 180px;height: 100px;padding:10px;float: right;text-align: center">-->
+                        <!--<button id="doing" data-setNum="{$vo['id']}" style="width: 150px;height: 80px;{if condition="$vo['type']>0"}background-color:red{/if}" class="layui-btn layui-btn-xs work-show">{$vo['ExamSeatNum']}<br>{$vo['username']}</button>-->
+                    <!--</td>-->
+            <!--{elseif condition="$k>=11 and $k<16"}-->
+                    <!--<td style="width: 180px;height: 100px;padding:10px;float: left;text-align: center">-->
+                        <!--<button id="doing" data-setNum="{$vo['id']}" style="width: 150px;height: 80px;{if condition="$vo['type']>0"}background-color:red{/if}" class="layui-btn layui-btn-xs work-show">{$vo['ExamSeatNum']}<br>{$vo['username']}</button>-->
+                    <!--</td>-->
+            <!--{elseif condition="$k>=15 and $k<21"}-->
+                    <!--<td style="width: 180px;height: 100px;padding:10px;float: right;text-align: center">-->
+                        <!--<button id="doing" data-setNum="{$vo['id']}" style="width: 150px;height: 80px;{if condition="$vo['type']>0"}background-color:red{/if}" class="layui-btn layui-btn-xs work-show">{$vo['ExamSeatNum']}<br>{$vo['username']}</button>-->
+                    <!--</td>-->
+            <!--{elseif condition="$k>=21 and $k<26"}-->
+                    <!--<td style="width: 180px;height: 100px;padding:10px;float: left;text-align: center">-->
+                        <!--<button id="doing" data-setNum="{$vo['id']}" style="width: 150px;height: 80px;{if condition="$vo['type']>0"}background-color:red{/if}" class="layui-btn layui-btn-xs work-show">{$vo['ExamSeatNum']}<br>{$vo['username']}</button>-->
+                    <!--</td>-->
+            <!--{elseif condition="$k>=26"}-->
+                    <!--<td style="width: 180px;height: 100px;padding:10px;float: right;text-align: center">-->
+                        <!--<button id="doing" data-setNum="{$vo['id']}" style="width: 150px;height: 80px;{if condition="$vo['type']>0"}background-color:red{/if}" class="layui-btn layui-btn-xs work-show">{$vo['ExamSeatNum']}<br>{$vo['username']}</button>-->
+                    <!--</td>-->
+            <!--{/if}-->
+            {if condition="!($k%5) && $k>=10"}
+                </tr>
+            {/if}
+       {/volist}
+   </table>
+</div>
+{/block}
+
+{block name='script'}
+<script>
+    layui.use(['layer','jquery'], function(){
+        var $ = layui.jquery, layer = layui.layer;
+        $(document).on('click','#doing',function(){
+            layer.open({
+                type: 2,
+                area: ['40%','500px'],
+                title: '考生信息',
+                shadeClose: true,
+                content: ['userInfo?organize='+{$request->param('organize')}+'&plan='+{$request->param('plan')}+'&work_id='+{$request->param('work_id')}+"&level="+{$request->param('level')}+'&subject='+{$request->param('subject')}+'&num='+{$request->param('subject')}+'&enroll_id='+$(this).attr('data-setNum'),'no']
+            });
+        });
+    });
+
+</script>
+{/block}

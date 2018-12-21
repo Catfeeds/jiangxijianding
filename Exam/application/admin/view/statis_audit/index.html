@@ -1,0 +1,87 @@
+{extend name="common@layout/layout" /}
+{block name="title"}报名审核统计{/block}
+
+{block name="css"}
+{/block}
+{block name='crumbs'}
+<span class="layui-breadcrumb">
+  <a href="/admin" class="county">
+    <i class="layui-icon layui-icon-home"></i>
+    &nbsp;首页
+  </a>
+  <a><cite>审核统计</cite></a>
+  <a><cite>报名审核统计</cite></a>
+</span>
+{/block}
+{block name="content"}
+        <div class="layui-card-body">
+            <table class="layui-table">
+                <thead>
+                <tr>
+                    <th width="50px">ID</th>
+                    <th width="100px;">证件号</th>
+                    <th width="100px;">证件类型</th>
+                    <th>报名名称</th>
+                    <th>审核人</th>
+                    <th>审核时间</th>
+                    <th>状态</th>
+                    <th width="200px">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {volist name="arrReviewLog" id="vo"}
+                <tr>
+                    <td>{$i}</td>
+                    <td>{$vo.username}</td>
+                    <td>{switch name="$vo['id_type']"}
+                        {case value="1"}身份证{/case}
+                        {case value="2"}护照{/case}
+                        {case value="3"}军官证{/case}
+                        {case value="4"}港澳台证{/case}
+                        {default /}其他
+                        {/switch}</td>
+                    <td>{$vo.title}</td>
+
+                    <td>{$vo.name}</td>
+                    <td><?=date("Y-m-d H:i:s",$vo['review_time'])?></td>
+                    <td>{:config('EnrollStatusText.status')[$vo->status]}</td>
+                    <td><button id="detil" exam_enroll_id="{$vo.exam_enroll_id}" class="layui-btn layui-btn-sm detil">
+                        详情
+                    </button></td>
+                </tr>
+                {/volist}
+
+                </tbody>
+            </table>
+            <div class="layui-form-item">
+
+            <div class="layui-fluid tp-pages">
+                {$arrReviewLog->render()}
+            </div>
+            </div>
+        </div>
+
+{/block}
+{/extend}
+{block name="script"}
+<script>
+    layui.use(['form', 'layer','jquery'], function () {
+        var form = layui.form;
+        var $ = layui.jquery;
+    });
+    $(".detil").click(function () {
+        var id =$(this).attr("exam_enroll_id");
+        layer.open({
+            type: 2,
+            skin: 'layui-layer-rim', //加上边框
+            area: ['1000px', '90%'], //宽高
+            title: "报名审核详情",
+            content: urladdr.detailStatisAudit+"?id="+id,  //调到详情页面
+            yes: function(index, layero){
+                //do something
+                layer.close(index); //如果设定了yes回调，需进行手工关闭
+            }
+        });
+    });
+</script>
+{/block}

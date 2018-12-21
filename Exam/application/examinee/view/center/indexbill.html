@@ -1,0 +1,200 @@
+<div>
+	<span class="title" data-value="{$title}"></span>
+	<div class="header_title"><span>发票管理</span> </div>
+	<div class="layui-fluid">
+		<div class="layui-card">
+			<!--<div class="layui-form layui-card-header layuiadmin-card-header-auto">
+				<div class="layui-form-item">
+					&lt;!&ndash;<button class="layui-btn" id="addExamInfo">&ndash;&gt;
+					&lt;!&ndash;<i class="layui-icon">&#xe608;</i> 添加&ndash;&gt;
+					&lt;!&ndash;</button>&ndash;&gt;
+				</div>
+			</div>-->
+			<div class="layui-card-body">
+				<table class="layui-table myorder_table">
+					<colgroup>
+						<!--<col width="5%">-->
+						<col>
+						<col>
+						<col>
+						<col>
+						<col>
+						<col width="200">
+					</colgroup>
+					<thead>
+					<tr>
+						<!--<th>ID</th>-->
+						<th>鉴定计划</th>
+						<th>订单号</th>
+						<th>工种</th>
+						<th>级别</th>
+						<!--<th>进度</th>-->
+						<!--<th>状态</th>-->
+						<th>金额</th>
+						<th>操作</th>
+					</tr>
+					</thead>
+					<tbody>
+					{volist name="examData" id="vo"}
+					<tr>
+						<!--<td>{$vo['id']}</td>-->
+						<td>{$vo['title']}</td>
+						<td>{$vo['order_num']}</td>
+						<td>{$vo['workname']}</td>
+						<!--<td>{$vo['directionname']}</td>-->
+						<td>{$vo->work_level_subject_level}</td>
+						<!--<td>-->
+							<!--{$vo->status}-->
+						<!--</td>-->
+						<!--<td>-->
+							<!--{$vo->status}-->
+						<!--</td>-->
+						<td>{$vo['total_money']}</td>
+						<td >
+							<button class="blue_btn borderwid applyinvoice" data-value="{$vo['id']}" >开具发票</button>
+							<!--<button class="layui-btn layui-btn-xs layui-btn-normal printbill" data-value="{$vo['order_id']}" >打印发票</button>-->
+							<button class="looks_btn borderwid Mailbill"  data-value="{$vo['order_id']}" >邮寄发票</button>
+						</td>
+					</tr >
+					</tbody>
+					{/volist}
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="ShenQingFaPiao_main layui-form">
+		<div class="ShenQingFaPiao_main_title">发票申请</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">发票抬头</label>
+			<div class="layui-input-block">
+				<div class="leftfloat" onclick="geren();"><input type="radio" name="sex" value="个人" title="个人" checked=""></div>
+				<div class="leftfloat" onclick="company();"><input type="radio" name="sex" value="公司" title="公司"></div>
+			</div>
+		</div>
+		
+		<div class="layui-form-item geren_table">
+			<label class="layui-form-label">发票抬头</label>
+			<div class="layui-input-block">
+				<input type="text" name="title" placeholder="" required lay-verify="required" autocomplete="off" class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item company_table">
+			<label class="layui-form-label">公司名</label>
+			<div class="layui-input-block">
+				<input type="text" name="title" placeholder="" required lay-verify="required" autocomplete="off" class="layui-input">
+			</div>
+		</div>
+
+		<div class="layui-form-item  company_table">
+			<label class="layui-form-label">纳税人识别号</label>
+			<div class="layui-input-block">
+				<input type="text" name="title" placeholder="" required lay-verify="required" autocomplete="off" class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item company_table">
+			<label class="layui-form-label">开户行账号</label>
+			<div class="layui-input-block">
+				<input type="text" name="title" placeholder="" required lay-verify="required" autocomplete="off" class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">开户行地址</label>
+			<div class="layui-input-block">
+				<select name="city" lay-verify="required">
+					<option value="0">北京</option>
+					<option value="1">上海</option>
+					<option value="2">广州</option>
+					<option value="3">深圳</option>
+					<option value="4">杭州</option>
+				</select>
+			</div>
+		</div>
+		<div class="layui-form-item ">
+			<label class="layui-form-label">邮寄地址</label>
+			<div class="layui-input-block">
+				<input type="text" name="title" placeholder="" required lay-verify="required" autocomplete="off" class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item company_table">
+			<label class="layui-form-label">电话</label>
+			<div class="layui-input-block">
+				<input type="text" name="title" placeholder="" required lay-verify="required" autocomplete="off" class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">发票类型</label>
+			<div class="layui-input-block">
+				<select name="city" lay-verify="required">
+					<option value="0">个人</option>
+					<option value="1">企业</option>
+				</select>
+			</div>
+		</div>
+		<div class="double_btn double_qx">
+			<div class="dayin_btn payment margin_right_15">确定</div>
+			<div class="gray_btn payment">取消</div>
+		</div>
+		
+	</div>
+</div>
+<div class="YouJi_main" style="display: none;">
+	<h2 class="tanchuang_title">邮寄地址确认</h2>
+	<div class="youji_main">
+		<p><img src="__PUBLIC__/layui/img/map.png"/></p>
+		<p class="graycolor">地址</p>
+		<p>抚州市长椿街12号</p>
+		<p class="fengexian"></p>
+		<p><img src="__PUBLIC__/layui/img/phone.png"/></p>
+		<p class="graycolor">电话</p>
+		<p>15055666655</p>
+		
+	</div>
+	<p class="graycolor" style="text-align: center;">温馨提示：邮费到付</p>
+	<div class="double_btn double_qxyj">
+		<div class="dayin_btn payment margin_right_15">确定</div>
+		<div class="gray_btn payment">取消</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	layui.use('element', function(){
+		var element = layui.element;
+	});
+
+	layui.use(['form', 'layer','jquery'], function () {
+		$('title').html($('.title').data('value'));
+		$('.applyinvoice').on('click', function () {
+			id = $(this).data('value');
+			layer.open({
+				type: 2,
+				area: ['500px', '650px'],
+				title: "填写发票信息",
+				content: '/examinee/Center/applyinfo?id='+id,
+			});
+			return false;
+		});
+
+		$('.printbill').on('click', function () {
+			id = $(this).data('value');
+			layer.open({
+				type: 2,
+				area: ['500px', '650px'],
+				title: "发票申请",
+				content: '/examinee/Center/printbill?id='+id,
+			});
+			return false;
+		});
+
+		$('.Mailbill').on('click', function () {
+			id = $(this).data('value');
+			layer.open({
+				type: 2,
+				area: ['417px', '406px'],
+				title: "邮寄地址确认",
+				content: '/examinee/Center/mail?id='+id,
+			});
+			return false;
+		});
+
+	});
+</script>

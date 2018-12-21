@@ -1,0 +1,33 @@
+{extend name="common@layout/layout"}
+
+{block name='title'}县鉴定中心管理{/block}
+
+{block name='css'}
+<style>
+    .lhj-content a {
+        width: 100%;
+    }
+</style>
+{/block}
+
+{block name='crumbs'}
+<span class="layui-breadcrumb" lay-separator="">
+  <a href="/admin" class="county">
+    <i class="layui-icon layui-icon-home"></i>
+    &nbsp;首页
+  </a>
+  <a><cite>市列表</cite></a>
+</span>
+{/block}
+{block name='content'}
+<fieldset class="layui-elem-field layui-field-title site-title">
+    <legend><a name="grid">请选择对哪个市进行操作</a></legend>
+</fieldset>
+<div class="layui-row layui-col-space15">
+    {volist name="list" id="vo"}
+    <div class="lhj-content layui-col-md3">
+        <a href='{:url("/admin/County/current","cityId=$vo[id]")}' class="layui-btn">{$vo.name}</a>
+    </div>
+    {/volist}
+</div>
+{/block}

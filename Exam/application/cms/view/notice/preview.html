@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+
+
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/layui/css/main.css" />
+
+    <style type="text/css">
+        .xiangqing
+        {
+            width: 1092px;
+            margin: 0;
+        }
+    </style>
+    <script src="__PUBLIC__/layui/assets/jquery-1.12.4.js"></script>
+    <script src="__PUBLIC__/layui/layui.js"></script>
+
+    <title class="noprint">{$data.title}</title>
+    <script type="text/javascript">
+        function doPrint(){
+            //  bdhtml=window.document.body.innerHTML;
+            // sprnstr="<!--startprint-->";
+            // eprnstr="<!--endprint-->";
+            // prnhtml=bdhtml.substr(bdhtml.indexOf(sprnstr)+17);
+            // prnhtml=prnhtml.substring(0,prnhtml.indexOf(eprnstr));
+            // window.document.body.innerHTML=prnhtml;
+            window.print();
+        }
+    </script>
+    <!--<style type="text/css">-->
+        <!--img {-->
+            <!--border: 0;-->
+            <!--max-width: 100%;-->
+        <!--}-->
+       <!--@media  {-->
+           <!--.noprint{ display: none;}-->
+       <!--}-->
+    <!--</style>-->
+    <!--<style media="print">-->
+        <!--@page {-->
+            <!--size: auto;-->
+            <!--margin: 0mm;-->
+        <!--}-->
+
+    <!--</style>-->
+</head>
+
+
+
+<div class=" xiangqing">
+    <div class="layui-col-xs9">
+
+        <h3 class="baoming_title">
+            <span class="baoming_title_span" ></span>
+            <span class="layui-breadcrumb rightfloat" lay-separator=">">
+				  <a target="_blank" href="/" class="noprint">首页</a>
+
+				</span>
+        </h3>
+        <div class="xiangqing_header">
+            <h2 style="color:#F00;" class="noprint">{$data.title}</h2>
+            <!--<a href="javascript:window.print()" rel="external nofollow" target="_self">打印</a>-->
+            <button type="button" onclick="doPrint()">打印</button>
+        </div>
+
+        <div class="baoming_main">
+
+            {$data.content}
+
+        </div>
+
+    </div>
+
+
+
+</div>
+<!--endprint-->
+{include file="content/foot"}
+</body>
+
+</html>

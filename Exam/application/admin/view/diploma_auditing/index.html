@@ -1,0 +1,81 @@
+{extend name="common@layout/layout" /}
+{block name="title"}证书审核{/block}
+
+{block name="css"}
+{/block}
+{block name='crumbs'}
+<span class="layui-breadcrumb">
+  <a href="/admin" class="county">
+    <i class="layui-icon layui-icon-home"></i>
+    &nbsp;首页
+  </a>
+    <a><cite>证书管理</cite></a>
+  <a><cite>证书审核</cite></a>
+</span>
+{/block}
+{block name="content"}
+<table class="layui-table">
+    <thead>
+    <tr>
+        <th width="50px">ID</th>
+        <th>申请总个数</th>
+        <th>已用个数</th>
+        <th>未用个数</th>
+        <th>错误个数</th>
+        <th>补证个数</th>
+        <th>申请时间</th>
+        <th>状态</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    {volist name="applyCertificate" id="vo"}
+    <tr>
+        <td id="id">{$i}</td>
+        <td>{$vo['apply_num']}</td>
+        <td>{$vo['used_num']}</td>
+        <td>{$vo['unused_num']}</td>
+        <td>{$vo['error_num']}</td>
+        <td>{$vo['repair_num']}</td>
+        <td>{$vo['create_time']}</td>
+        <td>{:config('certMessage')[$vo['status']]}</td>
+        <td>{if $vo['status']==0}
+            <button class="layui-btn layui-btn-sm" cert_id="{$vo['id']}" id="addCert" lay-submit lay-filter="formSubmit">审核</button>
+            {else}
+            <button class="layui-btn layui-btn-sm" layui-btn-disabled style='background-color: #ff5722' lay-submit lay-filter="formSubmit">审核</button>
+            {/if}
+        </td>
+    </tr>
+    {/volist}
+    </tbody>
+</table>
+    <div class="layui-form-item">
+    <div class="layui-fluid tp-pages">
+        {$applyCertificate->render()}
+    </div>
+    </div>
+{/block}
+{/extend}
+{block name="script"}
+<script>
+    layui.use(['form', 'layer','jquery'], function () {
+        var form = layui.form;
+        var $ = layui.jquery;
+        $("#addCert").click(function () {
+            var cert_id = $(this).attr('cert_id');
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['50%', '60%'], //宽高
+                title: "上传审核材料",
+                content: "/admin/DiplomaAuditing/certData?cert_id="+cert_id,  //调到页面
+                yes: function(index, layero){
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        })
+    });
+</script>
+{/block}
+

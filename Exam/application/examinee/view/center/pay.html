@@ -1,0 +1,98 @@
+{extend name="nonelayout"}
+
+{block name="content"}
+<div class="layui-tab-content">
+    <form class="layui-form">
+        <table border="1" class="layui-table">
+            <tr>
+                <input type="hidden" id="id" value="{$arrExamEnroll.id?$arrExamEnroll.id:''}">
+                <input type="hidden" id="work_level_subject_level" value="{$arrExamEnroll.work_level_subject_level?$arrExamEnroll.work_level_subject_level:''}">
+                <th width="100">报考工种:</th>
+                <td colspan="3">
+                   {$arrExamEnroll.workname?$arrExamEnroll.workname:''}
+                </td>
+            </tr>
+            <tr>
+                <th width="100">方向:</th>
+                <td colspan="3">
+                    {$arrExamEnroll.directionname?$arrExamEnroll.directionname:''}
+                </td>
+            </tr>
+            <tr>
+                <th>等级:</th>
+                <td colspan="3">
+                   {$arrExamEnroll->work_level_subject_level?$arrExamEnroll->work_level_subject_level:''}
+                </td>
+            </tr>
+            {volist name="worksubject" id="vo"}
+            <tr>
+                <th>
+                    {if $vo.subject_id==1}理论
+                    {elseif $vo.subject_id==2}实操
+                    {elseif $vo.subject_id==3}综合
+                    {else /}其他
+                    {/if}
+                </th>
+                <td colspan="3">
+                    {$vo.price?$vo.price:''} 元
+                </td>
+            </tr>
+            {/volist}
+            <tr>
+                <input type="hidden" id="total_money" value="{$total_money.total_money?$total_money.total_money:''}">
+                <th>合计:</th>
+                <td colspan="3">
+                    {$total_money.total_money?$total_money.total_money:'0'}.00 元
+                </td>
+            </tr>
+        </table>
+        <div>
+            {if $arrExamEnroll.status == Config("ExamEnrollstatus.payost") || $arrExamEnroll.status == Config("ExamEnrollstatus.paypass") || $arrExamEnroll.status == Config("enrollstatus.printticket")}
+            <button class="layui-btn layui-bg-black" style="float:right;margin-top: 20px;" disabled>已缴费</button>
+            {else /}
+            <button class="layui-btn" style="float:right;margin-top: 20px;" lay-submit lay-filter="formSubmit">缴费</button>
+            <!--<button class="layui-btn" style="float:right;margin-top: 20px;">在线支付</button>-->
+            {/if}
+        </div>
+
+    </form>
+</div>
+{/block}
+{block name='script'}
+<script>
+    layui.use(['form', 'layer','jquery'], function () {
+        var form = layui.form, $ = layui.jquery;
+
+        //监听提交
+        form.on('submit(formSubmit)', function (data) {
+            var id = $('#id').val();
+            var total_money = $('#total_money').val();
+            var level = $('#work_level_subject_level').val();
+            layer.confirm('是否确认该操作？', {btn: ['确定', '取消'], title: "提示"}, function () {
+                $.post("/api/ExamOrder/payAction", {
+                    'type_id': id,
+                    'total_money': total_money,
+                    'level': level
+                }, function (data) {
+                    if (data.code == 1) {
+                        layer.msg(data.msg, {
+                            icon: 1,
+                            time: 1000,
+                            end: function () {
+                                $.get("/examinee/Center/examdetail?id="+id, function(data) {
+                                    parent.$("#iframeContent").html(data); //初始化加载界面
+                                    parent.layer.closeAll();
+
+                                });
+                            },
+                        });
+                    } else {
+                        layer.msg(data.msg, {icon: 5});
+                    }
+                });
+                });
+                return false;
+        });
+    });
+</script>
+{/block}

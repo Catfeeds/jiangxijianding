@@ -1,0 +1,147 @@
+{extend name="/layout/nonelayout"}
+{block name="css"}
+<style>
+    .layui-form-label{
+        width: 40%;
+    }
+</style>
+{/block}
+{block name="content"}
+<body>
+<form class="layui-form">
+    <table border="1" class="layui-table" width="100px" >
+        <h3 style="text-align: center">鉴定计划详情</h3>
+        <tr>
+            <td>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">报名时间</label>
+                </div>
+            </td>
+            <td>
+                {volist name="arrWork" length='1' id="vo"}
+                {$vo.enroll_starttime}
+                {/volist} 到
+                {volist name="arrWork" length='1' id="vo"}
+                {$vo.enroll_endtime}
+                {/volist}
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" >审核截止时间</label>
+                </div>
+            </td>
+            <td>
+                {volist name="arrWork" length='1' id="vo"}
+                {$vo.audit_endtime}
+                {/volist}
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">缴费截止时间</label>
+                </div>
+            </td>
+            <td>
+                {volist name="arrWork" length='1' id="vo"}
+                {$vo.pay_endtime}
+                {/volist}
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">打印准考证时间</label>
+                </div>
+            </td>
+            <td>
+                {volist name="arrWork" length='1' id="vo"}
+                {$vo.print_starttime}
+                {/volist} 到
+                {volist name="arrWork" length='1' id="vo"}
+                {$vo.print_endtime}
+                {/volist}
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">考试时间</label>
+                </div>
+            </td>
+            <td>
+                {volist name="arrWork" length='1' id="vo"}
+                {$vo.exam_time}
+                {/volist}
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">工种类型</label>
+                </div>
+            </td>
+            
+            <td>
+
+                {volist name="arrWork" id="vo"}
+                {$vo.typename;break;}
+                {/volist}
+            </td>
+            <td></td>
+            
+
+        </tr>
+       
+        
+        <tr>
+            <td>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">工种名称</label>
+                </div>
+            </td> 
+            <td>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">工种方向</label>
+                </div>
+            </td> 
+            <td>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">工种级别</label>
+                </div>
+            </td>
+        </tr>
+        {volist name="arrWork" id="vo"}
+        <tr>
+            <td>
+                {$vo.workname}
+            </td>
+            <td>
+                {volist name="vo.wdname" id="v"}
+                {$v}
+                <br>
+                {/volist}
+            </td>
+            <td>
+                <!--<span class="layui-bg-orange">-->
+                {volist name="vo.level" id="v"}
+                {$arr[$v]}
+                {/volist}
+                <!--</span>-->
+            </td>
+        {/volist}
+        </tr>
+    </table>
+
+</form>
+</body>
+{/block}
+{/extend}
+{block name="script"}{/block}

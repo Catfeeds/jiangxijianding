@@ -1,0 +1,389 @@
+{extend name="common@layout/nonelayout" /}
+{block name="css"}
+<style>
+    .duox {
+        border: 1px solid #ccc;
+        width: 140px;
+        float: left;
+        margin-top: 42px;
+        padding: 5px;
+    }
+    .multiSelect{
+        margin-top:-38px;
+    }
+    .duox ul li {
+        padding: 3px 0px;
+    }
+</style>
+{/block}
+{block name="content"}
+<body>
+<form class="layui-form" style="white-space:nowrap;">
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">鉴定计划标题</label>
+        <div class="layui-input-block">
+            <input type="text" name="title" id="title" placeholder="请输入标题"   lay-verify="title" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+    <div class="layui-inline">
+        <label class="layui-form-label">报名时间：</label>
+        <div class="layui-input-block">
+            <input type="text" style="width: 400px;" class="layui-input" name="enroll" id="enroll" placeholder="开始 到 结束">
+            <!--<input type="text" style="width: 400px;" class="layui-input" name="enroll" id="enroll_start" placeholder="wq开始">-->
+            <!--<input type="text" style="width: 400px;" class="layui-input" name="enroll" id="enroll_end" placeholder="wq结束">-->
+            <div class="layui-form-mid layui-word-aux">报名时间必须大于今天 时间不选择则默认为开始09:00 截止18:00</div>
+        </div>
+    </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">审核截止时间</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" name="audit_endtime" id="audit_endtime" placeholder="请选择时间">
+                <div class="layui-form-mid layui-word-aux">审核截止时间必须大于报名截止时间</div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">缴费截止时间</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" name="pay_endtime" id="pay_endtime" placeholder="请选择时间">
+                <div class="layui-form-mid layui-word-aux">缴费截止时间必须大于审核截止时间</div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+    <div class="layui-inline">
+        <label class="layui-form-label">打印准考证时间</label>
+        <div class="layui-input-block">
+            <input type="text" style="width: 400px;" class="layui-input" name="print" id="print" placeholder="开始 到 结束">
+            <div class="layui-form-mid layui-word-aux">打印准考证时间必须大于缴费截止时间</div>
+        </div>
+
+    </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">考试日期：</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" name="exam_time" id="exam_time" placeholder="请选择日期">
+                <div class="layui-form-mid layui-word-aux">考试日期必须大于打印准考证时间</div>
+            </div>
+
+        </div>
+    </div>
+    <input type="hidden" name="type" value="{$pagetpye}">
+<!--    <div class="layui-form-item">
+        <label class="layui-form-label">所属类型：</label>
+        <div class="layui-input-block">
+            <input type="radio" name="type" value="1" title="职业资格鉴定">
+            <input type="radio" name="type" value="2" title="竞赛">
+            <input type="radio" name="type" value="3" title="考评人员">
+        </div>
+    </div>-->
+    <div class="layui-form-item">
+        <label class="layui-form-label">工种类型：</label>
+        <div class="layui-input-block">
+            <select name="work_type" id="work_type" lay-filter="work_type">
+                <option value="">请选择工种类型</option>
+                {volist name="workType" id="vo"}
+                <option value="{$vo.id}">{$vo.name}</option>
+                {/volist}
+            </select>
+        </div>
+    </div>
+
+    <div class="layui-form-item layui-input-inline" id="work">
+
+    </div>
+  <!--  <div class="duox">
+        <ul class="layui-form openLi">
+
+        </ul>
+    </div>-->
+
+    <!--<div class="layui-form-item layui-input-inline" id="level">-->
+
+    <!--</div>-->
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" id="addorganize" lay-submit lay-filter="formSubmit">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+{/block}
+{/extend}
+{block name="script"}
+<script>
+
+    layui.use(['laydate'], function(){
+        var laydate = layui.laydate;
+        var myDate = new Date();//获取系统当前时间
+        var time = myDate.toLocaleDateString().split('/').join('-');
+
+        //time+' 09:00:00 到 '+time+' 19:00:00'
+        //报名时间
+        var enroll = laydate.render({
+            elem: '#enroll'
+            ,type: 'datetime'
+            ,isInitValue: false
+            ,value: time+' 09:00:00 到 '+time+' 19:00:00'
+            ,min: myDate.toLocaleDateString()
+            ,range: '到'
+            ,format: 'yyyy-MM-dd HH:mm:ss'
+            ,done: function(value, date, endDate){
+                audit_endtime.config.min = endDate;
+                audit_endtime.config.min.month = endDate.month -1;
+                audit_endtime.config.min.date = endDate.date +1;
+                audit_endtime.config.isInitValue = false;
+                audit_endtime.config.value = new Date(endDate.year+'-'+(endDate.month+1)+'-'+endDate.date+' 19:00:00');
+                    //;
+            }
+        });
+
+        //审核截止时间
+        var audit_endtime = laydate.render({
+            elem: '#audit_endtime'
+            ,type: 'datetime'
+
+            ,min: myDate.toLocaleDateString()
+            ,done: function(value, date, endDate){
+                pay_endtime.config.min = date;
+                pay_endtime.config.min.month = date.month -1;
+                pay_endtime.config.min.date = date.date +1;
+                pay_endtime.config.isInitValue = false;
+                pay_endtime.config.value = new Date(date.year+'-'+(date.month+1)+'-'+date.date+' 19:00:00');
+            }
+        });
+
+        //缴费截止时间
+        var pay_endtime = laydate.render({
+            elem: '#pay_endtime'
+            ,type: 'datetime'
+            ,min: myDate.toLocaleDateString()
+            ,format: 'yyyy-MM-dd HH:mm:ss'
+            ,done: function(value, date, endDate){
+                print.config.min = date;
+                print.config.min.month = date.month -1;
+                print.config.min.date = date.date +1;
+                print.config.isInitValue = false;
+                print.config.value = date.year+'-'+(date.month+1)+'-'+date.date+' 09:00:00 到 '+date.year+'-'+(date.month+1)+'-'+date.date+' 19:00:00';
+            }
+        });
+        //打印准考证时间
+        var print = laydate.render({
+            elem: '#print'
+            ,type: 'datetime'
+            ,min: myDate.toLocaleDateString()
+            ,range: '到'
+            ,format: 'yyyy-MM-dd HH:mm:ss'
+            ,done: function(value, date, endDate){
+                exam_time.config.min = endDate;
+                exam_time.config.min.month = endDate.month -1;
+                exam_time.config.min.date = endDate.date +1;
+            }
+        });
+
+        //考试日期
+        var exam_time = laydate.render({
+            elem: '#exam_time'
+            ,type: 'date'
+            ,min: myDate.toLocaleDateString()
+        });
+
+        // //报名时间
+        // var enroll_start = laydate.render({
+        //     elem: '#enroll_start'
+        //     ,type: 'datetime'
+        // });
+        // var enroll_end = laydate.render({
+        //     elem: '#enroll_end'
+        //     ,type: 'datetime'
+        // });
+        // enroll_start.config.isInitValue = false;
+        // enroll_start.config.value=new Date(time+' 09:00:00');
+        // enroll_end.config.isInitValue = false;
+        // enroll_end.config.value=new Date(time+' 18:00:00');
+    });
+
+    layui.use(['form', 'layer','jquery'], function () {
+        var form = layui.form;
+        var $ = layui.jquery;
+        //获取工种
+        form.on('select(work_type)', function(data){
+            var work_type = data.value;
+            // alert(work_type);
+            $.ajax({
+                url:urladdr.selWorkByWorkType,
+                type:'post',
+                dataType:'json',
+                data:{
+                    work_type:work_type,
+                },
+                success:function (data) {
+                    if (data.code==1){
+                        $("#work").html("");
+                        $("#level").html("");
+                        //获取 work 标签
+                        var work = document.getElementById ("work");
+                        //创建label div
+                        var label = document.createElement("label");
+                        var div = document.createElement("div");
+                        //给标签设置属性
+                        label.setAttribute('class',"layui-form-label");
+                        div.setAttribute('class',"layui-input-block");
+                        label.innerText = '工种：';
+                        //插入标签
+                        work.appendChild(label);
+                        work.appendChild(div);
+                        var select = document.createElement("select");
+                        select.setAttribute('name',"work");
+                        select.setAttribute('multiple','');
+                        select.setAttribute('lay-search','');
+                        select.setAttribute('lay-case','');
+                        select.setAttribute('lay-omit','');
+                        var option = document.createElement("option");
+                        option.value = '';
+                        option.innerText = '请选择工种';
+                        select.appendChild(option);
+                        for (var i=0;i<data.data.length;i++){
+                            option = document.createElement("option");
+                            option.value = data.data[i]['id'];
+                            option.innerText = data.data[i]['name'];
+                            select.appendChild(option);
+                        }
+                        div.appendChild(select);
+                        form.render();
+                    }else{
+                        $("#work").html("");
+                        form.render();
+                        layer.msg(data.msg)
+                    }
+                }
+            });
+            //防止页面跳转
+            return false;
+        });
+
+
+        // form.on('select(work)', function(data){
+        //     var work_id = data.value;
+        //     $.ajax({
+        //         url:urladdr.selWorkWorkLevel,
+        //         type:'post',
+        //         dataType:'json',
+        //         data:{
+        //             work_id:work_id,
+        //         },
+        //         success:function (data) {
+        //             if (data.code==1){
+        //
+        //                 for(var i in data.data) {
+        //                     for(var j=0;j<data.data[i].length;j++){
+        //                         $('.openLi').append('<li><a href="#">'+data.data[i][j]+'</a></li> ');
+        //                     }
+        //                     form.render();
+        //                 }
+        //
+        //                 console.log(data);
+        //                 return false;
+        //             }else{
+        //                 $("#level").html("");
+        //                 form.render();
+        //                 layer.msg(data.msg)
+        //             }
+        //         }
+        //     });
+        // });
+
+        
+
+        //添加表单监听事件
+        form.on('submit(formSubmit)', function (data) {
+            data=data.field;
+            if (!$("input[name='title']").val()) {
+                layer.msg("标题必填");
+                return false;
+            }
+
+            if (!$("input[name='enroll']").val()) {
+                layer.msg("报名时间必选");
+                return false;
+            }
+
+            if (!$("input[name='audit_endtime']").val()) {
+                layer.msg("审核截止时间必选");
+                return false;
+            }
+
+            if (!$("input[name='pay_endtime']").val()) {
+                layer.msg("缴费截止时间必选");
+                return false;
+            }
+
+            if (!$("input[name='print']").val()) {
+                layer.msg("打印准考证时间必选");
+                return false;
+            }
+
+            if (!$("input[name='exam_time']").val()) {
+                layer.msg("考试时间必选");
+                return false;
+            }
+
+            if (!$("input[name='type']").val()) {
+                layer.msg("类型必选");
+                return false;
+            }
+            if (!$("input[type='checkbox']").is(":checked")) {
+                layer.msg("工种和级别必选");
+                return false;
+            }
+            // if (!$("input[name='status']").is(":checked")){
+                data.status = 2;
+            // }else{
+            //     data.status = 1;
+            // }
+// console.log(data);return false;
+            $.ajax({
+                url:urladdr.addExamPlan,
+                type:'post',
+                data:data,
+                dataType:'json',
+                success:function (data) {
+                    // console.log(data);
+                    if (data.code==1){
+                        layer.msg(data.msg,{
+                            icon: 1,//提示的样式
+                            time:  2000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                            end: function () {
+                                //当你在iframe页面关闭自身时
+                                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                parent.layer.close(index); //再执行关闭
+                                parent.location.reload();
+                            }
+                        });
+                    }else{
+                        layer.msg(data.msg);
+                    }
+                }
+            });
+            //防止页面跳转
+            return false;
+        });
+    });
+</script>
+{/block}

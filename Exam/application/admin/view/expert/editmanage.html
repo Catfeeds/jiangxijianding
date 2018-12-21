@@ -1,0 +1,128 @@
+{extend name="common@layout/nonelayout" /}
+
+
+{block name="content"}
+<div class="layui-tab-content">
+    <form class="layui-form" style="width:75%;">
+        <table border="1" class="layui-table">
+            <colgroup>
+                <col width="50">
+                <col width="100">
+                <col width="50">
+                <col width="100">
+            </colgroup>
+            <input type="hidden" name="id" value="{$res.id}">
+            <tr>
+                <th width="100">工种代码:</th>
+                <td colspan="3">
+                    <input type="text" name="code" disabled value="{$res.code}" autocomplete="off" class="layui-input">
+                </td>
+            </tr>
+            <tr>
+                <th width="100">工种名称:</th>
+                <td colspan="3">
+                    <input type="text" name="name" disabled value="{$res.name}" autocomplete="off" class="layui-input">
+                </td>
+            </tr>
+            <tr>
+                <th width="100">工种等级:</th>
+                <td colspan="3">
+                    <input type="text" name="level" disabled
+                           value="{:config('EnrollStatusText.work_level_subject_level')[$res->work_level_id]}"
+                           autocomplete="off" class="layui-input">
+                </td>
+            </tr>
+
+            <tr>
+                <th width="100">阅卷:</th>
+                <td colspan="3">
+                    <input type="radio" name="is_check" value="1" title="启用" {$res.is_check?'checked':'';}>
+                    <input type="radio" name="is_check" value="0" title="禁用" {$res.is_check?'':'checked';}>
+                </td>
+            </tr>
+            <tr>
+                <th width="100">论文:</th>
+                <td colspan="3">
+                    <input type="radio" name="is_thesis" value="1" title="启用" {$res.is_thesis?'checked':'';}>
+                    <input type="radio" name="is_thesis" value="0" title="禁用" {$res.is_thesis?'':'checked';}>
+                </td>
+            </tr>
+            <tr>
+                <th width="100">答辩:</th>
+                <td colspan="3">
+                    <input type="radio" name="is_debate" value="1" title="启用" {$res.is_debate?'checked':'';}>
+                    <input type="radio" name="is_debate" value="0" title="禁用" {$res.is_debate?'':'checked';}>
+                </td>
+            </tr>
+            <tr>
+                <th width="100">命题:</th>
+                <td colspan="3">
+                    <input type="radio" name="is_question" value="1" title="启用" {$res.is_question?'checked':'';}>
+                    <input type="radio" name="is_question" value="0" title="禁用" {$res.is_question?'':'checked';}>
+                </td>
+            </tr>
+            <tr>
+                <th width="100">状态{$res.status}:</th>
+                <td colspan="3">
+                    <input type="radio" name="status" value="1" title="启用" {$res.status?'checked':'';}>
+                    <input type="radio" name="status" value="0" title="禁用" {$res.status?'':'checked';}>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1"></td>
+                <td colspan="3">
+                    <button class="layui-btn layui-col-md3" style="float:right;" id="" lay-submit
+                            lay-filter="formSubmit">确认添加
+                    </button>
+                </td>
+            </tr>
+        </table>
+
+    </form>
+</div>
+{/block}
+
+{block name="script"}
+<script>
+    layui.use(['form', 'upload', 'laydate'], function () {
+        var form = layui.form, $ = layui.jquery, upload = layui.upload, laydate = layui.laydate;
+        var datevalue = $("#hire_time").data('value');
+        laydate.render({
+            elem: '#hire_time'
+            , type: 'datetime'
+            , format: 'yyyy-MM-dd HH:mm:ss'
+            , value: datevalue
+        });
+        //监听提交
+        form.on('submit(formSubmit)', function (data) {
+            var formData = data.field, button = $(this);
+            //button.addClass('layui-btn-disabled').attr('disabled', true);
+            $.post(urladdr.doeditExpertManage, formData, function (data) {
+                if (data.code > 0) {
+                    layer.msg(data.msg, {icon: 1, time: 1000}, function () {
+                        layer.close(layer.index);
+                        window.parent.location.reload();
+                    });
+                } else {
+                    layer.msg(data.msg, {icon: 5}, function () {
+                        button.removeClass('layui-btn-disabled').removeAttr('disabled');
+                    });
+                }
+            });
+            return false;
+        });
+
+        //执行实例
+        var uploadInst = upload.render({
+            elem: '#test1' //绑定元素
+            , url: '/upload/' //上传接口
+            , done: function (res) {
+                //上传完毕回调
+            }
+            , error: function () {
+                //请求异常回调
+            }
+        });
+    });
+</script>
+{/block}

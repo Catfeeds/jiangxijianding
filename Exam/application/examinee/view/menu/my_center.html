@@ -1,0 +1,75 @@
+
+<div>
+    <div class="header_title"><span>修改密码</span>
+    </div>
+    <div style="margin-top: 20px;">
+    <form class="layui-form" >
+        <div class="layui-form-item">
+            <label class="layui-form-label">密码</label>
+            <div class="layui-input-inline">
+                <input type="text" id="password" name="password" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux">密码为8-18位数字_字母</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">重新输入密码</label>
+            <div class="layui-input-inline">
+                <input type="text" id='passwordRes' name="passwordRes" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="sub">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+
+    </form>
+    </div>
+</div>
+{load href="__PUBLIC__/layui/css/layui.css"/}
+<script src="__PUBLIC__/layui/assets/jquery-1.12.4.js"></script>
+<script src="__PUBLIC__/layui/layui.js"></script>
+<script type="text/javascript">
+    layui.use(['form', 'layer','jquery'], function () {
+        var form  = layui.form;
+        var $  = layui.jquery;
+
+        form.verify({
+            //密码格式
+            password: [/^[\S]{8,20}$/, '密码必须8到20位，且不能出现空格'],
+
+            //重复输入密码
+            passwordRes: function (value) {
+                var password = $("input[name='password']").val();
+                if (!new RegExp(password).test(value)) {
+                    return '两次输入的密码不一致';
+                }
+            },
+        });
+        //添加表单监听事件
+        form.on('submit(sub)',function (data) {
+            data = data.field;
+            $.post("/api/UserLogin/my_center",data,function (data) {
+                if (data.code == 1){
+                    layer.msg(data.msg, {
+                        icon: 1,//提示的样式
+                        time: 2000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                        end: function () {
+                            //当你在iframe页面关闭自身时
+                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                            parent.layer.close(index); //再执行关闭
+                            parent.location.reload();
+                        }
+                    })
+                }else{
+                    layer.msg(data.msg);
+                }
+            })
+            //防止页面跳转
+            return false;
+        });
+
+    });
+
+</script>

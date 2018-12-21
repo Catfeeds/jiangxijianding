@@ -1,0 +1,180 @@
+
+{block name="css"}
+<link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css">
+{/block}
+{block name="content"}
+<body >
+<div  class="layui-body" style="left: 30px;">
+    <header ></header>
+    <form class="layui-form" >
+        <div class="layui-form-item">
+            <label class="layui-form-label">问题类型</label>
+            <div class="layui-input-block">
+                <input type="radio" name="type" value="1" title="帮助信息" checked>
+                <input type="radio" name="type" value="2" title="常见问题" >
+                <input type="radio" name="type" value="3" title="缴费及咨询电话" >
+            </div>
+        </div>
+         <div style="display: block" id="22">
+        <div class="layui-form-item">
+        <label class="layui-form-label"></label>
+        <div class="layui-input-inline" style="width: 600px;">
+            <textarea id="demo"  name="content"  style="display: none;width: 600px;" ><p>例如：现场审核：0791-88332676 88332233</p>
+                    <p>考务安排：0791-88332676 88332233</p>
+               <p>技术咨询：0791-88332258 88332233</p> </textarea>
+        </div>
+    </div>
+         </div>
+        <div style="display: none" id="00">
+            <div class="layui-form-item">
+                <label class="layui-form-label"></label>
+                <div class="layui-input-inline" style="width: 600px;">
+            <textarea id="dem" name="content" style="display: none;width: 600px;" ><p>例如:1.报考成功后能否对考试科目进行修改？
+</p>
+                    <p>答：网上支付前考生方可对科目进行任意修改，支付完成后不得更改任何科目信息。</p>
+                </textarea>
+                </div>
+            </div>
+        </div>
+        <div style="display: none" id="33">
+            <div class="layui-form-item">
+                <label class="layui-form-label"></label>
+                <div class="layui-input-inline" style="width: 600px;">
+            <textarea id="de" name="content" style="display: none;width: 600px;" >0791-88332258
+                </textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="sub">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+
+    </form>
+</div>
+</body>
+{/block}
+
+{block name="script"}
+<script src="__PUBLIC__/js/jquery.min.js"></script>
+<script src="__PUBLIC__/layui/layui.js"></script>
+<script src="__PUBLIC__/ueditor/ueditor.config.js"></script>
+<script src="__PUBLIC__/ueditor/ueditor.all.js"></script>
+<script type="text/javascript">
+    layui.use(['form', 'layer','jquery','layedit'], function () {
+        var form  = layui.form;
+        var $  = layui.jquery;
+        var layedit = layui.layedit;
+        //建立编辑器
+        var index22 =  layedit.build('demo',{
+            height:500,
+            tool:['strong' //加粗
+                ,'italic' //斜体
+                ,'underline' //下划线
+                ,'del' //删除线
+            ]
+        });
+        var index11 = layedit.build('dem',{
+            height:500,
+            tool:['strong' //加粗
+                ,'italic' //斜体
+                ,'underline' //下划线
+                ,'del' //删除线
+            ]
+        });
+        var index33 = layedit.build('de',{
+            height:500,
+            tool:['strong' //加粗
+                ,'italic' //斜体
+                ,'underline' //下划线
+                ,'del' //删除线
+            ]
+        });
+       var active =
+           {
+               content:function(){
+                   return layedit.getContent(this);
+               }
+           };
+        form.on('radio',function(data){
+
+            if(data.value==1) {
+
+                $('#22').css('display','block');
+                $('#00').css('display','none');
+                $('#33').css('display','none')
+
+            }else if(data.value==2) {
+                $('#22').css('display','none');
+                $('#00').css('display','block');
+                $('#33').css('display','none');
+
+            }else {
+                $('#33').css('display','block');
+                $('#00').css('display','none');
+                $('#22').css('display','none');
+
+            }
+            form.render();
+        });
+        //添加表单监听事件
+        form.on('submit(sub)',function (data) {
+            data = data.field;
+            if(data.type==1)
+            {
+                var content = active['content'].call(index22);
+                var id = 3;
+            }else if(data.type==2)
+            {
+                var content = active['content'].call(index11);
+                var id= 5 ;
+            }
+            else {
+               var content = active['content'].call(index33);
+                var id=8;
+            }
+            data.content = content;
+            if(content =='')
+            {
+                layer.msg('内容不能为空');
+            }
+            data.id = id;
+            var button = $(this);
+            button.addClass('layui-btn-disabled').attr('disabled',true);
+            $.post("/api/CmsPresentation/add",data,function (data) {
+                if (data.code == 1){
+                   $.post('/cms/change/wenti',{data:1},function(res){
+                       if(res.code == 1){
+                           layer.msg(data.msg, {
+                               icon: 1,//提示的样式
+                               time: 2000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                               end: function () {
+                                   //当你在iframe页面关闭自身时
+                                   var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                  parent.parent.layer.close(index); //再执行关闭
+                                   parent.location.reload();
+                               }
+                           })
+                       }else {
+                           layer.msg(res.msg);
+                           button.removeClass('layui-btn-disabled').removeAttr('disabled');
+                       }
+
+                   })
+                }else{
+                    layer.msg(data.msg);
+                    button.removeClass('layui-btn-disabled').removeAttr('disabled');
+                }
+            });
+            //防止页面跳转
+            return false;
+        });
+
+
+    });
+
+</script>
+{/block}

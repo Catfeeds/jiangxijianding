@@ -1,0 +1,108 @@
+{extend name="/layout/nonelayout"}
+{block name="css"}
+{load href="__STATIC__/css/common/page.css"/}
+{/block}
+{block name="content"}
+
+<body>
+  {empty name="data"}
+    <div>
+        <h3 style="margin: 250px auto;width: 120px;font-size: 20px;">此工种级别 暂无考评人员</h3>
+    </div>
+    {/empty}
+  {notempty name="data"}
+  <form class="layui-form" >
+  <div class="layui-card-body">
+
+      <table class="layui-table">
+          <colgroup>
+              <col width="50">
+              
+              <col width="200">
+              <col>
+          </colgroup>
+          <thead>
+          <tr>
+              <th></th>
+              <th>姓名</th>
+              <th>手机号</th>
+              <th>证书编号</th>
+              <th>证件号</th>
+              <th>到期时间</th>
+          </tr>
+          </thead>
+          <tbody>
+          {volist name="data" id="vo"}
+          <tr>
+              <td><input type="checkbox" class="id" name="bs_id[]" value="{$vo['id']}" lay-skin="primary" lay-filter="eachChoose"></td>
+              <td>{$vo['name']}</td>
+              <td>{$vo['phone']}</td>
+              <td>{$vo['card_no']}</td>
+              <td>{$vo['id_number']}</td>
+              <td>{$vo['expire_date']}</td>
+          </tr>
+          {/volist}
+
+          </tbody>
+      </table>
+      <input type="hidden" name="level" value="{$webdata['level']}">
+      <input type="hidden" name="work" value="{$webdata['work']}">
+      <input type="hidden" name="plan" value="{$webdata['plan']}">
+      <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" id="add" lay-submit=""  lay-filter="formSubmit">申请分配</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+  </div>
+</form>
+
+{/notempty}
+</body>
+{/block}
+{/extend}
+{block name="script"}
+<script type="text/javascript">
+    layui.use(['form', 'layer','jquery','element'], function () {
+       var element = layui.element;
+        var form  = layui.form;
+        var $  = layui.jquery;
+
+        form.on('submit(formSubmit)', function (data) {
+            data=data.field;
+            if (!$("input[type='checkbox']").is(":checked")) {
+                layer.msg("考评员必选");
+                return false;
+            }
+
+            $.ajax({
+                url:'/api/Jury/allot',
+                type:'post',
+                data:data,
+                dataType:'json',
+                success:function (data) {
+                    // console.log(data);
+                    if (data.code==1){
+                        layer.msg(data.msg,{
+                            icon: 1,//提示的样式
+                            time:  2000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                            end: function () {
+                                //当你在iframe页面关闭自身时
+                                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                parent.layer.close(index); //再执行关闭
+                                parent.location.reload();
+                            }
+                        });
+                    }else{
+                        layer.msg(data.msg);
+                    }
+                }
+            });
+            //防止页面跳转
+            return false;
+
+        });
+
+    });
+</script>
+{/block}

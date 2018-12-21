@@ -1,0 +1,256 @@
+{extend name="common@layout/layout"}
+
+{block name="title"}{$message['type']}{/block}
+{block name="content"}
+<div class="layui-tab-content">
+    <table class="layui-table">
+        <colgroup>
+            <col width="10">
+            <col>
+            <col>
+            <col>
+            <col>
+            <col>
+            <col width="100">
+            <col width="235">
+        </colgroup>
+        <thead>
+        <tr>
+            <th width="200px">考点名称</th>
+            <th width="50px">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {volist name='list' id='vo'}
+        <tr>
+            <td>{$vo['name']}</td>
+            <td>
+                {if condition="$vo['message']['down'] == 3"}
+                <button id="doing" data-value="{$vo.id}" data-url="/admin/arrange/arrange?plan={$request->param('plan')}&organize={$vo.id}" data-message="考场编排" class="layui-btn layui-btn-xs work-show" data-base-url="/admin/arrange/arrange">
+                    考场编排
+                </button>
+                {elseif condition="$vo['message']['down'] == 1"}
+                <a href="/admin/card/downCard?plan={$request->param('plan')}&organize={$vo.id}&type=card"><button id="down" data-value="{$vo.id}" data-url="{$vo['message']['url']}" data-message="{$vo['message']['message']}" class="layui-btn layui-btn-xs work-show">
+                    {$vo['message']['message']}
+                    </button></a>
+                {elseif condition="$vo['message']['down'] ==2"}
+                    <button id="doing" data-value="{$vo.id}" data-url="{$vo['message']['url']}?plan={$request->param('plan')}&organize={$vo.id}" data-message="{$vo['message']['message']}" class="layui-btn layui-btn-xs work-show" data-base-url="{$vo['message']['url']}">
+                        {$vo['message']['message']}
+                    </button>
+                {/if}
+                {if condition="isset($vo['message']['seatproduct']) &&  $vo['message']['seatproduct']==1"}
+                <a href="/admin/card/downCard?plan={$request->param('plan')}&organize={$vo.id}&type=seat">
+                    <button id="doproduct1" data-value="{$vo.id}" data-url="/admin/arrange/seatproduct" class="layui-btn layui-btn-xs work-show">
+                            下载座位表
+                    </button>
+                </a>
+                <button id="doproduct" data-value="{$vo.id}" data-url="/admin/arrange/seatproduct" class="layui-btn layui-btn-xs work-show">
+                    生成座位表
+                </button>
+                {elseif condition="isset($vo['message']['seatproduct']) &&  $vo['message']['seatproduct']==2"}
+                <button id="doproduct" data-value="{$vo.id}" data-url="/admin/arrange/seatproduct" class="layui-btn layui-btn-xs work-show">
+                    生成座位表
+                </button>
+                {/if}
+                {if condition="isset($vo['message']['deskpaste']) &&  $vo['message']['deskpaste']== 1"}
+                <a href="/admin/card/downCard?plan={$request->param('plan')}&organize={$vo.id}&type=deskpaste">
+                <button id="dopaste1" data-value="{$vo.id}" data-url="/admin/arrange/deskpaste" class="layui-btn layui-btn-xs work-show">
+                    下载桌贴
+                </button></a>
+                <button id="dopaste" data-value="{$vo.id}" data-url="/admin/arrange/deskpaste" class="layui-btn layui-btn-xs work-show">
+                    生成桌贴
+                </button>
+                {elseif condition="isset($vo['message']['deskpaste']) &&  $vo['message']['deskpaste']== 2"}
+                <button id="dopaste" data-value="{$vo.id}" data-url="/admin/arrange/deskpaste" class="layui-btn layui-btn-xs work-show">
+                    生成桌贴
+                </button>
+                {/if}
+                {if condition="isset($vo['message']['clear']) && $vo['message']['clear'] == 1"}
+                <a href="/admin/card/downCard?plan={$request->param('plan')}&organize={$vo.id}&type=clear">
+                <button id="doclear1" data-value="{$vo.id}" data-url="/admin/card/getcleardown" class="layui-btn layui-btn-xs work-show">
+                    下载清考册
+                </button></a>
+                <button id="doclear" data-value="{$vo.id}" data-url="/admin/card/getclear" class="layui-btn layui-btn-xs work-show">
+                    生成清考册
+                </button>
+                    {elseif condition="isset($vo['message']['clear']) && $vo['message']['clear'] == 2"}
+                    <button id="doclear" data-value="{$vo.id}" data-url="/admin/card/getclear" class="layui-btn layui-btn-xs work-show">
+                        生成清考册
+                </button>
+                {/if}
+            </td>
+        </tr>
+        {/volist}
+        </tbody>
+    </table>
+    <div class="layui-fluid tp-pages">
+    </div>
+</div>
+{/block}
+
+{block name='script'}
+<script>
+    layui.use(['layer','jquery'], function(){
+        var $ = layui.jquery, layer = layui.layer;
+        $(document).on('click','#doing',function(){
+            var mycars=new Array();
+            var base_url = $(this).attr('data-base-url');
+            var all_url = $(this).attr('data-url');
+            if( base_url == '/admin/missing/showRoom')
+            {
+                window.location.href= '/admin/missing/showRoom?plan='+"{$plan}"+"&organize="+$(this).attr('data-value');
+            }else{
+                var timestamp = Math.round(new Date / 1000)
+                var pay_time = new Date ('{$ExamPlan[\'pay_endtime\']}');
+                var time1 = Math.round(pay_time.getTime() / 1000);
+                if(base_url == '/admin/arrange/arrange' && timestamp < time1)
+                {
+                    layer.confirm('未到缴费截止时间，确认编排考场！', {
+                        btn: ['确定','取消'] //按钮
+                    }, function(index){
+                        layer.close();
+                        $.ajax({
+                            url:all_url,
+                            data:{"organize":$(this).attr('data-value'),"plan":"{$plan}"},
+                            type:"POST",
+                            dataType:"json",
+                            success:function(msg){
+                                if(msg['code'] ==200)
+                                {
+                                    layer.alert(msg['message'],function (index){
+                                        layer.close(index);
+                                        window.location.reload();
+                                    });
+                                }else{
+                                    layer.alert(msg['message'],function (index){
+                                        layer.close(index);
+                                    });
+                                }
+                            },
+                            error:function(error) {
+                                layer.alert($(this).attr('data-message')+'失败');
+                            }
+                        });
+                    });
+                }else{
+                    $.ajax({
+                        url:all_url,
+                        data:{"organize":$(this).attr('data-value'),"plan":"{$plan}"},
+                        type:"POST",
+                        dataType:"json",
+                        success:function(msg){
+                            if(msg['code'] ==200)
+                            {
+                                layer.alert(msg['message'],function (index){
+                                    layer.close(index);
+                                    window.location.reload();
+                                });
+                            }else{
+                                layer.alert(msg['message'],function (index){
+                                    layer.close(index);
+                                });
+                            }
+                        },
+                        error:function(error) {
+                            layer.alert($(this).attr('data-message')+'失败');
+                        }
+                    });
+                }
+            }
+        });
+
+        $(document).on('click','#dopaste',function(){
+            var mycars=new Array();
+            $.ajax({
+                url:$(this).attr('data-url'),
+                data:{"organize":$(this).attr('data-value'),"plan":{$plan}},
+                type:"POST",
+                dataType:"json",
+                success:function(msg){
+                    if(msg['code'] ==200)
+                    {
+                        layer.alert('生成桌贴成功',function (index){
+                            layer.close(index);
+                            window.location.reload();
+                        });
+                    }else{
+                        layer.alert('生成桌贴失败')
+                    }
+                },
+                error:function(error) {
+                    layer.alert('生成桌贴失败')
+                }
+            });
+        });
+        $(document).on('click','#doproduct',function(){
+            var mycars=new Array();
+            $.ajax({
+                url:$(this).attr('data-url'),
+                data:{"organize":$(this).attr('data-value'),"plan":{$plan}},
+                type:"POST",
+                dataType:"json",
+                success:function(msg){
+                    if(msg['code'] ==200)
+                    {
+                        layer.alert('生成座位表成功',function (index){
+                            layer.close(index);
+                            window.location.reload();
+                        });
+                    }else{
+                        layer.alert('生成座位表失败')
+                    }
+                },
+                error:function(error) {
+                    layer.alert('生成座位表失败')
+                }
+            });
+        });
+        $(document).on('click','#doclear',function(){
+            var mycars=new Array();
+            $.ajax({
+                url:$(this).attr('data-url'),
+                data:{"organize":$(this).attr('data-value'),"plan":{$plan}},
+                type:"GET",
+                dataType:"json",
+                success:function(msg){
+                    if(msg['code'] ==200)
+                    {
+                        layer.alert('生成清考册成功',function (index){
+                            layer.close(index);
+                            window.location.reload();
+                        });
+                    }else{
+                        layer.alert('生成清考册失败')
+                    }
+                },
+                error:function(error) {
+                    layer.alert('生成清考册失败')
+                }
+            });
+        });
+        $(document).on('click','#docard',function(){
+            var mycars=new Array();
+            $.ajax({
+                url:$(this).attr('data-url'),
+                data:{"organize":$(this).attr('data-value'),"plan":{$plan}},
+                type:"POST",
+                dataType:"json",
+                success:function(msg){
+                    if(msg['code'] ==200)
+                    {
+                        layer.alert('生成转考证成功',function (index){
+                            layer.close(index);
+                            window.location.reload();
+                        });
+                    }else{
+                        layer.alert('生成转考证失败')
+                    }
+                },
+                error:function(error) {
+                    layer.alert('生成转考证失败')
+                }
+            });
+        });
+    });
+</script>
+{/block}

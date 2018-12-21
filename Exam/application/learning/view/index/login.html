@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css">
+
+    <title>登录</title>
+</head>
+<body>
+<div class="layui-body">
+<header  class="layui-form-label" ><h1>登录</h1></header>
+<form class="layui-form" action="">
+    <!--输入证件类型-->
+    <div class="layui-form-item">
+        <label class="layui-form-label">证件类型：</label>
+        <div class="layui-input-block">
+            <select  name="id_type" id="type" lay-filter="type">
+                <option value="1" >身份证</option>
+                <option value="2" >护照</option>
+                <option value="3">军官证</option>
+                <option value="4" >港澳台证</option>
+                <option value="5" >其他</option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">证件号</label>
+        <div class="layui-input-block">
+            <input type="text"  id="id_no" name="id_no" required  lay-verify="required" placeholder="请输入证件号" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">密码框</label>
+        <div class="layui-input-inline">
+            <input type="name" id="name" name="name" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux">密码为6-12位数字_字母</div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="sub">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+</div>
+</body>
+</html>
+
+<script src="__PUBLIC__/layui/layui.js"></script>
+<script type="text/javascript">
+    layui.use(['form', 'layer','jquery'], function () {
+        var form  = layui.form;
+        var $  = layui.jquery;
+        // 为密码添加正则验证
+        $('#name').change(function() {
+            var reg = /^[\w]{6,12}$/;
+            if(!($('#name').val().match(reg))){
+                layer.msg('请输入密码');
+            }
+        });
+
+        //验证证件号
+        $('#id_no').change(function() {
+            var data=$("#type").val();
+            if(data=='1'){
+                var reg =  /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+                if(!($('#id_no').val().match(reg))){
+                    layer.msg('请输入合法身份证');
+                }
+            }else if(data=='2') {
+                var reg =/^[a-zA-Z0-9]{3,21}$/;
+                if (!($('#id_no').val().match(reg))) {
+                    layer.msg('请输入合法护照');
+                }
+            }else if(data=='3'){
+                var reg = /^[a-zA-Z0-9]{7,21}$/;
+                if(!($('#id_no').val().match(reg))){
+                    layer.msg('请输入合法军官证');
+                }
+            }else if(data=='4'){
+                var reg =/^[a-zA-Z0-9]{5,21}$/;
+                if(!($('#id_no').val().match(reg))){
+                    layer.msg('请输入合法港澳通行证');
+                }
+            }
+        });
+
+        //添加表单监听事件
+        form.on('submit(sub)',function () {
+            // alert(1);
+            var  id_type = $('#type').val();
+            var  id_no = $('#id_no').val();
+            var  name = $('#name').val();
+            if (id_no == ''){
+                layer.msg('请输入证件号');
+            }
+            if (name == ''){
+                layer.msg('请输入密码');
+            }
+            $.ajax({
+                url:'/examinee/index/loginAction',
+                type:'post',
+                data:{
+                    username:id_no,
+                    password:name,
+                    id_type:id_type,
+                },
+                dataType:'json',
+                //判断登录状态
+                success:function (data) {
+                    if (data.status==1){
+                        layer.msg(data.msg, {
+                            icon: 1,//提示的样式
+                            time: 2000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                            end: function () {
+                                location.href = 'index';
+                            }
+                        })
+                    }else{
+                        layer.msg(data.msg)
+                    }
+                }
+            });
+            //防止页面跳转
+            return false;
+        });
+    });
+
+</script>

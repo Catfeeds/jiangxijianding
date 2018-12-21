@@ -1,0 +1,243 @@
+{extend name="common@layout/layout" /}
+{block name="title"}组织管理{/block}
+{block name="css"}
+{/block}
+{block name='crumbs'}
+<span class="layui-breadcrumb">
+  <a href="/admin" class="county">
+    <i class="layui-icon layui-icon-home"></i>
+    &nbsp;首页
+  </a>
+  <a><cite>组织管理</cite></a>
+</span>
+{/block}
+{block name="content"}
+        <div class="layui-form layui-card-header" style="padding-top: 15px;height: auto;">
+            <div class="layui-form-item">
+                <form action="/admin/mechanism/index" method="post">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">用户名</label>
+                            <div class="layui-input-inline">
+                                <input type="text" style="width: 100px" name="username" id="usernameSea" sub="{$map['username']}" value="{$map['username']}" placeholder="请输入" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">代码</label>
+                            <div class="layui-input-inline">
+                                <input type="text" style="width: 100px" name="code" id="codeSea" sub="{$map['code']}" value="{$map['code']}" placeholder="请输入" autocomplete="off" class="layui-input">
+
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">联系人</label>
+                            <div class="layui-input-inline">
+                                <input type="text" style="width: 100px" name="linkman" id="linkmanSea" sub="{$map['linkman']}" value="{$map['linkman']}" placeholder="请输入" autocomplete="off" class="layui-input">
+
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">联系电话</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="phone" id="phoneSea" sub="{$map['phone']}" value="{$map['phone']}" placeholder="请输入" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button class="layui-btn layuiadmin-btn-useradmin" lay-submit>
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <button class="layui-btn" id="addOrganize">
+                    <i class="layui-icon">&#xe608;</i> 添加
+                </button>
+                <button class="layui-btn" id="batchOrganize">
+                    <i class="layui-icon">&#xe608;</i> 批量添加
+                </button>
+            </div>
+
+
+        </div>
+
+        <div class="layui-card-body">
+            <table class="layui-table">
+                <thead>
+                <tr>
+                    <th width="50px">ID</th>
+                    <th>名称</th>
+                    <th>代码</th>
+                    <th>联系人</th>
+                    <th>联系电话</th>
+                    <th>组织类型</th>
+                    <th>状态</th>
+                    <th width="200px">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {volist name="arrOrganize" id="vo"}
+                <tr>
+                    <td id="id">{$i}</td>
+                    <td>{$vo['name']}</td>
+                    <td>{$vo['code']}</td>
+                    <td>{$vo['linkman']}</td>
+                    <td>{$vo['phone']}</td>
+                    <td>{if ($vo['type']==1)}鉴定所站{elseif($vo['type'] == 2)}院校{else/}机构{/if}</td>
+                    <td>{if ($vo['status']==1)} <span style="color: green;font-weight:bold;"> 可用</span>{else/}<span style="color: red;font-weight:bold;">不可用</span>{/if}</td>
+                    <td> <button organize_id="{$vo['id']}" organize_type="{$vo['type']}" class="layui-btn layui-btn-sm edit">
+                        <i class="layui-icon">&#xe642;</i>
+                    </button>
+                         <button id="delete" organize_id="{$vo['id']}" organize_type="{$vo['type']}" class="layui-btn layui-btn-sm delete">
+                            <i class="layui-icon">&#xe640;</i>
+                        </button>
+                        <button id="detil" organize_id="{$vo['id']}" organize_type="{$vo['type']}" class="layui-btn layui-btn-sm detil">
+                            详情
+                        </button>
+                    </td>
+                </tr>
+                {/volist}
+                </tbody>
+            </table>
+            <div class="layui-fluid tp-pages">
+                {$arrOrganize->render()}
+            </div>
+        </div>
+
+{/block}
+{/extend}
+{block name="script"}
+<script type="text/javascript">
+
+    layui.use('element', function(){
+        var element = layui.element;
+    });
+
+    layui.use(['form', 'layer','jquery'], function () {
+        var form  = layui.form;
+        var $  = layui.jquery;
+        $("#addOrganize").click(function () {
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['1000px', '90%'], //宽高
+                title: "添加鉴定组织",
+                content: urladdr.addorganize,  //调到新增页面
+                yes: function(index, layero){
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+        $("#batchOrganize").click(function () {
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['1000px', '90%'], //宽高
+                title: "批量添加鉴定组织",
+                content: '/admin/mechanism/batchorganize',  //调到新增页面
+                yes: function(index, layero){
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+
+        $(".pager li a").click(function () {
+            var username = $("#usernameSea").attr('sub');
+            var code = $("#codeSea").attr('sub');
+            var linkman = $("#linkmanSea").attr('sub');
+            var phone = $("#phoneSea").attr('sub');
+            if (username == '' && code == '' && linkman == '' && phone == ''){
+
+            }else{
+                var a = $(this).attr("href");
+                var url = a+"&username="+username+"&code="+code+"&linkman="+linkman+"&phone="+phone;
+                $(this).attr("href",url);
+            }
+        });
+
+        $(".delete").click(function () {
+            var id =$(this).attr("organize_id");
+            var type =$(this).attr("organize_type");
+           // alert(id);
+            layer.open({
+                title: ['温馨提示'],
+                content: '<div style="color:#767676">确定要删除当前数据吗？</div>',
+                btn: ['确定', '取消'],
+                shadeClose: true,
+                //回调函数
+                yes: function(index, layero){
+                    $.ajax({
+                        url:urladdr.deleteorganize,
+                        type:'post',
+                        dataType:'json',
+                        data:{
+                            id:id,
+                            type:type
+                        },
+                        //判断注册状态
+                        success:function (data) {
+                            if (data.code==1){
+                                layer.msg(data.msg, {
+                                    icon: 1,//提示的样式
+                                    time: 1000, //1秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                                    end: function () {
+                                        location.reload();
+                                    }
+                                })
+                            }else{
+                                layer.msg(data.msg)
+                            }
+                        }
+                    });
+                    //防止页面跳转
+                    return false;
+                },
+                btn2: function(index, layero){
+                    layer.close(index);
+                },
+                cancel: function(index,layero){ //按右上角“X”按钮
+                    layer.close(index);
+                },
+
+            });
+        });
+
+
+        $(".detil").click(function () {
+            var id =$(this).attr("organize_id");
+            var type =$(this).attr("organize_type");
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['1000px', '90%'], //宽高
+                title: "组织详情",
+                content: urladdr.detailsorganize+"?id="+id+"&type="+type,  //调到详情页面
+                yes: function(index, layero){
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+
+        $(".edit").click(function () {
+            var id =$(this).attr("organize_id");
+            var type =$(this).attr("organize_type");
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['1000px', '90%'], //宽高
+                title: "修改鉴定组织",
+                content: urladdr.uporganize+"?id="+id+"&type="+type,  //跳到新增页面
+                yes: function(index, layero){
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+
+    });
+
+
+</script>
+{/block}

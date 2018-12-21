@@ -1,0 +1,173 @@
+{include file='content/daohang'}
+
+<div class="layui-main WangShangBaoMing">
+    <style type="text/css">
+        .wen{
+            overflow: hidden;white-space: nowrap;text-overflow: ellipsis;display: inline-block; width: 700px;
+
+        }
+    </style>
+    <!--报名左tab边栏-->
+    <div class="layui-col-xs3">
+        <div class="WangShangBaoMing_left">
+            <div class="jieshao_header">
+                <span class="jieshao_header_left marginleft" >{$data.title}</span>
+            </div>
+            <ul class="wangbao_list">
+                <li class="baoming" name="dian"  value="{$data.id}" >
+                   {$data.guide_name}
+                </li>
+                {volist name='info' id='v'}
+                <li name="dian" value="{$v.id}" class="dianji{$v.id}">
+                    {$v.guide_name}
+                </li>
+              {/volist}
+            </ul>
+        </div>
+    </div>
+    <div class="layui-col-xs9">
+        <!--报名右边tab内容-->
+
+        <div class="WangShangBaoMing_right">
+            <ul class="wangbao_mains">
+                <li>
+                    <div class="wangbao_main">
+                        <div class="wangbao_breadcrumb">
+                            <span class="wangbao_header" id="dian">{$data.guide_name}</span>
+                            <span class="layui-breadcrumb" lay-separator=">">
+								  		<a href="/">首页</a>
+								  		<a><cite class="dian">{$data.guide_name}</cite></a>
+									</span>
+                        </div>
+                        <ul id="aaa" style="height: auto;">
+
+                        </ul>
+                    </div>
+                </li>
+
+
+
+
+
+
+
+
+</ul>
+            <div id="fen">     <input type="hidden" id="count" value="{$infos.count}">
+                <input type="hidden" id="id" value="{$infos.id}"></div>
+            <div id="fenye" class="wangbao_fenye">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{include file='content/foot'}
+</body>
+
+</html>
+
+<script src="__PUBLIC__/layui/layui.js" type="text/javascript" charset="utf-8"></script>
+<script src="__PUBLIC__/layui/layui.all.js" type="text/javascript" charset="utf-8"></script>
+
+
+<script type="text/javascript">
+
+    layui.use(['laypage', 'layer','jquery'], function() {
+
+        var laypage = layui.laypage,
+            layer = layui.layer;
+        var $ = layui.jquery;
+        var count = $('#count').val();
+        var id = $('#id').val();
+
+        laypage.render({
+            elem: 'fenye',
+            count:count,
+            theme: '#CD2D36',
+            layout: ['count', 'prev', 'page', 'next', 'limit', 'refresh', 'skip'],
+            jump: function(obj) {
+                var pag = obj.curr;
+                var limit=obj.limit;
+                //console.log(pag);console.log(limit)
+                $.post('category',{id:id,pag:pag,limit:limit},function(data)
+                {
+                    var html ='';
+                    for(var i=0;i<data.length;i++)
+                    {
+                        html+='<li><a class="wen" href="'+data[i].url+'">';
+                        html+='<i></i>'+data[i].title+'</a><span class="rightfloat">'+data[i].time+'</span>';
+                        html+='</li>'
+                    }
+                    $('#aaa').html(html);
+                })
+
+
+            }
+        });
+    });
+
+    function paged(data)
+    {
+        layui.use(['laypage', 'layer','jquery'], function() {
+            var laypage = layui.laypage,
+                layer = layui.layer;
+            //
+            var count = data.count;
+            var di = data.id;
+
+            laypage.render({
+                elem: 'fenye',
+                count:count,
+                theme: '#CD2D36',
+                layout: ['count', 'prev', 'page', 'next', 'limit', 'refresh', 'skip'],
+                jump: function(obj) {
+                    var pag = obj.curr;
+                    var limit=obj.limit;
+                  //  console.log(pag);console.log(limit)
+                    $.post('category',{id:di,pag:pag,limit:limit},function(data)
+                    {
+                        var html ='';
+                        for(var i=0;i<data.length;i++)
+                        {
+                            html+='<li><a class="wen"  href="'+data[i].url+'">';
+                            html+='<i></i>'+data[i].title+'</a><span class="rightfloat">'+data[i].time+'</span>';
+                            html+='</li>'
+                        }
+                        $('#aaa').html(html);
+                    })
+                }
+            });
+        });
+    }
+    layui.use('jquery',function(){
+        var $ = layui.jquery;
+        $("li[name=dian]").click(function(){
+            var id = $(this).attr('value');
+            console.log(id);
+            var title = $(this).text();
+            $('.dian').html(title);
+            $('#dian').html(title);
+          $.post('about',{id:id},function(data)
+            {
+
+                paged(data);
+            })
+        });
+
+
+    });
+
+
+    $(function() {
+        var wangbao_list = $('.wangbao_list li');
+        var wangbao_mains = $('.wangbao_mains>li');
+        var ZhuanJiaImg = $('.zhuanjiaImg')
+        wangbao_list.click(function() {
+            $(this).addClass('baoming').siblings().removeClass('baoming');
+            var h = $(this).index();
+            wangbao_mains.eq(h).show().siblings().hide();
+        });
+    });
+</script>

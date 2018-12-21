@@ -1,0 +1,72 @@
+{extend name="common@layout/nonelayout" /}
+
+{block name="content"}
+<div class="layui-tab-content">
+
+    <form class="layui-form" action="">
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">所属工种:</label>
+            <div class="layui-input-block">
+                <select name="work_id" lay-verify="required" lay-search>
+                    <option value="">请选择所属工种</option>
+                    {volist name='list' id='vo'}
+                    <option value="{$vo.id}">{$vo.name}</option>
+                    {/volist}
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">方向名称</label>
+            <div class="layui-input-block">
+                <textarea name="name" placeholder="如果需要批量添加方向 , 请换行, 例如:
+钢筋工
+水电工
+架子工" class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">是否启用</label>
+            <div class="layui-input-block">
+                <input type="checkbox" name="status" checked value="1" lay-skin="switch">
+            </div>
+        </div>
+
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="formSubmit">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+</div>
+{/block}
+
+{block name='script'}
+<script>
+    layui.use('form', function () {
+        var form = layui.form, $ = layui.jquery, lock = false;
+        //监听提交
+        form.on('submit(formSubmit)', function (data) {
+            var formData = data.field;
+            if (!lock) {
+                lock = true;
+                $.post(urladdr.doaddWorkDirection, formData, function (data) {
+                    if (data.code > 0) {
+                        layer.msg(data.msg, {icon: 1, time: 1000}, function () {
+                            layer.close(layer.index);
+                            window.parent.location.reload();
+                        });
+                    } else {
+                        layer.msg(data.msg, {icon: 5});
+                        lock = false;
+                    }
+                });
+            }
+            return false;
+        });
+    });
+</script>
+{/block}

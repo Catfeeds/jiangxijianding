@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <!--<meta http-equiv="Content-Type" content="text/html; charset=gb2312">-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>{block name="title"}标题{/block}</title>
+    <link rel="stylesheet" href="">
+    {load href="__PUBLIC__/layui/css/layui.css"/}
+</head>
+<body class="layui-layout-body" >
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">江西省鉴定中心</div>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+        <ul class="layui-nav layui-layout-left">
+            <li class="layui-nav-item"><a href="">控制台</a></li>
+            <li class="layui-nav-item"><a href="">商品管理</a></li>
+            <li class="layui-nav-item"><a href="">用户</a></li>
+            <li class="layui-nav-item">
+                <a href="javascript:;">其它系统</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="">邮件管理</a></dd>
+                    <dd><a href="">消息管理</a></dd>
+                    <dd><a href="">授权管理</a></dd>
+                </dl>
+            </li>
+        </ul>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:;">
+                    <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
+                    {$Think.session.user.id_card}
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a href="">基本资料</a></dd>
+                    <dd><a href="">安全设置</a></dd>
+                </dl>
+            </li>
+            <!--<li class="layui-nav-item"><a href="/examinee/index/loginOut">退出</a></li>-->
+            <li class="layui-nav-item"><a href="javascript:;" class="checkOut">退出</a></li>
+
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree jx-left-nav menu"  lay-filter="test">
+                <li class="layui-nav-item"><a href="/examinee/BaseInfo/indexbase">基本信息</a></li>
+                <li class="layui-nav-item">
+                    <a href="/examinee/BaseInfo/workInfo">鉴定报名</a>
+                </li>
+                <li class="layui-nav-item"><a href="/examinee/Payment/index">线下缴费(线上缴费待定)</a></li>
+                <!--<li class="layui-nav-item"><a href="/examinee/BaseInfo/addExamEnrollAgain">填写报名表格</a></li>-->
+                <!--<li class="layui-nav-item"><a href="/examinee/BaseInfo/fileUpload">上传审核资料</a></li>-->
+                <!--&lt;!&ndash;<li class="layui-nav-item"><a href="">修改信息</a></li>&ndash;&gt;-->
+                <!--<li class="layui-nav-item"><a href="/examinee/BaseInfo/verifyEnroll">提交资格审查</a></li>-->
+                <!--<li class="layui-nav-item"><a href="">打印报名表格</a></li>-->
+                <!--<li class="layui-nav-item"><a href="">用户中心首页</a></li>-->
+                <!--<li class="layui-nav-item"><a href="">重新报名</a></li>-->
+                <!--<li class="layui-nav-item"><a href="">进入考试缴费线下缴费</a></li>-->
+                <li class="layui-nav-item"><a href="/examinee/Bill/index">发票管理</a></li>
+                <li class="layui-nav-item"><a href="/examinee/Bill/gradeindex">我的成绩</a></li>
+                <li class="layui-nav-item"><a href="/examinee/Cert/index">我的证书</a></li>
+                <!--<li class="layui-nav-item"><a href="">打印准考证</a></li>-->
+                <li class="layui-nav-item"><a href="/examinee/index/my_center">修改密码</a></li>
+                <!--<li class="layui-nav-item"><a href="">成绩查询</a></li>-->
+                <li class="layui-nav-item"><a href="javascript:;" class="checkOut">退出系统</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body">
+        {block name="content"}{/block}
+    </div>
+
+    <div class="layui-footer">
+        <!-- 底部固定区域 -->
+        © 北京博奥网络教育科技股份有限公司 2018
+    </div>
+</div>
+{load href="__PUBLIC__/js/jquery.min.js"}
+{load href="__PUBLIC__/layui/layui.js"/}
+{load href="__PUBLIC__/layui/lay/modules/code.js"/}
+
+
+<script type="text/javascript">
+
+    //JavaScript代码区域
+    layui.use(['form', 'layer', 'jquery','element'], function () {
+        var element = layui.element;
+        var form = layui.form;
+        var $ = layui.jquery;
+        $(".checkOut").click(function () {
+            layer.open({
+                title: ['温馨提示'],
+                content: '<div style="color:#767676">确定要退出当前账号吗？</div>',
+                btn: ['确定', '取消'],
+                shadeClose: true,
+                //回调函数
+                yes: function (index, layero) {
+                    // self.location='http://www.baidu.com';//立即退出
+                    $.ajax({
+                        url: '/api/UserLogin/loginOut',
+                        dataType: 'json',
+                        //判断注册状态
+                        success: function (data) {
+                            if (data == 1) {
+                                layer.msg("退出成功", {
+                                    icon: 1,//提示的样式
+                                    time: 1000, //1秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                                    end: function () {
+                                        window.location.href = '/examinee/index/login';
+                                    }
+                                })
+                            } else {
+                                layer.msg(data)
+                            }
+                        }
+                    });
+                    //防止页面跳转
+                    return false;
+                },
+                btn2: function (index, layero) {
+                    layer.close(index);
+                },
+                cancel: function (index, layero) { //按右上角“X”按钮
+                    layer.close(index);
+                },
+
+            });
+        });
+
+
+        $('.menu li').on('click', function () {
+            var href = $(this).find('a').attr('href');
+            $.post({
+                url: '/api/UserInfo/perfect',
+                dataType: 'json',
+                //判断注册状态
+                success: function (data) {
+                    if (data.code == -1) {
+                        layer.msg(data.msg, {
+                            icon: 1,//提示的样式
+                            time: 2000, //1秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                            end: function () {
+                                window.location.href = '/examinee/BaseInfo/indexbase';
+                            }
+                        });
+                    } else {
+                        window.location.href = href;
+                    }
+                }
+            });
+            return false;
+        });
+    });
+
+</script>
+</body>
+{block name="script"}{/block}
+</html>

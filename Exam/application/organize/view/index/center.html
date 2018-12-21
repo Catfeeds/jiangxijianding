@@ -1,0 +1,184 @@
+{extend name="/layout/layout"}
+{block name="css"}
+{/block}
+{block name="content"}
+<body>
+
+<form class="layui-form">
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">用户名</label>
+        <div class="layui-input-inline">
+            <div class="layui-form-mid layui-word-aux">
+                <!--<span style="color: skyblue">-->
+                    {volist name="data" length='1' id="vo"}
+                         {$vo.username}
+                    {/volist}
+                <!--</span>-->
+            </div>
+        </div>
+
+        <label class="layui-form-label">昵称</label>
+        <div class="layui-input-inline">
+            <div class="layui-form-mid layui-word-aux">
+                {volist name="data" length='1' id="vo"}
+                {$vo.name}
+                {/volist}
+            </div>
+        </div>
+
+        <label class="layui-form-label">代码</label>
+        <div class="layui-input-inline">
+            <div class="layui-form-mid layui-word-aux">
+                {volist name="data" length='1' id="vo"}
+                {$vo.code}
+                {/volist}
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">负责人</label>
+        <div class="layui-input-inline">
+            <div class="layui-form-mid layui-word-aux">
+                {volist name="data" length='1' id="vo"}
+                    {$vo.dutyer}
+                {/volist}
+            </div>
+        </div>
+
+        <label class="layui-form-label">联系人</label>
+        <div class="layui-input-inline">
+            <div class="layui-form-mid layui-word-aux">
+                {volist name="data" length='1' id="vo"}
+                {$vo.linkman}
+                {/volist}
+            </div>
+        </div>
+
+        <label class="layui-form-label">地址</label>
+        <div class="layui-input-inline">
+            <div class="layui-form-mid layui-word-aux">
+                {volist name="data" length='1' id="vo"}
+                {$vo.address}
+                {/volist}
+            </div>
+        </div>
+
+    </div>
+
+    <div class="layui-form-item">
+
+        <label class="layui-form-label">联系电话</label>
+        <div class="layui-input-inline">
+            <div class="layui-form-mid layui-word-aux">
+                {volist name="data" length='1' id="vo"}
+                {$vo.phone}
+                {/volist}
+            </div>
+        </div>
+
+        <label class="layui-form-label">组织类型</label>
+        <div class="layui-input-inline">
+            <div class="layui-form-mid layui-word-aux">
+                {volist name="data" length='1' id="vo"}
+                {if ($vo['type']==1)}鉴定所{elseif($vo['type'] == 2)}院校{else/}机构{/if}
+                {/volist}
+            </div>
+        </div>
+
+        <label class="layui-form-label">状态</label>
+        <div class="layui-input-inline">
+            <div class="layui-form-mid layui-word-aux">
+                {volist name="data" length='1' id="vo"}
+                {if ($vo['status']==1)}可用{else/}不可用{/if}
+                {/volist}
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">建设时间</label>
+        <div class="layui-input-inline">
+            <div class="layui-form-mid layui-word-aux">
+                {volist name="data" length='1' id="vo"}
+                {$vo.build_date}
+                {/volist}
+            </div>
+        </div>
+
+        <label class="layui-form-label">创建时间</label>
+        <div class="layui-input-inline">
+            <div class="layui-form-mid layui-word-aux">
+                {volist name="data" length='1' id="vo"}
+                    {$vo.create_time}
+                {/volist}
+            </div>
+        </div>
+
+        <label class="layui-form-label">修改时间</label>
+        <div class="layui-input-inline">
+            <div class="layui-form-mid layui-word-aux">
+                {volist name="data" length='1' id="vo"}
+                {$vo.update_time}
+                {/volist}
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+    <table border="1" class="layui-table" width="100px" >
+        <tr>
+            <td>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">工种名称</label>
+                </div>
+            </td>
+            <td>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">工种方向</label>
+                </div>
+            </td>
+            <td>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">工种级别</label>
+                </div>
+            </td>
+        </tr>
+        
+        {volist name="data" id="vo"}
+        <tr>
+            <td>
+                <!--<span class="layui-bg-orange">-->
+                {$vo.workname}
+                <!--</span>-->
+            </td>
+            <td>
+                {volist name="vo.wdname" id="v"}
+                        {$v}
+                <br>
+                    {/volist}
+            </td>
+            <td>
+                {volist name="vo.level" id="v"}
+                            {$arr[$v]}
+                        {/volist}
+            </td>
+        </tr>
+        {/volist}
+            
+    </table>
+</div>
+    
+
+
+</form>
+</body>
+{/block}
+{/extend}
+{block name="script"}{/block}

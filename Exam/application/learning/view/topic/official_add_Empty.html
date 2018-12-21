@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .delete_button {
+            width: 17px;
+            height: 17px;
+            background: #A9B3BF;
+            right: -3px;
+            z-index: 99999;
+            position: absolute;
+            top: 50%;
+            margin-top: -9px;
+            text-align: center;
+            line-height: 18px;
+            color: #fff;
+        }
+    </style>
+    <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css">
+</head>
+<body>
+<div class="layui-body">
+    <div style="padding: 15px;">
+        <form class="layui-form" action="" id="addform">
+            <input type="hidden" name="id" value="{$datas.id|default=''}">
+            <div class="layui-form-item">
+                <label class="layui-form-label">题目</label>
+                <div class="layui-input-block">
+                    <textarea class="layui-textarea" name="topic_name" id="build_name" style="display: none">
+                        {$datas.topic_name|default=''}
+                    </textarea>
+                    <div class="layui-form-mid layui-word-aux">提示： 这里填写题目描述</div>
+                </div>
+            </div>
+
+            <div class="layui-form-item empty_list">
+                {volist name="answer" id="vo"}
+                <div class="each-data">
+                    <label class="layui-form-label"style=" width: 80px;height: 20px;background: #C2CEDB;font-size: 18px;color: #9b9b9b;">答案{$i}</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="answer[{$i}]" required="" value="{$vo}" lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input" style="width: 96%;display: inline-block;">
+                    </div><br>
+                </div>
+                {/volist}
+            </div>
+
+
+
+            <div class="layui-btn-container">
+                <button data-value="1" class="layui-btn layui-btn-fluid choose_button add_empty" style="background: #C2CEDB;">增加一个填空</button>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">归属题库</label>
+                <div class="layui-input-block b">
+                    <input type="radio" name="range" value="1" {$datas.range == '正规题库'? 'checked': '';} title="正规题库">
+                    <input type="radio" name="range" value="2" {$datas.range == '作业题库'? 'checked': '';} title="作业题库">
+                    <input type="radio" name="range" value="3" {$datas.range == '模拟题库'? 'checked': '';} title="模拟题库">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">难易程度</label>
+                <div class="layui-input-block c">
+                    <input type="radio" name="topic_level" value="1" title="易" {$datas.topic_level == '易'? 'checked': '';}>
+                    <input type="radio" name="topic_level" value="2" title="偏易" {$datas.topic_level == '偏易'? 'checked': '';}>
+                    <input type="radio" name="topic_level" value="3" title="适中" {$datas.topic_level == '适中'? 'checked': '';}>
+                    <input type="radio" name="topic_level" value="4" title="偏难" {$datas.topic_level == '偏难'? 'checked': '';}>
+                    <input type="radio" name="topic_level" value="5" title="难" {$datas.topic_level == '难'? 'checked': '';}>
+                </div>
+            </div>
+
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">答案解析</label>
+                <div class="layui-input-block">
+                    <textarea class="layui-textarea" name="answer_explain" id="build_answer_explain" style="display: none">
+                        {$datas.answer_explain|default=''}
+                    </textarea>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button type="submit" class="layui-btn" lay-submit lay-filter="formSubmit">立即提交</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>
+{load href="__PUBLIC__/layui/layui.js"/}
+{load href="__PUBLIC__/layui/lay/modules/code.js"/}
+{load href="__PUBLIC__/js/jquery.min.js"}
+<script>
+    layui.use(['form', 'layer','jquery','layedit'],function(){
+        var form = layui.form;
+        var $ = layui.jquery;
+        var layedit = layui.layedit;
+
+
+        $(document).ready(function(){
+            bindListener();
+        });
+
+
+        function bindListener() {
+            $('.delete_button').unbind().click(function () {
+                var div = $(this).parent().parent();
+                div.remove();
+            });
+        }
+
+        var num = {$count};//初始值
+        $('.add_empty').click(function () {
+            num += 1;
+            var input = "<div class=\"each-data\">\n" +
+                "                    <label class=\"layui-form-label\"style=\" width: 80px;height: 20px;background: #C2CEDB;font-size: 18px;color: #9b9b9b;\">答案"+num+"</label>\n" +
+                "                    <div class=\"layui-input-block\">\n" +
+                "                        <input type=\"text\" name=\"answer["+num+"]\" required=\"\" value=\"{$vo}\" lay-verify=\"required\" placeholder=\"请输入标题\" autocomplete=\"off\" class=\"layui-input\" style=\"width: 96%;display: inline-block;\">\n" +
+                "                        <span class=\"delete_button\">X</span>\n" +
+                "                    </div><br>\n" +
+                "                </div>";
+
+            $('.empty_list').append(input);
+            bindListener();
+        });
+        layedit.set({
+            uploadImage: {
+                url: '/api/LearningTopicOfficial/imgUpload', //接口url
+                type: 'post', //默认post
+            }
+        });
+
+        build_name = layedit.build('build_name', {
+            height: 200
+        });
+        build_answer_explain = layedit.build('build_answer_explain', {
+            height: 200
+        });
+        var active = {
+            content: function(){
+                return layedit.getContent(this);
+            }
+            ,text: function(){
+                return layedit.getText(this);
+            }
+            ,selection: function(){
+                return layedit.getSelection(index);
+            }
+        };
+
+
+        form.on('submit(formSubmit)', function (data) {
+
+            var topic_name = active['text'].call(build_name);
+            var topic_answer_explain = active['text'].call(build_answer_explain);
+
+            data=data.field;
+            data.topic_name = topic_name;
+            data.answer_explain = topic_answer_explain;
+
+            $.ajax({
+                url:'/api/LearningTopicOfficial/addEmpty',
+                type:'post',
+                data:data,
+                dataType:'json',
+                success:function (data) {
+                    if (data.status==1){
+                        layer.msg(data.msg,{
+                            icon: 1,
+                            time:  2000,
+                            end: function () {
+                                var index = parent.layer.getFrameIndex(window.name);
+                                parent.layer.close(index);
+                                parent.location.reload();
+                            }
+                        });
+                    }else{
+                        layer.msg(data.msg);
+                    }
+                }
+            });
+            return false;
+        });
+
+    });
+
+</script>

@@ -1,0 +1,114 @@
+{extend name="/layout/nonelayout"}
+{block name="css"}
+{/block}
+{block name='content'}
+<div style="width: 400px;text-align:center;margin-left: 20%;margin-top: 5%;">
+    <div class="layui-form" >
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">发票抬头</label>
+            <div class="layui-input-block">
+                <input type="text" name="invoice_name" value="" placeholder="" required lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+            <input type="hidden" name="type" value="2">
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">邮箱</label>
+            <div class="layui-input-block">
+                <input type="text" name="email" value="" placeholder="" required lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item  company_table">
+            <label class="layui-form-label">纳税识别号</label>
+            <div class="layui-input-block">
+                <input type="text" name="identification" value="" placeholder="" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item company_table">
+            <label class="layui-form-label">开户行名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="bank" value=""  placeholder=""  autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item company_table">
+            <label class="layui-form-label">开户行账号</label>
+            <div class="layui-input-block">
+                <input type="text" name="number" value=""  placeholder=""  autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">开户行地址</label>
+            <div class="layui-input-block">
+                <input type="text" name="bankaddress"  value=""  placeholder=""  required lay-verify="required"  autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item ">
+            <label class="layui-form-label">邮寄地址</label>
+            <div class="layui-input-block">
+                <input type="text" name="address"  value=""   placeholder="" required lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item ">
+            <label class="layui-form-label">电话</label>
+            <div class="layui-input-block">
+                <input type="text" name="phone"  value=""  placeholder=""  autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="formDemo">确认提交</button>
+            </div>
+        </div>
+        <input type="hidden" value="{$total_money}" name="total_money">
+        <input type="hidden" value="{$order_id}" name="order_id">
+
+    </div>
+</div>
+{/block}
+{block name='script'}
+<script type="text/javascript">
+
+    layui.use(['form', 'laypage','laydate','layer','jquery'], function() {
+        var form = layui.form,
+                $ = layui.jquery;
+        form.render();
+        var laydate = layui.laydate;
+        $ = layui.jquery;
+        form.render();
+
+        var laypage = layui.laypage;
+        var aaa=function() {
+            var typevalue = $("input[name=type]:checked").val();
+            if(typevalue == 1){
+                $(".geren_table").show();
+                $(".company_table").hide();
+            }else{
+                $(".company_table").show();
+                $(".geren_table").hide();
+            }
+        }
+        aaa();
+        form.on('radio(type)',function (data) {
+            aaa();
+        })
+
+
+        //监听提交
+        form.on('submit(formDemo)', function (data) {
+            var formData = data.field;
+            $.post("/api/Invoice/add", formData, function (data) {
+                if (data.code === 1) {
+                    layer.msg(data.msg, {icon: 1, time: 1000}, function () {
+                        layer.close(layer.index);
+                        window.parent.location.reload();
+                    });
+                } else {
+                    layer.msg(data.msg, {icon: 5});
+                }
+            });
+            return false;
+        });
+    });
+</script>
+{/block}

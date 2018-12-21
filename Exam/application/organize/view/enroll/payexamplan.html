@@ -1,0 +1,71 @@
+{extend name="/layout/layout"}
+{block name="css"}
+{/block}
+{block name="content"}
+
+<body>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body" style="clear: both; ">
+            <table class="layui-table" style="width: 90%" >
+                <colgroup>
+                    <col width="">
+                    <col width="180px">
+                    <col width="100px">
+                    <col width="100px">
+                    <col width="100px">
+                    <col width="100px">
+                    <col width="110px">
+                    <col width="100px">
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>计划名称</th>
+                    <th>缴费截止时间</th>
+                    <th>缓缴费/人</th>
+                    <th>已缴费/人</th>
+                    <th>待缴费/人</th>
+                    <th>考试时间</th>
+                    <th>报名人数/人</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {volist name="examplan" id="vo"}
+                <tr>
+                    <td>{$vo['title']}</td>
+                    <td>{$vo['pay_endtime']}</td>
+                    <td>{$vo['huan']}</td>
+                    <td>{$vo['ready']}</td>
+                    <td>{$vo['wait']}</td>
+                    <td>{$vo['exam_time']}</td>
+                    <td>{$vo['num']}</td>
+                    <td><a href="{$type}?plan_id={$vo.id}" class="layui-btn layui-btn-sm">详情</a></td>    
+                </tr>
+                {/volist}
+
+                </tbody>
+            </table>
+        </div>
+        <div class="layui-fluid tp-pages">
+            {$examplan->render()}
+        </div>
+    </div>
+</div>
+
+</body>
+{/block}
+{/extend}
+{block name="script"}
+<script type="text/javascript">
+
+    layui.use('element', function(){
+        var element = layui.element;
+    });
+
+    // $('.toggle').click(function(){
+    //     alert(123)
+    // })
+
+</script>
+{/block}

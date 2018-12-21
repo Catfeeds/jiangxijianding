@@ -1,0 +1,86 @@
+{extend name="common@layout/layout"}
+
+{block name="title"}{$message['type']}{/block}
+{block name="content"}
+<div class="layui-tab-content">
+    <table class="layui-table">
+        <colgroup>
+            <col width="10">
+            <col>
+            <col>
+            <col>
+            <col width="100">
+            <col width="100">
+        </colgroup>
+        <thead>
+        <tr>
+            <th width="50px">ID</th>
+            <th>标题</th>
+            <th>工种分类</th>
+            <th>考试时间</th>
+            <th>状态</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {volist name='list' id='vo'}
+        <tr>
+            <td id="id">{$vo['id']}</td>
+            <td>{$vo['title']}</td>
+            <td>{$vo['work_type_name']}</td>
+            <td>{$vo['exam_time']}</td>
+            <td>{if ($vo['status']==1)}已发布{else if($vo['status']==1)/}未发布{/if}</td>
+            <td>
+                {if condition="$vo['code'] ==401"}<button id="show-room" data-value="{$vo.id}" code="{$vo.code}" class="layui-btn layui-btn-xs work-show">生成组织册</button>{elseif condition="$vo['code'] == 402"/}<button id="show-room" data-value="{$vo.id}" code="{$vo.code}" class="layui-btn layui-btn-xs work-show">生成组织册</button><a href="/download/plan/{$vo.id}.doc"><button style="margin-top: 2px" id="show-room1" data-value="{$vo.id}" code="{$vo.code}" class="layui-btn layui-btn-xs work-show">下载组织册</button></a>{else}<button id="show-room" data-value="{$vo.id}" code="{$vo.code}" class="layui-btn layui-btn-xs work-show">查看考点</button>{/if}
+                </button>
+            </td>
+        </tr>
+        {/volist}
+        </tbody>
+    </table>
+    <div class="layui-fluid tp-pages">
+        {$list->render()}
+    </div>
+</div>
+{/block}
+
+{block name='script'}
+<script>
+    layui.use(['layer','jquery'], function(){
+        var $ = layui.jquery, layer = layui.layer;
+        $(document).on('click','#show-room',function(){
+           if($(this).attr('code')==401 || $(this).attr('code')==402)
+           {
+               $.ajax({
+                   url:'/admin/organization/generate',
+                   data:{"plan":$(this).attr('data-value')},
+                   type:"POST",
+                   dataType:"json",
+                   success:function(msg){
+                       if(msg['code'] ==200)
+                       {
+                           layer.alert('生成组织册成功',function (index){
+                               layer.close(index);
+                               window.location.reload();
+                           });
+                       }else{
+                           if(msg['code'] ==101)
+                           {
+                               layer.alert('生成组织册失败，关闭以打开组织册文件',function (index){
+                                   layer.close(index);
+                                   window.location.reload();
+                               });
+                           }
+                       }
+                   },
+                   error:function(error) {
+                       layer.alert('生成组织册失败');
+                   }
+               });
+           }else{
+               window.location.href='/admin/card/room?plan='+$(this).attr('data-value')+'&code='+{$message['code']};
+           }
+        });
+    });
+</script>
+{/block}

@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css">
+
+    <title>设置我的资料</title>
+</head>
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">设置我的资料</div>
+                <div class="layui-card-body" pad15>
+
+                    <div class="layui-form" lay-filter="">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">我的角色</label>
+                            <div class="layui-input-inline">
+                                <div class="layui-form-label" style="width: 400px;text-align: left;padding-left: 10px;">
+                                    {volist name="currAdminAndRole.role" id="vo"}
+                                    <span>{$vo['name']}、</span>
+                                    {/volist}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">用户名</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="username" disabled value="{$currAdminAndRole['username']}"
+                                       readonly class="layui-input">
+                            </div>
+                            <div class="layui-form-mid layui-word-aux">不可修改。用于后台登入名</div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">姓名</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="nickname" required  lay-verify="required" id="nickname" value="{$currAdminAndRole['name']}" autocomplete="off" placeholder="请输入昵称" class="layui-input">
+                                <input type="hidden" id="name" value="{$currAdminAndRole['name']}">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">手机</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="cellphone" id="phone" value="{$currAdminAndRole['phone']}"  autocomplete="off" required  lay-verify="required" placeholder="请输入手机号" class="layui-input">
+                                <input type="hidden" id="hiddenphone" value="{$currAdminAndRole['phone']}">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button class="layui-btn" id="upuserinfo" lay-submit lay-filter="setmyinfo">确认修改</button>
+                                <!--<button type="reset" class="layui-btn layui-btn-primary">重新填写</button>-->
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
+
+<script src="__PUBLIC__/layui/layui.js"></script>
+<script src="__PUBLIC__/layui/lay/modules/code.js"></script>
+<script type="text/javascript">
+
+    layui.use(['form', 'layer','jquery'], function () {
+        var form  = layui.form;
+        var $  = layui.jquery;
+        $("#upuserinfo").click(function () {
+            var nickname = $("#nickname").val();
+            var name = $("#name").val();
+            var phone = $("#phone").val();
+            var hiddenphone = $("#hiddenphone").val();
+            if (nickname == name && phone == hiddenphone) {
+                layer.msg("无改动", {
+                    icon: 5,
+                    anim: 6
+                });
+                return false;
+            }
+            $.ajax({
+                //详细信息页面 修改详细信息
+                url:'/api/admin/infopage', //详细信息页面 修改详细信息
+                type:'post',
+                data:{
+                    name:nickname,
+                    phone:phone,
+                },
+                dataType:'json',
+                success:function (data) {
+                    if (data.status==1){
+                        layer.msg(data.msg, {
+                            icon: 1,//提示的样式
+                            time: 1000, //1秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                            end: function () {
+                                window.location.href='/admin/index/infopage'; //详细信息页面 修改详细信息
+                            }
+                        })
+                    }else{
+                        layer.msg(data.msg)
+                    }
+                }
+            });
+        });
+
+
+    });
+
+</script>

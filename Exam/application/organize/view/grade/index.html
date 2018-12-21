@@ -1,0 +1,133 @@
+{extend name="/layout/layout"}
+{block name="css"}{/block}
+
+{block name="content"}
+
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+            <div class="layui-form-item">
+              
+                <form action="/organize/Grade/index" method="post">
+                    <a class="layui-btn" id="batchOrganize" onclick="window.history.back(-1);">
+                    返回
+                </a>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">准考证号</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="ticketnum"  value="{$map['grade.TicketNum']?$map['grade.TicketNum']:''}" placeholder="请输入" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">证件号</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="id_card" value="{$map['id_card']?$map['id_card']:''}" placeholder="请输入" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">最终结果</label>
+                        <div class="layui-input-block">
+                           <select name="result" id="worknameSea" lay-filter="work" class="layui-select">
+                                <option value="">请选择</option>
+                                {volist name='result' id='v'}
+
+                                    <option value="{$key}" {if($key== $map['result'])} selected {/if}>{$v}</option>
+                                {/volist}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <input type="submit" class="layui-btn layuiadmin-btn-order" value="搜索" id="searchBtn">
+                        <a href="/organize/Grade/exportGrade?plan_id={$map['plan_id']}" class="layui-btn layui-btn-sm">导出成绩</a>
+                    </div>
+                    
+                    <input type="hidden" value="{$map['plan_id']}" name="plan_id">
+                </form>
+                
+            </div>
+        </div>
+        <br/>
+        <br/>
+        <div class="layui-card-body">
+            <table class="layui-table">
+                <colgroup>
+                    <col width="100">
+                    <col width="150">
+                    <col>
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>考生姓名</th>
+                    <th>准考证号</th>
+                    <th>证件号</th>
+                    <th>报考工种</th>
+                    <th>报考级别</th>
+                    <th>理论结果</th>
+                    <th>实操结果</th>
+                    <th>综合结果</th>
+                </tr>
+                </thead>
+                <tbody>
+                {volist name="examgrade" id="vo" key='n'}
+                <tr>
+                    <td id="id">{$vo->username}</td>
+                    <td>{$vo.TicketNum}</td>
+                    <td>{$vo.id_card}</td>
+                    <td>{$vo.work_name}</td>
+                    <td>{$vo->level}</td>
+                    <td>{$vo->theory_score_result}</td>
+                    <td>{$vo->watch_score_result}</td>
+                    <td>{$vo->synthesize_score_result}</td>
+                </tr>
+                {/volist}
+
+                </tbody>
+            </table>
+        </div>
+        <div class="layui-fluid tp-pages">
+            {$examgrade->render()}
+        </div>
+    </div>
+</div>
+
+
+</body>
+{/block}
+{/extend}
+{block name="script"}
+<script type="text/javascript">
+
+    layui.use('element', function(){
+        var element = layui.element;
+    });
+
+    layui.use(['form', 'layer','jquery'], function () {
+        var form  = layui.form;
+        var $  = layui.jquery;
+
+        
+
+        $(".pager li a").click(function () {
+            var title = $("#titleSea").attr('sub');
+            var workname = $("#worknameSea").attr('sub');
+            var directionname = $("#directionnameSea").attr('sub');
+            var work_level_subject_level = $("#levelSea").attr('sub');
+            var exam_type = $("#exam_typeSea").attr('sub');
+            if (title == '' && workname == '' && directionname == '' && level == '' && exam_type == ''){
+
+            }else{
+                var a = $(this).attr("href");
+                var url = a+"&title="+title+"&workname="+workname+"&directionname="+directionname+"&work_level_subject_level="+work_level_subject_level+"&exam_type="+exam_type;
+                $(this).attr("href",url);
+            }
+        });
+
+       
+
+    });
+
+
+</script>
+{/block}

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf8"?>
+<root>
+  <fields>id|name|sex</fields>
+  <student>
+    <id>1</id>
+    <name>张三</name>
+    <sex>男</sex>
+  </student>
+  <student>
+    <id>1</id>
+    <name>李四</name>
+    <sex>女</sex>
+  </student>
+  <student>
+    <id>1</id>
+    <name>王五</name>
+    <sex>其他</sex>
+  </student>
+</root>

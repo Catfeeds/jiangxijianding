@@ -1,0 +1,163 @@
+<div class="header_title"><span>填写报名</span></div>
+<div class="tianxiebaoming layui-form">
+	<div class="tianxiebaoming_main">
+		<div class="layui-col-xs4 layui-col-md4">
+			<div class="layui-form-item">
+				<label class="layui-form-label">参赛职业</label>
+				<div class="layui-input-block">
+					<select name="city" lay-verify="required">
+						<option value=""></option>
+						<option value="0">小学</option>
+						<option value="1">初中</option>
+						<option value="2">高中</option>
+						<option value="3">本科</option>
+						<option value="4">专科</option>
+					</select>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">参赛组别</label>
+				<div class="layui-input-block">
+					<select name="city" lay-verify="required">
+						<option value=""></option>
+						<option value="0">小学</option>
+						<option value="1">初中</option>
+						<option value="2">高中</option>
+						<option value="3">本科</option>
+						<option value="4">专科</option>
+					</select>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">原职业（工种）</label>
+				<div class="layui-input-block">
+					<select name="city" lay-verify="required">
+						<option value=""></option>
+						<option value="0">小学</option>
+						<option value="1">初中</option>
+						<option value="2">高中</option>
+						<option value="3">本科</option>
+						<option value="4">专科</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-xs4 layui-col-md4">
+			<div class="layui-form-item">
+				<label class="layui-form-label">参赛日期</label>
+				<div class="layui-input-block">
+					<input type="text" name="date" id="date" lay-verify="date" placeholder="起止日期" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">考生来源</label>
+				<div class="layui-input-block">
+					<select name="city" lay-verify="required">
+						<option value=""></option>
+						<option value="0">小学</option>
+						<option value="1">初中</option>
+						<option value="2">高中</option>
+						<option value="3">本科</option>
+						<option value="4">专科</option>
+					</select>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">原证书编号</label>
+				<div class="layui-input-block">
+					<input type="text" name="title" placeholder="请输入证书编号" required lay-verify="required" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+
+		</div>
+		<div class="layui-col-xs4 layui-col-md4" style="height: 140px;">
+			<div class="layui-form-item">
+				<label class="layui-form-label">参赛单位</label>
+				<div class="layui-input-block">
+					<select name="city" lay-verify="required">
+						<option value=""></option>
+						<option value="0">小学</option>
+						<option value="1">初中</option>
+						<option value="2">高中</option>
+						<option value="3">本科</option>
+						<option value="4">专科</option>
+					</select>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">原级别</label>
+				<div class="layui-input-block">
+					<select name="city" lay-verify="required">
+						<option value=""></option>
+						<option value="0">小学</option>
+						<option value="1">初中</option>
+						<option value="2">高中</option>
+						<option value="3">本科</option>
+						<option value="4">专科</option>
+					</select>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="layui-col-xs12 layui-col-md12 ">
+		<div class="layui-form-item layui-form-text">
+			<label class="layui-form-label">获奖情况<p>特长介绍</p></label>
+			<div class="layui-input-block">
+				<textarea name="desc" placeholder="请输入内容" class="layui-textarea"></textarea>
+			</div>
+		</div>
+		<div class="layui-form-item layui-form-text">
+			<label class="layui-form-label">备注</label>
+			<div class="layui-input-block">
+				<textarea name="desc" placeholder="请输入内容" class="layui-textarea"></textarea>
+			</div>
+		</div>
+	</div>
+	<div class="layui-col-xs12 layui-col-md12">
+		<div class="layui-form-item" style="height: 150px;">
+		<label class="layui-form-label">上传资料</label>
+		<div class="layui-input-block">
+			<div class="photo2" id="shangchuan"><i class="layui-icon layui-icon-add-circle-fine"></i></div>
+			<span class="shili"></span>
+			<div class="photo2"><i class="layui-icon layui-icon-add-circle-fine"></i></div>	
+		</div>
+		</div>
+		<div class="layui-form-item" style="margin-top: 15px;">
+				<label class="layui-form-label">验证码</label>
+				<div class="layui-input-block">
+					<input type="text" name="title" placeholder="请输入验证码" required lay-verify="required" autocomplete="off" class="layui-input yzm_input2">
+					<img class="yzmimg" src="img/yanzm.png">
+				</div>
+			</div>
+	</div>
+	<div class="double_btn double_xinxi_btn">
+		<div class="dayin_btn tijiaodayin">确认提交并打印报名表</div>
+	</div>
+</div>
+
+<script>
+	layui.use(['form', 'laydate', 'upload'], function() {
+		var upload = layui.upload;
+		var form = layui.form;
+		var laydate = layui.laydate;
+		$ = layui.jquery;
+		form.render();
+		laydate.render({
+			elem: '#date' //指定元素
+		});
+		//执行实例
+		var uploadInst = upload.render({
+			elem: '#shangchuan' //绑定元素
+				,
+			url: '/upload/' //上传接口
+				,
+			done: function(res) {
+				//上传完毕回调
+			},
+			error: function() {
+				//请求异常回调
+			}
+		});
+	});
+	
+</script>

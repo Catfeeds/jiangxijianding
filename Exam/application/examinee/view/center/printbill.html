@@ -1,0 +1,119 @@
+{extend name="nonelayout"}
+{block name="css"}
+{/block}
+{block name='content'}
+<div style="width: 400px;margin-top: 20px;">
+    <div class="layui-form">
+        <input type="hidden" name="id" value="{$id?$id:''}">
+
+        {if $invoiceData['type']==1}
+        <div class="layui-form-item">
+            <label class="layui-form-label">发票抬头</label>
+            <div class="layui-input-block">
+                <label class="layui-form-label">{$invoiceData['invoice_name']?$invoiceData['invoice_name']:''}</label>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">开户行地址</label>
+            <div class="layui-input-block">
+                <label class="layui-form-label">{$invoiceData['bankaddress']?$invoiceData['bankaddress']:''}</label>
+            </div>
+        </div>
+        <div class="layui-form-item ">
+            <label class="layui-form-label">邮寄地址</label>
+            <div class="layui-input-block">
+                <label class="layui-form-label">{$invoiceData['address']?$invoiceData['address']:''}</label>
+            </div>
+        </div>
+        {else /}
+        <div class="layui-form-item">
+            <label class="layui-form-label">发票抬头</label>
+            <div class="layui-input-block">
+                <label class="layui-form-label">{$invoiceData['invoice_name']?$invoiceData['invoice_name']:''}</label>
+            </div>
+        </div>
+
+        <div class="layui-form-item  company_table">
+            <label class="layui-form-label">纳税人识别号</label>
+            <div class="layui-input-block">
+                <label class="layui-form-label">{$invoiceData['identification']?$invoiceData['identification']:''}</label>
+            </div>
+        </div>
+        <div class="layui-form-item company_table">
+            <label class="layui-form-label">开户行名称</label>
+            <div class="layui-input-block">
+                <label class="layui-form-label">{$invoiceData['bank']?$invoiceData['bank']:''}</label>
+            </div>
+        </div>
+        <div class="layui-form-item company_table">
+            <label class="layui-form-label">开户行账号</label>
+            <div class="layui-input-block">
+                <label class="layui-form-label">{$invoiceData['number']?$invoiceData['number']:''}</label>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">开户行地址</label>
+            <div class="layui-input-block">
+                <label class="layui-form-label">{$invoiceData['bankaddress']?$invoiceData['bankaddress']:''}</label>
+            </div>
+        </div>
+        <div class="layui-form-item ">
+            <label class="layui-form-label">邮寄地址</label>
+            <div class="layui-input-block">
+                <label class="layui-form-label">{$invoiceData['address']?$invoiceData['address']:''}</label>
+            </div>
+        </div>
+        <div class="layui-form-item company_table">
+            <label class="layui-form-label">电话</label>
+            <div class="layui-input-block">
+                <label class="layui-form-label">{$invoiceData['phone']?$invoiceData['phone']:''}</label>
+            </div>
+        </div>
+        {/if}
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" id="pre" >确认打印</button>
+        </div>
+    </div>
+</div>
+{/block}
+{block name='script'}
+<script type="text/javascript">
+    $("#pre").on('click',function () {
+            window.print();
+    });
+
+
+//        function preview(oper) {
+//            var tata=document.execCommand("print");/* window.print(); 调用打印的功能*/
+//            return false;
+//            if(tata){  //点击取消后执行的操作
+//                layui.use(['form', 'layer','jquery','element'], function () {
+//                    var element = layui.element;
+//                    var form = layui.form;
+//                    var $ = layui.jquery;
+//                    var $id= $("#hiddenid").val();
+//                    //添加表单监听事件
+//                    $.ajax({
+//                        url:'/api/ExamEnroll/printApplyStatus?status='+55,
+//                        data:{id:$id},
+//                        dataType:'json',
+//                        success:function (data) {
+//                            if (data.code==1) {
+//                                layer.msg(data.msg)
+//                            }else{
+//                                layer.msg(data.msg);
+//                            }
+//                        }
+//                    });
+//                    //防止页面跳转
+//                    return false;
+//                });
+//            }
+//    }
+</script>
+{/block}
+
+

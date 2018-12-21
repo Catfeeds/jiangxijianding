@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--缓缴费不通过-->
+<root>
+    <!--每个数据项内标签名有哪些，多个用|分割-->
+    <fields>item|time</fields>
+    <!--每个数据项标签名要和文件名一致-->
+    <slow_payment>
+        <item>缓缴费不通过11</item>
+        <time>1545125140</time>
+    </slow_payment>
+    <slow_payment>
+        <item>材料审核不通过222</item>
+        <time>1545125140</time>
+    </slow_payment>
+    <slow_payment>
+        <item>材料审核不通过333</item>
+        <time>1545125140</time>
+    </slow_payment>
+    <slow_payment>
+        <item>材料审核不通过444</item>
+        <time>1545125140</time>
+    </slow_payment>
+</root>

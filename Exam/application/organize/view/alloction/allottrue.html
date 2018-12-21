@@ -1,0 +1,48 @@
+{extend name="/layout/nonelayout"}
+{block name="css"}
+{load href="__STATIC__/css/common/page.css"/}
+{/block}
+{block name="content"}
+
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <table class="layui-table">
+                <colgroup>
+                    <col width="150">
+                    
+                    <col width="200">
+                    <col>
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>考评员姓名</th>
+                    <th>证书编号</th>
+                    <th>考评员级别</th>
+                    <th>工种</th>
+                </tr>
+                </thead>
+                <tbody>
+                {volist name="data" id="vo" key='n'}
+                <tr>
+                    <td id="id">{$vo['uname']}</td>
+                    <td>{$vo['card_no']}</td>
+                    <td>{$vo['card_level']}</td>
+                    <td>{$vo['wname']}</td>
+                </tr>
+                {/volist}
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+</body>
+{/block}
+{/extend}
+{block name="script"}
+{/block}

@@ -1,0 +1,126 @@
+<div>
+	<span class="title" data-value="{$title}"></span>
+	<div class="header_title"><span>我的证书</span></div>
+	<div class="layui-fluid">
+		<div class="layui-card">
+			<!--<div class="layui-form layui-card-header layuiadmin-card-header-auto">
+				<div class="layui-form-item">
+					<button class="layui-btn" id="addExamInfo">
+					<i class="layui-icon">&#xe608;</i> 添加
+					</button>
+				</div>
+			</div>-->
+			<div class="layui-card-body">
+				<table class="layui-table myorder_table">
+					<colgroup>
+						<!--<col width="5%">-->
+						<col>
+						<col>
+						<col>
+						<col>
+						<col>
+						<col>
+					</colgroup>
+					<thead>
+					<tr >
+						<!--<th>ID</th>-->
+						<th>证书编号</th>
+						<th>工种</th>
+						<th>级别</th>
+						<!--<th>考试批次</th>-->
+						<th>领取方式</th>
+						<th>操作</th>
+					</tr>
+					</thead>
+					<tbody>
+					{volist name="examData" id="vo"}
+					<tr>
+						<td>{$vo['certificate_no']}</td>
+						<td>{$vo['work']}</td>
+						<td>{$vo->current_level}</td>
+						<td>{$vo['cert_way']}</td>
+						<td >
+							<button class="looks_btn margin_right_10 borderwid detailCert" data-value="{$vo['id']}" >查看</button>
+							<!--<button class="dayin_btn margin_right_10 borderwid LingQu" data-value="{$vo['id']}">现场领取</button>-->
+							<!--<button class="blue_btn borderwid YouJi"  data-value="{$vo['exam_enroll_id']}" >申请邮寄</button>-->
+							<button class="dayin_btn margin_right_9 borderwid gain" data-value="{$vo['exam_enroll_id']}" >领取方式</button>
+						</td>
+					</tr >
+					</tbody>
+					{/volist}
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="XiuGaiDiZhi layui-form" style="display: none;">
+	<h2 class="tanchuang_title">地址修改</h2>
+	<div class="double_btn double_qx">
+		<button class="dayin_btn margin_right_10 borderwid LingQu" data-value="{$vo['id']?$vo['id']:''}" >现场领取</button>
+		<button class="blue_btn borderwid YouJi"  data-value="{$vo['exam_enroll_id']?$vo['exam_enroll_id']:''}" >申请邮寄</button>
+	</div>
+</div>
+<script type="text/javascript">
+	layui.use('element', function(){
+		var element = layui.element;
+	});
+
+	layui.use(['form', 'layer','jquery'], function () {
+		$('title').html($('.title').data('value'));
+		//详情
+		$(".detailCert").click(function () {
+			id = $(this).data('value');
+			layer.open({
+				type: 2,
+				skin: 'layui-layer-rim', //加上边框
+				area: ['500px', '600px'], //宽高
+				title: "查看证书详情",
+				content: "/examinee/Center/detail?id=" + id,  //调到新增页面
+				yes: function (index, layero) {
+					//do something
+					layer.close(index); //如果设定了yes回调，需进行手工关闭
+				}
+			});
+		});
+
+		$('.LingQu').on('click', function () {
+			id = $(this).data('value');
+			layer.open({
+				type: 2,
+				area: ['350px', '350px'],
+				title: "现场领取",
+				content: '/examinee/Center/lingqu?id='+id,
+			});
+			return false;
+		});
+
+		$('.YouJi').on('click', function () {
+			id = $(this).data('value');
+			layer.open({
+				type: 2,
+				area:['350px', '350px'],
+				title: "邮寄地址确认",
+				content: '/examinee/Center/youji?id='+id,
+				end: function () {
+					layer.close(layer.index);
+				}
+			});
+			return false;
+		});
+
+		$('.gain').on('click',function () {
+			layer.open({
+				type: 1,
+				title: false,
+				area: ['340px', '310px'],
+				content: $('.XiuGaiDiZhi'),
+				cancel: function(index, layero) {
+					$(".XiuGaiDiZhi").css('display', 'none');
+				}
+
+			});
+		});
+
+	});
+</script>

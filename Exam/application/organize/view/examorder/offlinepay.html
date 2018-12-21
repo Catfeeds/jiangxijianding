@@ -1,0 +1,111 @@
+{extend name="/layout/nonelayout"}
+{block name="css"}
+{/block}
+{block name="content"}
+<body>
+
+<form class="layui-form"  id="form" enctype="multipart/form-data">
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label"></label>
+        <input type="hidden" value="{$plan_id}" name="plan_id">
+        <input type="hidden" value="{$order_id}" name="order_id">
+    </div>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label"></label>
+        <div class="layui-input-block">
+            <span class="layui">此次线下交费共{$count.total_money}元</span>
+        </div>
+    </div>
+    <div class="layui-upload">
+      <label class="layui-form-label">上传凭证<span style="color: red">*</span></label>
+      <div class="layui-input-block">
+             <!-- <button type="button" class="layui-btn " id="test1">点击选择</button> -->
+             <input type="file" name="file" id="inp">
+        </div>
+      <div class="layui-upload-list">
+        <label class="layui-form-label"></label>
+        <img class="layui-upload-img" src="" id="demo1" >
+      </div>
+    </div> 
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">流水号<span style="color: red">*</span></label>
+        <div class="layui-input-block">
+          <input type="text" placeholder="请输入流水号" class="layui-input" lay-verify="required" name="water_no"  id="water_no">
+        </div>
+    </div>
+
+     <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label"></label>
+        <div class="layui-inline">
+        <button class="layui-btn"  lay-filter="Submission" id="submit">提交</button>
+        </div>
+    </div>
+</form>
+</body>
+{/block}
+{/extend}
+{block name="script"}
+<script type="text/javascript">
+     layui.use('laydate', function(){
+        var laydate = layui.laydate;
+        var myDate = new Date();//获取系统当前时间
+
+    });
+
+    layui.use(['form', 'layer','jquery'], function () {
+        var form = layui.form;
+        var $ = layui.jquery;
+        upload = layui.upload;
+
+        inp.onchange=function(){
+         var read=new FileReader() // 创建FileReader对像;
+         read.readAsDataURL(this.files[0]) // 调用readAsDataURL方法读取文件;
+              read.onload=function(){
+               url=read.result // 拿到读取结果;
+               $('#demo1').attr('src',url)
+               $('#demo1').attr('height','100px')
+             }
+         }  
+        
+        $('#submit').click(function(){
+            var src = $('#demo1').attr('src');
+            if(src=='')
+            {
+                layer.msg('请上传缴费凭证');
+                return false;
+            }
+            form = new FormData($("#form")[0]);
+            $.ajax({
+                type: "POST",//方法类型
+                dataType: "json",//预期服务器返回的数据类型
+                url: "/api/ExamEnroll/offlinepay" ,//url
+                data: form,
+                processData:false,
+                contentType:false,
+                //判断注册状态
+                success:function (data) {
+                        if (data.code==1){
+                        layer.msg(data.msg,{
+                            icon: 1,//提示的样式
+                            time:  2000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                            end: function () {
+                                //当你在iframe页面关闭自身时
+                                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                parent.layer.close(index); //再执行关闭
+                                parent.location.reload();
+                            }
+                        });
+                    }else{
+                        layer.msg(data.msg);
+                    }
+                }
+            }); 
+            return false;
+
+        })
+
+
+
+    })
+</script>
+{/block}

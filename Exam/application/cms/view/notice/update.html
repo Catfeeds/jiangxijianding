@@ -1,0 +1,400 @@
+
+{block name="css"}
+<link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css">
+<link rel="stylesheet" href="__PUBLIC__/layui/js/formSelects-v4.css">
+{/block}
+{block name="content"}
+
+<style type="text/css">
+    .xm-select-parent .xm-form-select dl{
+        z-index: 1001;
+    }
+    .xm-select-parent .xm-select-title
+    {
+        margin-left: 108px;
+    }
+    .xm-select-parent .xm-select
+    {
+        margin-top: -30px;
+    }
+    .xm-select-parent .xm-select {
+        margin-top: 0px;
+    }
+    .xm-input{
+        position: absolute;
+        top: -30px;
+    }
+    .layui-form-item .layui-input-inline
+    {
+        width: 18%;
+    }
+    .layui-table-view
+    {
+        width:595px;
+    }
+    .layui-table
+    {
+        width: 80%;
+    }
+</style>
+<div  class="layui-body" style="left: 16px;width:925px">
+    <header></header>
+    <div class="layui-form" >
+
+        <div class="layui-form-item" style="margin-top: 10px">
+            <label class="layui-form-label">消息标题 <span style="color:red">*</span></label>
+            <div class="layui-input-inline">
+                <input type="hidden" value="{$user}" name="user_id" id="user_id">
+                <input type="text" id="title" name="title" required lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input" value="{$notice.title}">
+            </div>
+        </div>
+
+            <label class="layui-form-label">发送科室<span style="color:red">*</span></label>
+                <div class="layui-form-item" style="width: 26%">
+                    <select name="" xm-select="select4">
+
+                        {volist name='info' id='v'}
+                        <option value="{$v.id}" {if in_array($v.id,$office)} selected {/if}>{$v.name}</option>
+
+                        {/volist}
+                    </select>
+                </div>
+        <div class="layui-form-item">
+            <table  lay-filter="test1"  class="layui-table"  width="60%" style="margin: 10px 108px">
+                <thead>
+                <tr>
+                    <th style="width: 10px;"><input type="checkbox" name="admin_id[]" lay-skin="primary" lay-filter="allChoose"></th>
+                    <th width="100px">科室名称</th>
+                    <th width="100px">职务</th>
+                    <th width="100px">姓名</th>
+                </tr>
+                </thead>
+                <tbody id="admin">
+
+                {volist name='infos' id='voo'}
+                <tr class="{$voo.office_id}">
+                 <td><input type="checkbox" checked name="admin_id[]" lay-skin="primary" value="{$voo.id}"></td>
+                 <td>{$voo.office_name}</td>
+                <td>{$voo.role}</td>
+                 <td>{$voo.name}</td>
+                 </tr>
+                {/volist}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">单选框<span style="color:red">*</span></label>
+            <div class="layui-input-block">
+                <input type="radio" class="accessory" name="fujian" value="0" title="
+                  消息内容" {eq name="notice['fujian']" value="0"} checked {/eq}>
+                <input type="radio" class="accessory" name="fujian" value="1" title="上传附件" {eq name="notice['fujian']" value="1"} checked {/eq}>
+            </div>
+        </div>
+        <div class="layui-form-item" id="fu" {if $notice['fujian']==1} style="display: block;margin-left: 102px"" {else} style="display: none;margin-left: 102px" {/if}>
+        <label class="layui-form-label"  style="margin-left: -100px;">上传附件<span style="color:red">*</span></label>
+
+        <div class="layui-upload" style="margin-left: 8px;">
+        <button type="button" class="layui-btn layui-btn-normal" id="testList">选择多文件</button>
+        <div class="layui-upload-list">
+        <table class="layui-table">
+        <thead>
+        <tr><th>文件名</th>
+
+        <th>状态</th>
+        <th>操作</th>
+        </tr></thead>
+        <tbody id="demoList">
+        {notempty name='notice.fujian_id'}
+        {volist name='notice.fujian_id' id='fu'}
+        <tr class="fu{$fu.id}">
+            <td>{$fu.name}</td>
+            <td><span style="color: #5FB878;">上传成功</span></td>
+            <th><button class="layui-btn layui-btn-mini layui-btn-danger dele" value="{$fu.id}">删除</button></th>
+        </tr>
+        {/volist}
+        {/notempty}
+        </tbody>
+        </table>
+        </div>
+        <button type="button" class="layui-btn" id="testListAction">开始上传</button>
+
+        <button type="button" class="layui-btn" id="back">返回</button>
+        </div>
+
+</div>
+        <div id="fujian"></div>
+
+           {notempty name="$notice_id"}
+        <input type="hidden" value="{$notice_id}" name="notice_id" id="notice">
+        {/notempty}
+            <div class="layui-form-item layui-form-text" id="xiao" {if $notice['fujian']==0} style="display: block" {else} style="display: none" {/if}>
+                <label class="layui-form-label">消息内容<span style="color:red">*</span></label>
+                <div class="layui-input-block">
+                    <textarea  id="content" name="content" cols="50" rows="15" style="width: 95%;height:300px;" >{eq name="notice['fujian']" value='0'} {$notice.content}  {/eq}</textarea>
+                </div>
+               </div>
+
+            <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="sub">发送</button>
+
+            </div>
+        </div>
+
+    </form>
+</div>
+</div>
+
+{/block}
+
+{block name="script"}
+<script src="__PUBLIC__/js/jquery.min.js"></script>
+<script src="__PUBLIC__/layui/layui.js"></script>
+<script src="__PUBLIC__/ueditor/ueditor.config.js"></script>
+<script src="__PUBLIC__/ueditor/ueditor.all.js"></script>
+
+
+
+<script type="text/javascript">
+  var ue = UE.getEditor('content');
+  function getCOntent()
+  {
+    var content = UE.getEditor('content').getContent();
+    return content;
+  }
+
+    var id = $("#agendaId").val();
+  layui.use(['upload','layer'], function() {
+
+      var html='';
+      var $ = layui.jquery
+              , upload = layui.upload;
+      //多文件列表示例
+      var demoListView = $('#demoList')
+              , uploadListIns = upload.render({
+          elem: '#testList'
+          , url: 'fujian'
+          , accept: 'file'
+          , data: {}   //可放扩展数据  key-value
+          , multiple: true
+          , auto: false
+
+          , bindAction: '#testListAction'
+          , choose: function (obj) {
+              var files = this.files = obj.pushFile(); //将每次选择的文件追加到文件队列
+              //读取本地文件
+
+              obj.preview(function (index, file, result) {
+                  var tr = $(['<tr id="upload-' + index + '">'
+                      , '<td>' + file.name + '</td>'
+
+                      , '<td>等待上传</td>'
+                      , '<td>'
+                      , '<button class="layui-btn layui-btn-mini demo-reload layui-hide">重传</button>'
+                      , '<button class="layui-btn layui-btn-mini layui-btn-danger demo-delete">删除</button>'
+                      , '</td>'
+                      , '</tr>'].join(''));
+
+                  //单个重传
+                  tr.find('.demo-reload').on('click', function () {
+                      obj.upload(index, file);
+                  });
+                  //删除
+                  tr.find('.demo-delete').on('click', function () {
+                      delete files[index]; //删除对应的文件
+                      tr.remove();
+                      uploadListIns.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
+                  });
+
+                  demoListView.append(tr);
+              });
+          }
+
+          , done: function (res, index, upload) {
+              if (res.code == 1){
+                  html += '<input type="hidden" name="fujia_id[]" value="'+res.data+'"'+'id="'+res.data+'">'
+                  $("#fujian").html(html);
+                  var tr = demoListView.find('tr#upload-' + index)
+                          , tds = tr.children();
+                  tds.eq(2).html('<span style="color: #5FB878;">上传成功</span>');
+                  tds.eq(3).html('<button class="layui-btn layui-btn-mini layui-btn-danger fujian-del" value="'+res.data+'">删除</button>'); //清空操作
+                 delete this.files[index];
+                  tr.find('.fujian-del').on('click',function(){
+                      var id = $(this).val();
+                      $.ajax({
+                              url: "/cms/notice/Fujiandelete",
+                              data: {'id': id},
+                              type: "post",
+                              dataType: 'json',
+                              success: function (data) {
+                                  if (data.code == 1) {
+                                      layer.msg(data.msg,{'icon':1},function () {
+                                          tr.remove();
+                                      });
+                                  } else {
+                                      layer.msg(data.msg,{'icon':5});
+                                  }
+                              }
+                          });return false;
+                  })
+              }else
+                  {
+                      layer.msg(res.msg);
+                  }
+          }
+          , error: function (res,index, upload) {
+               layer.msg(res.msg);
+          }
+
+      });
+
+  });
+
+    layui.config({
+        base:'/static/layui/js/'
+    }).extend({
+        formSelects:'formSelects-v4'
+    }).use(['form','layer','layedit','upload','formSelects','table'],function(){
+        var form = layui.form ,$ = layui.jquery,table=layui.table;
+        var formSelects = layui.formSelects;
+
+       formSelects.btns('select4',['select','remove','reverse']);
+
+      formSelects.on('select4',function(id,vals,val,isAdd)
+      {
+
+          if(isAdd)
+          {
+              var office_id = val.value;
+              var user = $('#user_id').val();
+              $.post('/api/OaSend/admin',{office_id:office_id,user:user},function(res)
+              {
+                  var ta = '';
+                    for (var i=0;i<res.length;i++)
+                    {
+                        ta+='<tr class="'+res[i]['office_id']+'"><td><input type="checkbox"  checked value="'+res[i]['id']+'" lay-skin="primary" name="admin_id[]"></td>';
+                        ta +='<td>'+res[i]['office']+'</td>'
+                        ta +='<td>'+res[i]['role']+'</td><td>'+res[i]['name']+'</td></tr>';
+                    }
+                  // alert(ta);
+
+                 $('#admin').append(ta);
+                  form.render('checkbox');
+              })
+          }else {
+              var office_id = val.value;
+
+              $('.'+office_id).remove();
+              form.render('checkbox');
+          }
+      });
+   // $('.icon-qingkong').click(
+   //   //  alert(111)
+   //     $('#admin').html('')
+   //     $('.table_admin').hide()
+   //
+   // );
+      // table.render({
+      //     elem:'#demo'
+      //     ,height:312
+      //     ,url:'admin'
+      //     ,cols:[[
+      //         {checkbox:true},
+      //         {field:'id',title:"ID",width:80},
+      //         {field:'name',title:"姓名",width:100}
+      //         ,{field:'role',title:"职务",width:100}
+      //     ]]
+      // })
+
+        $('.dele').click(function()
+        {
+            var id = $(this).val();
+            $.ajax({
+                url: "/cms/notice/Fujiandelete",
+                data: {'id': id},
+                type: "post",
+                dataType: 'json',
+                success: function (data) {
+                    if (data.code == 1) {
+                        layer.msg(data.msg,{'icon':1},function () {
+                           $('.fu'+id).remove();
+                        });
+                    } else {
+                        layer.msg(data.msg,{'icon':5});
+                    }
+                }
+            });return false;
+        });
+        form.on('checkbox(allChoose)',function(data)
+        {
+            var child = $(data.elem).parents('table').find('tbody input[type="checkbox"]');
+            child.each(function(index,item){
+                item.checked = data.elem.checked;
+            })
+            form.render('checkbox');
+        })
+        form.on('radio',function(data){
+            var fu = data.value;
+          //  console.log(data);
+            if(fu==0)
+            {
+                $('#fu').hide();
+                $('#xiao').css('display','block');
+            }else {
+                $('#fu').css('display','block');
+                $('#xiao').hide();
+            }
+        });
+        form.on('submit(sub)',function(data){
+            var content = getCOntent();
+            var fujian = $('#fujian').html();
+
+            data = data.field;
+            data.content = content;
+         if(content!='' && fujian!='')
+         {
+             layer.msg('附件与消息不能同时存在！！！');
+             return false;
+         }
+            if(data.fujian=='2')
+            {
+                if(content=='')
+                {
+                    layer.msg('消息内容不能为空');
+                    return false;
+                }
+            }
+            var button = $(this);
+            button.addClass('layui-btn-disabled').attr('disabled',true);
+            $.ajax({
+                url:'/api/OaSend/update',
+                type:'post',
+                data:data,
+                dataType:'json',
+                success:function(res)
+                {
+                    if(res.code==1)
+                    {
+                        layer.msg(res.msg,{
+                            icon:1,
+                            time:2000,
+                            end:function(){
+                                var indexof = parent.layer.getFrameIndex(window.name);
+                                parent.layer.close(indexof);
+                                parent.location.reload();
+                            }
+                        });
+                    }else{
+                        layer.msg(res.msg);
+                        button.removeClass('layui-btn-disabled').removeAttr('disabled');
+                    }
+                }
+            });
+            return false;
+        })
+    });
+
+
+</script>
+{/block}

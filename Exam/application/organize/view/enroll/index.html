@@ -1,0 +1,393 @@
+{extend name="/layout/layout"}
+{block name="css"}
+{/block}
+{block name="content"}
+
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+    
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+            
+            <div class="layui-form-item">
+                <button class="layui-btn" id="batchOrganize" onclick="window.location='/organize/enroll/index'">
+                    返回
+                </button>
+                <!-- <img src="/static/center/img/return.png" alt="" style="background-color: #009688"> -->
+                {if(isset($arrEnroll[0]) && $arrEnroll[0]['audit_endtime']>time())}
+                <button class="layui-btn" id="enrollupload">
+                    <i class="layui-icon">&#xe608;</i> 审核材料上传
+                </button>
+                 <button class="layui-btn" id="submitall" >
+                    <i class="layui-icon"></i> 全部提交
+                </button>
+                {/if}
+
+                {if(isset($arrEnroll[0])  && strtotime($arrEnroll[0]['exam_time'])<strtotime('-15 days'))}
+                <button class="layui-btn" id="thesisup" title="论文必须在考试前15天上传">
+                    <i class="layui-icon">&#xe608;</i> 论文上传
+                </button>
+                {/if}
+               
+            </div>   
+                <form action="/organize/enroll/index" method="post">
+                    <input type="hidden" value="{$plan}" name="plan_id">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">考生姓名</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="name"  class="layui-input" value="{$map['name']}" id="name">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">证件号</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="id_card"  class="layui-input" value="{$map['id_card']}" id="id_card" size="22">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">考试类型</label>
+                        <div class="layui-input-block">
+                             <select name="exam_type" id="exam_typeSea" class="layui-select">
+                                <option value="">请选择</option>
+                                <option value="1" {if($map['exam_type'])==1} selected {/if}>新考</option>
+                                <option value="2" {if($map['exam_type'])==2} selected {/if}>补考</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">报名进度</label>
+                        <div class="layui-input-block">
+                            <select name="status" id="levelSea" class="layui-select">
+                                <option value="">请选择</option>
+                                {volist name='audit' id='v'}
+                                <option value="{$key}" {if($map['status'])==$key} selected {/if}>{$v}</option>
+                                {/volist}
+
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <input type="submit" class="layui-btn layuiadmin-btn-order" value="搜索" id="searchBtn">
+                    </div>
+                </form>
+                <input type="hidden" id="notsub" value="{$count[0]['count']}">
+                <input type="hidden" id="zong" value="{$count['zong']}">
+
+        <div class="layui-card-body">
+            <table class="layui-table" width="200px">
+                <colgroup>
+                    <col width="50">
+                    <col width="50">
+                    <col width="50">
+                    <col width="50">
+                    <col width="50">
+                    <col width="50">
+                    <col>
+                </colgroup>
+                <tr>
+                    <td>已提交</td>
+                    <td>{$data[0]['pass']}</td>
+                    <td>可提交</td>
+                    <td>{$data[0]['ready']}</td>
+                    <td>待上传</td>
+                    <td>{$data[0]['wait']}</td>
+                </tr>
+            </table>
+            <table class="layui-table">
+                <colgroup>
+                    <col width="87">
+                    <col width="180">
+                    <col width="150">
+                    <col width="87">
+                    <col width="87">
+                    <col width="130">
+                    <col>
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>考生姓名</th>
+                    <th>工种名称</th>
+                    <th>工种方向</th>
+                    <th>工种级别</th>
+                    <th>考试类型</th>
+                    <th>报名进度</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {volist name="arrEnroll" id="vo" key='n'}
+                <tr>
+                    <td>{$vo['username']}</td>
+                    <td>{$vo['workname']}</td>
+                    <td>{$vo['directionname']}</td>
+                    <td>{$vo->work_level_subject_level}</td>
+                    <td>{$vo['exam_type']==1?"新考":"补考"}</td>
+                    <td title="{$vo['reason']}">{$vo->status}</td>
+                    <td> 
+                        {if($vo['audit_endtime']>time())}
+                        <button list='{$vo.id}' class="layui-btn  layui-btn-sm {if (!in_array($vo.status,config('EnrollStatus.update')))} layui-btn-disabled {else} edit {/if}">
+                        <i class="layui-icon">&#xe642;</i>
+                    </button>
+                        <button id="delete" list='{$vo.id}' class="layui-btn layui-btn-sm {if (!in_array($vo.status,config('EnrollStatus.delete')))} layui-btn-disabled {else} delete {/if}">
+                            <i class="layui-icon">&#xe640;</i>
+                        </button>
+                        {if (in_array($vo.status,config('EnrollStatus.revoke')))}
+                         <button id="cancel" list='{$vo.id}' class="layui-btn layui-btn-sm cancel">
+                            <i class="layui-icon">撤销</i>
+                        </button>
+                        {/if}
+                        {if (in_array($vo.status,config('EnrollStatus.twocancel')))}
+                         <button id="sub" list='{$vo.id}' class="layui-btn layui-btn-sm sub">
+                            <i class="layui-icon">提交</i>
+                        </button>
+                        {/if}
+                        
+                        {/if}
+                        <button id="detail" list='{$vo.id}' class="layui-btn layui-btn-sm detail">
+                            <i class="layui-icon">详情</i>
+                        </button>
+                    </td>
+                </tr>
+                {/volist}
+
+                </tbody>
+            </table>
+        </div>
+
+            <div class="layui-fluid tp-pages">
+                {$arrEnroll->render()}
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+
+</body>
+{/block}
+{/extend}
+{block name="script"}
+<script type="text/javascript">
+
+    layui.use('element', function(){
+        var element = layui.element;
+    });
+
+    layui.use(['form', 'layer','jquery'], function () {
+        var form  = layui.form;
+        var $  = layui.jquery;
+        var plan = $('input[name=plan_id]').val();
+        var work = $('#workid').val();
+        
+        $('#enrollupload').click(function(){
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['50%', '60%'], //宽高
+                title: "上传报名材料",
+                content: "enrollData?plan_id="+plan,  //调到页面
+                yes: function(index, layero){
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+
+        })
+
+        $('#thesisup').click(function(){
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['40%', '60%'], //宽高
+                title: "批量上传论文",
+                content: "enrollthesis?plan_id="+plan,  //调到页面
+                yes: function(index, layero){
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+
+        })
+       
+
+        $(".delete").click(function () {
+            var id =$(this).attr('list');
+            // alert(id);
+            layer.open({
+                title: ['温馨提示'],
+                content: '<div style="color:#767676">确定要删除当前数据吗？</div>',
+                btn: ['确定', '取消'],
+                shadeClose: true,
+                //回调函数
+                yes: function(index, layero){
+                    $.ajax({
+                        url:'/api/ExamEnroll/delete',
+                        type:'post',
+                        dataType:'json',
+                        data:{
+                            id:id,
+                        },
+                        //判断注册状态
+                        success:function (data) {
+                            if (data.code==1){
+                                layer.msg(data.msg, {
+                                    icon: 1,//提示的样式
+                                    time: 1000, //1秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                                    end: function () {
+                                        location.reload();
+                                    }
+                                })
+                            }else{
+                                layer.msg(data.msg)
+                            }
+                        }
+                    });
+                    //防止页面跳转
+                    return false;
+                },
+                btn2: function(index, layero){
+                    layer.close(index);
+                },
+                cancel: function(index,layero){ //按右上角“X”按钮
+                    layer.close(index);
+                },
+
+            });
+        });
+
+        $(".edit").click(function () {
+            var id =$(".edit").attr('list');
+
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['70%', '80%'], //宽高
+                title: "修改报名信息",
+                content: urladdr.editExamEnroll+"?id="+id+"&plan_id="+plan,  //调到页面
+                yes: function(index, layero){
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+        $(".detail").click(function () {
+            var id =$(this).attr('list');
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['70%', '80%'], //宽高
+                title: "查看报名信息",
+                content: urladdr.detailExamEnroll+"?id="+id,  //调到页面
+                yes: function(index, layero){
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+
+        $('#submitall').click(function(){
+           var num = $('#notsub').val();
+           var zong = $('#zong').val();
+           var plan = $('input[name=plan_id]').val();
+           if(num==false)
+           {
+                layer.msg('暂无可提交数据');
+                return false;
+           }
+           layer.open({
+                title: ['温馨提示'],
+                content: '<div style="color:#767676">此计划报名共'+zong+'人,可以提交共'+num+'人,确定全部提交吗</div>',
+                btn: ['确定', '取消'],
+                shadeClose: true,
+                //回调函数
+                yes: function(index, layero){
+                    $.ajax({
+                        url:'/api/ExamEnroll/submit',
+                        type:'post',
+                        data:{
+                            plan:plan
+                        },
+                        dataType:'json',
+                        //判断注册状态
+                        success:function (data) {
+                                layer.msg(data.msg, {
+                                    icon: 1,//提示的样式
+                                    time: 1000, //1秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                                    end: function () {
+                                        location.reload();
+                                    }
+                                })
+                        }
+                    });
+                    //防止页面跳转
+                    return false;
+                },
+
+            });
+        });
+
+        $('.cancel').click(function(){
+            var id = $(this).attr('list');
+            layer.open({
+                title: ['温馨提示'],
+                content: '<div style="color:#767676">您确定要撤销吗,撤销后将不能参加考试</div>',
+                btn: ['确定', '取消'],
+                shadeClose: true,
+                //回调函数
+                yes: function(index, layero){
+                    $.ajax({
+                        url:'/api/ExamEnroll/cancel',
+                        type:'post',
+                        dataType:'json',
+                        data:{
+                            id:id,
+                            type:'cancel',
+                        },
+                        //判断注册状态
+                        success:function (data) {
+                                layer.msg(data.msg, {
+                                    icon: 1,//提示的样式
+                                    time: 1000, //1秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                                    end: function () {
+                                        location.reload();
+                                    }
+                                })
+                        }
+                    });
+                    //防止页面跳转
+                    return false;
+                },
+
+            });
+        });
+
+        $('.sub').click(function(){
+            var id = $(this).attr('list');
+            $.ajax({
+                url:'/api/ExamEnroll/cancel',
+                type:'post',
+                dataType:'json',
+                data:{
+                    id:id,
+                    type:'sub',
+                },
+                //判断注册状态
+                success:function (data) {
+                        layer.msg(data.msg, {
+                            icon: 1,//提示的样式
+                            time: 1000, //1秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                            end: function () {
+                                location.reload();
+                            }
+                        })
+                }
+            });
+                
+        })
+
+
+    });
+
+
+</script>
+{/block}

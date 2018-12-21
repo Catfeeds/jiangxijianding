@@ -1,0 +1,75 @@
+<div>
+    <div class="header_title"><span>学习资料</span>
+        <a class="kong_btn margin_right rightfloat" id="myBtn">批量下载</a>
+    </div>
+    <div class="baoming_main">
+        <table lay-filter="demo" class="layui-table myorder_table" lay-skin="line">
+            <thead>
+            <tr>
+                <th lay-data="{type:'checkbox'}"></th>
+                <th lay-data="{field:'username', }">标题</th>
+                <th lay-data="{field:'experience', sort:true}">格式</th>
+                <th lay-data="{field:'sign'}">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {volist name="data" id="vo"}
+            <tr>
+                <td data-value="{$vo.id}"></td>
+                <td>{$vo.file_name}</td>
+                <td>
+                    {switch name="$vo.file_type" }
+                    {case value="1" }视频格式{/case}
+                    {case value="2"}Docx文档格式{/case}
+                    {case value="3"}PDF文件格式{/case}
+                    {case value="4"}PPT文件格式{/case}
+                    {case value="5"}Flash动画文件{/case}
+                    {/switch}
+                </td>
+                <td>
+                    <div class="blue_btn2 arrow_down" data-value="/uploads/learning/videos/{$vo.file_address}">下载</div>
+                </td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    //下载文件
+    function downloadFile(url) {
+        try{
+            var elemIF = document.createElement("iframe");
+            elemIF.src = url;
+            elemIF.style.display = "none";
+            document.body.appendChild(elemIF);
+        }catch(e){
+            alert("下载异常！");
+        }
+    }
+
+    layui.use(['form', 'table', 'laypage', 'laydate'], function() {
+        var form = layui.form,
+            $ = layui.jquery;
+
+       $('.arrow_down').click(function () {
+           $(this).each(function () {
+               downloadFile($(this).data('value'));
+           });
+       });
+
+        form.render();
+        var laydate = layui.laydate;
+        $ = layui.jquery;
+        form.render();
+
+        var laypage = layui.laypage;
+        var table = layui.table;
+
+        table.init('demo', {
+            limit: 10 // limit: 10
+
+        });
+    });
+</script>

@@ -1,0 +1,211 @@
+
+{extend name="layout"}
+{block name="css"}
+{/block}
+{block name="content"}
+<body>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+
+            <div class="layui-form-item">
+                <button class="layui-btn" id="addExamInfo">
+                    <i class="layui-icon">&#xe608;</i> 添加
+                </button>
+                <!--<button class="layui-btn" id="addExamInfoLink">-->
+                <!--<i class="layui-icon">&#xe608;</i> 添加联动-->
+                <!--</button>-->
+            </div>
+        </div>
+        <div class="layui-card-body">
+            <table class="layui-table">
+                <colgroup>
+                    <col width="5%">
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col width="355px">
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>鉴定计划</th>
+                    <th>工种</th>
+                    <th>方向</th>
+                    <th>级别</th>
+                    <th>进度</th>
+                    <th>更新时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {volist name="examData" id="vo"}
+                <tr>
+                    <td>{$vo['id']}</td>
+                    <td>{$vo['title']}</td>
+                    <td>{$vo['workname']}</td>
+                    <td>{$vo['directionname']}</td>
+                    <td>{$vo['work_level_subject_level']}</td>
+
+                    <td>
+                        {$vo->status}
+                    </td>
+                    <td>{$vo['update_time']}</td>
+                    <td style="text-align:right">
+                        {if (in_array($vo.status,config('EnrollStatus.apply')))}
+                        <button class="layui-btn layui-btn-xs printApply">打印报名表格</button>
+                        {else /}
+                        <button class="layui-btn layui-btn-xs layui-btn-normal edit"><i class="layui-icon"></i></button>
+                        <button class="layui-btn layui-btn-xs audit">上传审核资料</button>
+                        <button class="layui-btn layui-btn-xs auditChick">提交资格审查</button>
+                        {/if}
+                        <button class="layui-btn layui-btn-xs layui-btn-warm auditDetail">详情</button>
+                        <button class="layui-btn layui-btn-xs layui-btn-danger delete"><i class="layui-icon"></i></button>
+                    </td>
+                </tr >
+                {/volist}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+</body>
+{/block}
+{/extend}
+{block name="script"}
+<script type="text/javascript">
+    layui.use('element', function(){
+        var element = layui.element;
+    });
+
+    //添加报考信息
+    layui.use(['form', 'layer','jquery'], function () {
+        var form  = layui.form;
+        var $  = layui.jquery;
+        $("#addExamInfo").click(function () {
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['90%', '90%'], //宽高
+                title: "添加报考信息",
+                content: "/examinee/BaseInfo/addExamEnroll",  //调到新增页面
+                yes: function(index, layero){
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+
+    //删除报考信息
+        $(".delete").click(function () {
+            var id = $(this).parents('tr').find('td').eq(0).html();
+            layer.confirm("确认删除?", function () {
+                $.ajax({
+                    url: "delete",
+                    data: {'id': id},
+                    type: "post",
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.code == 1) {
+                            layer.msg(data.msg);
+                            location.reload();
+                        } else {
+                            layer.msg(data.msg);
+                        }
+                    }
+                })
+            })
+        });
+
+    //修改报考信息
+        $(".edit").click(function () {
+            var id = $(this).parents('tr').find('td').eq(0).html();
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['90%', '90%'], //宽高
+                title: "修改报考信息",
+                content: "/examinee/BaseInfo/addWorkInfo?id="+id,  //调到新增页面
+                yes: function(index, layero){
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+
+    //上传审核资料
+        $(".audit").click(function () {
+            var id = $(this).parents('tr').find('td').eq(0).html();
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['90%', '90%'], //宽高
+                title: "上传审核资料",
+                content: "/examinee/BaseInfo/fileUpload?id="+id,  //调到新增页面
+                yes: function(index, layero){
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+
+
+    //详情
+        $(".auditDetail").click(function () {
+            var id = $(this).parents('tr').find('td').eq(0).html();
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['90%', '90%'], //宽高
+                title: "查看报名详情",
+                content: "/examinee/BaseInfo/examdetail?id="+id,  //调到新增页面
+                yes: function(index, layero){
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+
+
+    //提交资格审查
+        $(".auditChick").click(function () {
+            var id = $(this).parents('tr').find('td').eq(0).html();
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['90%', '90%'], //宽高
+                title: "提交资格审查",
+                content: "/examinee/BaseInfo/verifyEnroll?id="+id,  //调到新增页面
+                yes: function(index, layero){
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+
+
+
+    //打印报名表
+        $(".printApply").click(function () {
+            var id = $(this).parents('tr').find('td').eq(0).html();
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['90%', '90%'], //宽高
+                title: "打印报名表格",
+                content: "/examinee/BaseInfo/printApply?id="+id,  //调到新增页面
+                yes: function(index, layero){
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+    });
+
+</script>
+{/block}

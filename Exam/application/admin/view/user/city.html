@@ -1,0 +1,184 @@
+{extend name="common@layout/layout" /}
+{block name="title"}人员管理{/block}
+{block name='css'}
+<style>
+    .lhj-content {
+        width: 23%;
+        float: left;
+        padding: 10px 0 10px 10px;
+    }
+
+    .lhj-content a {
+        width: 100%;
+    }
+</style>
+{/block}
+{block name='crumbs'}
+<span class="layui-breadcrumb" lay-separator="">
+   <a href="/admin" class="county">
+     <i class="layui-icon layui-icon-home"></i>
+     &nbsp;首页
+   </a>
+   {neq name='flag' value='2'}<a href="{:url('province')}"><cite>省科室</cite></a>{/neq}
+   <a><cite>市科室</cite></a>
+ </span>
+{/block}
+{block name="content"}
+<div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+    <ul class="layui-tab-title">
+        <li class="layui-this">员工管理</li>
+        <li>下属县列表</li>
+    </ul>
+    <div class="layui-tab-content">
+        <div class="layui-tab-item layui-show">
+            <div class="layui-form layui-card-header layui-inline" style="padding-bottom: 10px;">
+
+                <form action="{:request()->baseurl()}" method="post">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">员工编号</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="username" autocomplete="off" placeholder="请输入"
+                                       value="{$Think.session.search.username}" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">真实姓名</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="name" autocomplete="off" placeholder="请输入"
+                                       value="{$Think.session.search.name}" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">手机号码</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="phone" autocomplete="off" placeholder="请输入"
+                                       value="{$Think.session.search.phone}" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button class="layui-btn layuiadmin-btn-useradmin" lay-submit>
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <button class="layui-btn user-add" data-value="{$cityId}" style="float: right;margin-bottom: 5px;">添加人员
+            </button>
+            <table class="layui-table" lay-even>
+                <thead>
+                <tr>
+                    <th>员工编号</th>
+                    <th>真实姓名</th>
+                    <th>科室</th>
+                    <th>手机号码</th>
+                    <th>状态</th>
+                    <th width="110">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {volist name="list" id="vo"}
+                <tr>
+                    <td>{$vo.username}</td>
+                    <td>{$vo.name}</td>
+                    <td>{$vo->office['name']}</td>
+                    <td>{$vo.phone}</td>
+                    <td>{$vo.status}</td>
+                    <td>
+                        {if $vo.dataStatus==1}
+                        <button data-value="{$vo.id}" data-status="0"
+                                class="layui-btn layui-btn-danger layui-btn-xs user-status">禁用
+                        </button>
+                        {else}
+                        <button data-value="{$vo.id}" data-status="1" class="layui-btn layui-btn-xs user-status">解禁
+                        </button>
+                        {/if}
+                        <button data-value="{$vo.id}" data-city="{$cityId}"
+                                class="layui-btn layui-btn-normal layui-btn-xs user-edit">修改
+                        </button>
+
+                    </td>
+                </tr>
+                {/volist}
+                </tbody>
+            </table>
+            <input type="hidden" name="cityId" value="{$cityId}"/>
+            <div class="layui-fluid tp-pages">
+                {$list->render()}
+            </div>
+            <div style="clear: both;"></div>
+
+        </div>
+        <div class="layui-tab-item">
+            <fieldset class="layui-elem-field layui-field-title site-title">
+                <legend><a name="grid">请选择对哪个县进行操作</a></legend>
+            </fieldset>
+            <div class="county-list layui-row layui-col-space15"></div>
+        </div>
+    </div>
+</div>
+
+{/block}
+
+{block name="script"}
+<script>
+    layui.use('layer', function () {
+        var $ = layui.jquery, layer = layui.layer;
+        //县列表
+        $.ajax({
+            type: "POST",
+            url: "/api/office/countyList",
+            data: {cityId: $('input[name=cityId]').val()},
+            dataType: "json",
+            success: function (data) {
+                var html = '';
+                $.each(data, function (commentIndex, comment) {
+                    html += '<div class="lhj-content layui-col-md3"><a href="/admin/user/county/cityId/' + comment['id'] + '" class="layui-btn">' + comment['name'] + '</a></div>';
+                });
+                $('.county-list').html(html);
+            }
+        });
+        //禁用
+        $('.user-status').on('click', function () {
+            var id = $(this).data('value'), status = $(this).data('status');
+            layer.confirm('是否确认该操作？', {btn: ['确定', '取消'], title: "提示"}, function () {
+                $.get(urladdr.adminDisable + id + '/status/' + status, function (res) {
+                    if (res.code === 1) {
+                        layer.msg(res.msg, {time: 500, icon: 1}, function () {
+                            location.reload();
+                        });
+                    } else {
+                        layer.msg(res.msg, {icon: 5});
+                    }
+                });
+            });
+        });
+        //修改
+        $(".user-edit").click(function () {
+            var id = $(this).data('value'), cityId = $(this).data('city');
+            layer.open({
+                type: 2,
+                anim: 1,
+                skin: 'layui-layer-molv',
+                area: ['60%', '80%'], //宽高
+                title: "修改信息",
+                content: urladdr.editAdmin + id + '/cityId/' + cityId  //调到新增页面
+            });
+        });
+        //添加人员
+        $(".user-add").click(function () {
+            var cityId = $(this).data('value');
+            layer.open({
+                type: 2,
+                anim: 1,
+                skin: 'layui-layer-molv',
+                area: ['60%', '80%'], //宽高
+                title: "添加人员",
+                content: urladdr.addAdmin + '/cityId/' + cityId  //调到新增页面
+            });
+        });
+    });
+
+</script>
+{/block}

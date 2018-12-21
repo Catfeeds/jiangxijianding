@@ -1,0 +1,126 @@
+
+{include file='content/daohang'}
+<div class="RetrievePassword_main">
+    <div class="layui-container">
+        <ul class="subnav_process">
+            <li class="active">
+                <div>
+                    <i>1</i>
+                    <p>填写帐号</p>
+                </div>
+                <i></i>
+            </li>
+            <li class="active">
+                <div>
+                    <i>2</i>
+                    <p>设置新密码</p>
+                </div>
+                <i></i>
+            </li>
+            <li class="last">
+                <div>
+                    <i>3</i>
+                    <p>完成</p>
+                </div>
+
+            </li>
+        </ul>
+    </div>
+    <div class="RetrievePassword2_main">
+        <div class="layui-form-item">
+            <label class="layui-form-label">输入新密码：</label>
+            <div class="layui-input-block">
+                <input type="password" id="newPass" name="newPass" lay-verify="required|newPass" autocomplete="off"  placeholder="输入新密码8~18位" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">确认新密码：</label>
+            <div class="layui-input-block">
+                <input type="password" id="queren" name="queren" lay-verify="required|queren" autocomplete="off" placeholder="确认新密码" class="layui-input">
+            </div>
+        </div>
+        <input type="hidden" value="{$mobile}" id="mobile">
+        <!--<a href="javascript:;"><div class="denglu_btn" id="submit">确定</div></a>-->
+        <div class="denglu_btn" lay-submit lay-filter="sub">确定</div>
+    </div>
+</div>
+
+{include file='content/foot'}
+</body>
+
+</html>
+
+<script src="__PUBLIC__/layui/js/layui.js" type="text/javascript" charset="utf-8"></script>
+<script src="__PUBLIC__/layui/js/layui.all.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+    layui.use(['form', 'layer','jquery'], function () {
+        var form = layui.form,
+                $ = layui.jquery;
+        //验证密码
+        $('#newPass').change(function () {
+            var reg = /^[\S]{8,18}$/;
+            if (!($('#newPass').val().match(reg))) {
+                layer.msg('请重新输入密码,密码必须8到18位，且不能出现空格!', {icon: 5});
+                return false;
+            }
+        });
+
+        ////验证确认密码
+        $('#queren').change(function () {
+            var pwd = $("input[name='newPass']").val();
+            var passwordRes = $("input[name='queren']").val();
+            if (!(pwd == passwordRes)) {
+                layer.msg('两次输入的密码不一致', {icon: 5});
+                return false;
+            }
+        });
+
+        form.verify({
+
+            //密码格式
+            newPass: [/^[\S]{8,18}$/, '请重新输入密码,密码必须8到18位，且不能出现空格!'],
+
+            //重复输入密码
+            queren: function (value) {
+                var password = $("input[name='newPass']").val();
+                if (!new RegExp(password).test(value)) {
+                    return '两次输入的密码不一致';
+                }
+            },
+        });
+//    });
+//    $('#submit').click(function(){
+        form.on('submit(sub)', function (data) {
+            var newPass = $('#newPass').val();
+            var queren = $('#queren').val();
+            var mobile = $('#mobile').val();
+            console.log(newPass);
+            var reg = /^[\S]{8,18}$/;
+            if (!(newPass.match(reg))) {
+                layer.msg('请输入正确手机验证码');
+                return false;
+            }
+            if (newPass != queren) {
+                layer.msg('密码不一致');
+                return false;
+            }
+            $.ajax({
+                url: '/api/UserLogin/updatePass',
+                type: 'post',
+                data: {
+                    mobile: mobile,
+                    newPass: newPass
+                },
+                dataType: 'json',
+                //判断登录状态
+                success: function (data) {
+                    if (data.code == 1) {
+                        location.href = '/cms/index/forgetpassthree';
+                    } else {
+                        layer.msg(data.msg)
+                    }
+                }
+            });
+        });
+    });
+</script>

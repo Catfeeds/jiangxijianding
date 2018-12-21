@@ -1,0 +1,222 @@
+{extend name="layout"}
+{block name="title"}课件管理{/block}
+{block name="content"}
+<div class="layui-fluid layadmin-homepage-fluid">
+    <div class="layui-row layui-col-space8">
+        <div class="layui-col-md2">
+            <div class="layui-collapse" lay-accordion="">
+                <div class="layui-colla-item">
+                    <h1 class="layui-colla-title">考试科目<i class="layui-icon"></i></h1>
+                </div>
+                {volist name="$paperName" id="vo"}
+                <div class="layui-colla-item">
+                    <h2 class="layui-colla-title"><a href="/learning/test/index?id={$key}">{$vo}</a></h2>
+                </div>
+                {/volist}
+            </div>
+        </div>
+
+
+        <div class="layui-col-md10">
+
+
+            <!--title-->
+            <div class="layui-col-md12 layadmin-homepage-list-imgtxt message-content">
+                <div class="media-body">
+                    <div class="pad-btm">
+                        <h1 style="text-align:center">{$topic[0]->paper_name|default='模拟考试系统'}</h1>
+                        <p class="min-font" style="text-align:center">
+                              <span class="layui-breadcrumb" style="visibility: visible;">
+                                <span id="time"></span>
+                                  <span>&nbsp;&nbsp;</span>
+                                  {notempty name='dataOnly.total_score'}
+                                  <span>总分{$dataOnly.total_score}分</span>
+                                  {/notempty}
+                              </span>
+                        </p>
+                    </div>
+                </div>
+            </div><hr class="layui-bg-black"><br>
+
+            <!--select-->
+            {empty name="topic"}
+            <form class="layui-form" action="/learning/test/index" method="get">
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <select name="id" lay-verify="required">
+                            <option value="">-----请选择考试科目------</option>
+                            {volist name="$paperName" id="vo"}
+                            <option value="{$key}">{$vo}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                </div><br><br>
+                <div class="layui-form-item" style="text-align:center;">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" lay-submit lay-filter="formDemo">开始考试</button>
+                    </div>
+                </div>
+            </form>
+            {/empty}
+
+            <!--centent-->
+            {notempty name="topic"}
+            <form class="layui-form">
+                {volist name="$topic|default=''" id="vo" }
+                <input type="hidden" name="id" value="{$id}">
+                <input type="hidden" name="start_time" value="<?=time();?>">
+                <ul class="layui-show">
+                    {switch name="$vo.type" }
+                    {case value="1" }
+                    <hr><div class="test">
+                    <div class="warp_test">
+                        <table class="outer_table">
+                            <tbody>
+                            <tr>
+                                <td><h5>{$i}、 {$vo.topic_name}</h5><br>
+                                    <p>A、{$vo.option_a}</p><p>B、{$vo.option_b}</p><p>C、{$vo.option_c}</p><p>D、{$vo.option_d}</p><br>
+                                    <table cellpadding="0" cellspacing="0" class="choice_table">
+                                        <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="radio" name="single[{$vo.id}]" value="A" title="A"><div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i><div>A</div></div>
+                                                <input type="radio" name="single[{$vo.id}]" value="B" title="B"><div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i><div>B</div></div>
+                                                <input type="radio" name="single[{$vo.id}]" value="C" title="C"><div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i><div>C</div></div>
+                                                <input type="radio" name="single[{$vo.id}]" value="C" title="D"><div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i><div>D</div></div>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table></td>
+                                <td align="right"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                    {/case}
+                    {case value="2"}
+                    <div class="test">
+                        <div class="warp_test">
+                            <table class="outer_table">
+                                <tbody>
+                                <tr>
+                                    <td><h5>{$i}、 {$vo.topic_name} </h5><br>
+                                        <p>A、{$vo.option_a}</p><p>B、{$vo.option_b}</p><p>C、{$vo.option_c}</p><p>D、{$vo.option_d}</p><br>
+                                        <table cellpadding="0" cellspacing="0" class="choice_table">
+                                            <tbody>
+                                            <tr>
+                                                <td>
+                                                    <input type="checkbox" name="many[{$vo.id}][]" value="A" title="A">
+                                                    <input type="checkbox" name="many[{$vo.id}][]" value="B" title="B">
+                                                    <input type="checkbox" name="many[{$vo.id}][]" value="C" title="C">
+                                                    <input type="checkbox" name="many[{$vo.id}][]" value="D" title="D">
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table></td>
+                                    <td align="right"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div><hr>
+                    {/case}
+                    {case value="3"}
+                    <div class="test">
+                        <div class="warp_test">
+                            <table class="outer_table">
+                                <tbody>
+                                <tr>
+                                    <td><h5>{$i}、 {$vo.topic_name} </h5><br>
+                                        <table cellpadding="0" cellspacing="0" class="choice_table">
+                                            <tbody>
+                                            <tr>
+                                                <td>
+                                                    <input type="radio" name="judge[{$vo.id}]" value="正确" title="对"><div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i><div>对</div></div>
+                                                    <input type="radio" name="judge[{$vo.id}]" value="错误" title="错"><div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i><div>错</div></div>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table></td>
+                                    <td align="right"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div><hr>
+                    {/case}
+                    {/switch}
+                </ul>
+                {/volist}
+                <center><button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit">交卷评分</button></center>
+
+            </form>
+
+            <!--time-->
+            <script type="text/javascript">
+                var maxtime ={$dataOnly.length_time}*60;
+                function CountDown(){
+                    if(maxtime>=0){
+                        minutes = Math.floor(maxtime/60);
+                        seconds = Math.floor(maxtime%60);
+                        msg = "<span  style='color:#F00'>考试还有："+minutes+"分"+seconds+"秒</span>";
+                        var time = document.getElementById("time");
+                        time.innerHTML = msg;
+                        if(maxtime == 5*60)
+                            layer.alert('注意，还有5分钟!', {icon: 5});
+                        --maxtime;
+                    }
+                    else{
+                        clearInterval(startTime);
+                        layer.alert('时间到，结束!', {icon: 1},function () {
+                            $("button[type=submit]").click();
+                        });
+
+                    }
+                }
+
+                startTime = setInterval("CountDown()", 1000);
+
+            </script>
+            {/notempty}
+
+        </div>
+    </div>
+</div>
+{/block}
+{/extend}
+{block name="script"}
+<script type="text/javascript">
+    layui.use(['form', 'layer'], function () {
+        var form = layui.form,$ = layui.jquery;
+        form.on('submit(formSubmit)', function (data) {
+            data=data.field;
+            $.ajax({
+                url:'/api/LearningTest/add',
+                type:'post',
+                data:data,
+                dataType:'json',
+                success:function (data) {
+                    if (data.code==-1) {
+                        layer.msg(data.msg);
+
+                    } else if (data.code==1){
+                        layer.open({
+                            type: 1,
+                            title: false,
+                            closeBtn: 0,
+                            shadeClose: true,
+                            skin: 'yourclass',
+                            content: '<h1>你考了'+data.data.score+'分，回家洗洗睡吧!<h1>'
+                        });
+
+                    } else {
+                        window.location.href='/learning/test/show?id='+data.data.ip;
+                    }
+                }
+            });
+            return false;
+        });
+    });
+</script>
+{/block}

@@ -1,0 +1,336 @@
+{extend name="common@layout/layout" /}
+{block name="css"}
+<link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css">
+{/block}
+{block name='crumbs'}
+<span class="layui-breadcrumb">
+  <a href="/admin" class="county">
+    <i class="layui-icon layui-icon-home"></i>
+    &nbsp;首页
+  </a>
+     <a><cite>文章模块管理</cite></a>
+  <a><cite>图片文章管理</cite></a>
+
+</span>
+{/block}
+{block name="content"}
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto" style="margin-top: 30px;">
+
+                    <div class="layui-form-item">
+                        <button class="layui-btn" lay-submit lay-filter="formDemo" id="sou"  value="1"><i class="layui-icon layui-icon-search layuiadmin-button-btn"></i></button>
+                        <button class="layui-btn" id="addExamInfo" >
+                        <i class="layui-icon">&#xe608;</i> 添加图片文章
+                        </button>
+                        <label class="layui-form-label" style="margin-left: -2%">图片标题</label>
+                        <div class="layui-input-inline">
+
+                            <input type="text" name="title" id="title"  placeholder="请输入标题关键字" autocomplete="off" class="layui-input" value="{$title}">
+                        </div>
+                        <label class="layui-form-label">日期范围</label>
+                        <div class="layui-input-inline">
+                            <input type="text" class="layui-input" id="test6" placeholder=" ~ " value="{$time}">
+                        </div>
+
+                    </div>
+        </div>
+
+        <div class="layui-card-body">
+            <table class="layui-table">
+                <colgroup>
+                    <col width="5%">
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col width="340">
+                </colgroup>
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>图片标题</th>
+                    <th>图片</th>
+                    <th>属性</th>
+                    <th>播放顺序</th>
+                    <th>文章状态</th>
+                    <th>设置轮播图</th>
+                    <th>创建时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {volist name='data' id='v'}
+                <tr>
+                    <td>{$i}</td>
+                    <td><a href="{$v.inter}" title="{$v.title}" target="_blank">{:mb_substr($v.title,0,10)}......</a></td>
+                    <td><img src="{$v.url}" alt="" width="200" heigth="50"></td>
+                    <td class="type{$v.id}" value="{$v.type.val}">{$v.type.text}</td>
+                    <td><select id="{$v.id}" name="sort" class="sort"  lay-filter="sort">
+                        <option value="0" {eq name="v.sort" value="0"} selected {/eq}>请选择</option>
+                        <option value="1" {eq name="v.sort" value="1"} selected {/eq}>1</option>
+                        <option value="2" {eq name="v.sort" value="2"} selected {/eq}>2</option>
+                        <option value="3" {eq name="v.sort" value="3"} selected {/eq}>3</option>
+                        <option value="4" {eq name="v.sort" value="4"} selected {/eq}>4</option>
+                        <option value="5" {eq name="v.sort" value="5"} selected {/eq}>5</option>
+                        <option value="6" {eq name="v.sort" value="6"} selected {/eq}>6</option>
+
+                    </select></td>
+                    <td>{if condition="$v.urgency eq 1"}<span  style="color: #5FB878;">已发布</span>
+                        {else} <span style="color:indianred">未发布</span>
+                        {/if}
+                    </td>
+                    <td>
+                        {if $v.status==0}
+                        <button list="{$v.id}" class="layui-btn layui-btn-xs  dir-disable" data-value="1" name="status">启用</button>
+
+                        {else}
+                        <button list="{$v.id}" data-value="0" name="status"
+                                class="layui-btn layui-btn-xs layui-btn-warm  dir-disable">禁用
+                        </button>
+                        {/if}
+
+                    </td>
+                    <td>
+                        {$v.create_time}
+                    </td>
+                    <td>
+                        {if $v.status==1 && $v.urgency==0}
+                        <button class="layui-btn layui-btn-warm layui-btn-xs yu" data-value="{$v.article_id}">发布</button>
+                        {else} {/if}
+                        <button class="layui-btn layui-btn-normal layui-btn-xs edit" data-value="{$v.article_id}"><i class="layui-icon"></i></button>
+                        <button class="layui-btn layui-btn-danger layui-btn-xs delete" value="{$v.article_id}"><i class="layui-icon"></i></button>
+                        <button class="layui-btn layui-btn-xs yua" data-value="{$v.article_id}">预览</button>
+
+                    </td>
+                </tr>
+               {/volist}
+                </tbody></table>
+        </div>
+    </div>
+</div>
+
+        <button class="layui-btn  layui-btn-warm  yulan" >
+            <i class="layui-icon">预览轮播图</i>
+        </button>
+
+
+<div class="layui-fluid tp-pages">
+    {$data->render()}
+</div>
+
+
+
+
+{/block}
+
+{block name="script"}
+
+
+{load href="__PUBLIC__/js/jquery.min.js"}
+
+<script type="text/javascript">
+
+    layui.use(['form', 'layer','jquery','laydate'], function () {
+        var form  = layui.form;
+        var $  = layui.jquery;
+        var laydate = layui.laydate;
+        $("#addExamInfo").click(function () {
+            layer.open({
+                    type: 2,
+                anim:1,
+                skin: 'layui-layer-molv', //加上边框
+                    area: ['60%', '90%'], //宽高
+                    title: "添加文章信息",
+                    content: "/cms/article/add?type=1",  //调到新增页面
+                    yes: function(index, layero){
+                        //do something
+                        layer.close(index); //如果设定了yes回调，需进行手工关闭
+                    }
+                });
+            });
+        laydate.render({
+            elem: '#test6'
+            ,range: '~'
+        });
+        $("#sou").click(function()
+        {
+            var time = $('#test6').val();
+            var title = $('#title').val();
+            var type = $('#sou').val();
+            // console.log(time);console.log(title); console.log(id);return false;
+            location.href = '/cms/guide/picture?time='+time+"&title="+title+"&type="+type;
+        });
+        $(".sort").change(function()
+        {
+            var id = $(this).attr('id');
+            console.log(id);
+            var sort = $(this).val();
+            var type = $('.type'+id).attr('value');
+
+            $.ajax({
+                url:"/api/CmsPicture/sort",
+                data:{'id':id,sort:sort,type:type},
+                type:'post',
+                dataType:'json',
+                success:function(data)
+                {
+                    if(data.code==1)
+                    {
+                        layer.msg(data.msg);
+                    }else
+                    {
+                        layer.msg(data.msg,{
+                            icon:0,
+                            time:2000,
+                            end:function(){
+
+                                location.reload();
+                            }
+                        });
+
+                    }
+
+                }
+            })
+        });
+        $(".yua").click(function () {
+            var id = $(this).data('value');
+          //  console.log(id);
+            layer.open({
+                type: 2,
+                anim:1,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['90%', '90%'], //宽高
+                title: "预览",
+                content: "/cms/change/articleYu?id="+id,  //调到新增页面
+                yes: function(index, layero){
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+    });
+    layui.use(['form', 'layer','jquery'], function () {
+        var form  = layui.form;
+        var $  = layui.jquery;
+        $(".edit").click(function () {
+            var id = $(this).data('value');
+            layer.open({
+                type: 2,
+                anim:1,
+                skin: 'layui-layer-molv', //加上边框
+                area: ['60%', '90%'], //宽高
+                title: "修改文章信息",
+                content: "/cms/article/update?id="+id,  //调到新增页面
+                yes: function(index, layero){
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+    });
+
+
+    //删除轮播图信息
+    layui.use(['form', 'layer','jquery'], function () {
+        var layer = layui.layer;
+        var $  = layui.jquery;
+        $(".delete").click(function () {
+            var id = $(this).val();
+            layer.confirm("确认删除?", function () {
+                $.ajax({
+                    url: "/api/CmsArticle/delete",
+                    data: {'id': id},
+                    type: "post",
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.code == 1) {
+                            layer.msg(data.msg);
+                            location.reload();
+                        } else {
+                            layer.msg(data.msg);
+                        }
+                    }
+                })
+            })
+        });
+    });
+
+    //
+
+
+    layui.use(['form', 'layer','jquery'], function () {
+        var layer = layui.layer;
+        var $  = layui.jquery;
+        $(".dir-disable").click(function () {
+            var status = $(this).data('value');
+            var id = $(this).attr('list');
+            layer.confirm("点击启用后请刷新首页，才会生效，确认更改?", function () {
+                $.ajax({
+                    url: "/api/CmsPicture/picture",
+                    data: {'id': id,'status':status},
+                    type: "post",
+                    dataType: 'json',
+                    success: function (data) {
+
+                        if (data.code == 1) {
+                            layer.msg(data.msg);
+                            location.reload();
+                        } else {
+                            layer.msg(data.msg);
+                        }
+                    }
+                })
+            })
+        });
+    });
+    layui.use(['form', 'layer','jquery'], function () {
+        var form  = layui.form;
+        var $  = layui.jquery;
+        $(".yulan").click(function () {
+
+            layer.open({
+                type: 2,
+                anim:1,
+                skin: 'layui-layer-molv', //加上边框
+                area: ['40%', '70%'], //宽高
+                title: "轮播图预览",
+                content: "/cms/change/picture",  //调到新增页面
+                yes: function(index, layero){
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+    });
+    layui.use('layer', function () {
+        //禁用 / 启用
+        $('.yu').on('click', function () {
+            var id = $(this).data('value');
+
+            layer.confirm('发布该文章后请点击刷新首页才会生效，确认该操作？', {btn: ['确定', '取消'], title: "提示"}, function () {
+
+                $.post("/cms/change/article", {'id': id}, function (res) {
+
+                    if (res.code === 1) {
+                        layer.msg(res.msg, {time: 500, icon: 1}, function () {
+                            location.reload();
+                            parent.location.reload();
+                        });
+                    } else {
+                        layer.msg(res.msg, {icon: 5});
+                    }
+                });
+            });
+        });
+    });
+
+</script>
+{/block}

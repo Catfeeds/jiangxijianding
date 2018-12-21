@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>全部扩展</title>
+    <script src="__PUBLIC__/ueditor/ueditor.config.js"></script>
+    <script src="__PUBLIC__/ueditor/ueditor.all.js"></script>
+    <script src="__PUBLIC__/js/jquery-2.1.4.min.js"></script>
+    <script src="__PUBLIC__/js/validator.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#btnV").click(function () {
+                $("#form").formValidate(function () {
+                    alert("ajax post ...");
+                });
+            });
+        })
+    </script>
+    <script src="../../../../public/static/js/jquery-2.1.4.min.js"></script>
+    <script src="../../../../public/static/js/validator.js"></script>
+</head>
+<body>
+<form action="{:url('index/index/index')}" method="post">
+    <table>
+        <tr>
+            <td>商品名称</td>
+            <td><input type="text" name="namename"></td>
+        </tr>
+        <tr>
+            <td>商品二维码</td>
+            <td><img src="{:url('index/index/scerweima')}"></td>
+            <!--<td><img src="/qrcode.png"></td>-->
+        </tr>
+        <tr>
+            <td>商品条形码</td>
+            <td><img src="{:url('index/index/barcode_create',array('content'=>'www.tainfuzhen.com'))}"></td>
+        </tr>
+
+        <tr>
+            <td>商品详细描述</td>
+            <td><textarea name="goods_introduce" id="goods_introduce" style="width:730px;height:320px;"></textarea></td>
+        </tr>
+        <tr>
+            <td>
+                <button class="btn btn-success" type="submit">提交</button>
+            </td>
+        </tr>
+    </table>
+</form>
+
+<div id="form" style="border:1px solid black;">
+    <input class="validate" data-type="n6-16" data-err="只能是6到16位纯数字" >
+    <input class="validate" data-type="sp" data-err="格式错误，必须8-18位同时包含数字、大写字母和小写字母" >
+    <input type="button" id="btnV" value="validate">
+</div>
+<script>
+    var ue = UE.getEditor("goods_introduce");
+</script>
+</body>
+</html>

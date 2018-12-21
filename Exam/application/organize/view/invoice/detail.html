@@ -1,0 +1,60 @@
+{extend name="/layout/nonelayout"}
+{block name="css"}
+{load href="__STATIC__/css/common/page.css"/}
+{/block}
+{block name="content"}
+
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        
+        <div class="layui-card-body">
+            <table class="layui-table">
+                <colgroup>
+                    <col width="150">
+                    
+                    <col width="200">
+                    <col>
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>姓名</th>
+                    <th>证件号</th>
+                    <th>工种</th>
+                    <th>级别</th>
+                    <th>理论单价</th>
+                    <td>实操单价</td>
+                    <th>综合单价</th>
+                    <th>总金额</th>
+                </tr>
+                </thead>
+                <tbody>
+                {volist name="detailData" id="vo" key='n'}
+                <tr>
+                    <td id="id">{$vo['username']}</td>
+                    <td>{$vo['id_card']}</td>
+                    <td>{$vo['name']}</td>
+                    <td>{$vo->level}</td>
+                    <td>{$vo['lilun_price']}</td>
+                    <td>{$vo['shicao_price']}</td>
+                    <td>{$vo['zonghe_price']}</td>
+                    <td>{$vo['total_money']}</td>
+                </tr>
+                {/volist}
+
+                </tbody>
+            </table>
+        </div>
+        <div class="layui-fluid tp-pages">
+            {$detailData->render()}
+        </div>
+    </div>
+</div>
+
+
+</body>
+{/block}
+{/extend}
+{block name="script"}
+{/block}

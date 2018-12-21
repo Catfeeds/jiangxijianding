@@ -1,0 +1,44 @@
+{include file="content/daohang"}
+<div class="layui-container jigouliucheng_main">
+    <div class="layui-col-xs8">
+        <div class="JiGouLC">
+            <h2 class="JiGouLC_title">考生工作流程图</h2>
+            <img src="__PUBLIC__/layui/img/SheKaoLC.png" />
+        </div>
+    </div>
+    <div class="layui-col-xs4">
+        <div class="CandidatesPromise_main">
+            <h2 class="JiGouLC_title">考生承诺</h2>
+            <p>我已仔细阅读了有关文件规定，清楚并理解有关报考内容。如因不符合报名资格条件被取消考试，或因提供不准确信息，造成无法与本人联系，影响本人考试的，本人自愿承担后果。</p>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width: 90px;">报考人签名：</label>
+                <div class="layui-input-block" >
+                    <input type="text" name="username" id="username" lay-verify="required" style="width: 150px" placeholder="" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="denglu_btn" lay-submit lay-filter="sub">我已签名并郑重承诺</div>
+        </div>
+
+    </div>
+</div>
+{include file='content/foot'}
+</body>
+</html>
+<script src="__PUBLIC__/layui/layui.js"></script>
+<script>
+    layui.use(['form', 'layer','jquery'], function () {
+        var form = layui.form;
+        var $ = layui.jquery;
+//        //添加表单监听事件
+        form.on('submit(sub)',function () {
+            var  username = $('#username').val();
+            if (username == ''){
+                layer.msg('请您先诚信签名!');
+                return false;
+            }
+            location.href="/cms/index/sign?name="+username;
+            //防止页面跳转
+            return false;
+        });
+    });
+</script>

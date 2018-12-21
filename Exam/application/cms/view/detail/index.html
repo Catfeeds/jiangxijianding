@@ -1,0 +1,233 @@
+{include file='content/daohang'}
+<style type="text/css">
+
+	.layui-carousel img {
+		width: 100%;
+		height: 100%;
+	}
+  .jd_btn2
+  {
+	  height: 55px;
+	  line-height: 55px;
+  }
+	.jxjd_box{width: 1200px;margin: auto;}
+</style>
+
+
+<div class="jxjd_box content">
+			<div class="jieshao_main">
+				<div class="layui-col-xs4">
+					<div class="layui-carousel" id="test1">
+						<div carousel-item>
+							{volist name='picture' id='v'}
+							<div>
+								<a href="{$v.inter}" target="_blank"><img src="{$v.url}" /></a>
+								<div class="lunbo_txt"><a href="{$v.inter}" target="_blank"><span style="color: white;">{$v.title}</span></a></div>
+							</div>
+							{/volist}
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-xs5">
+					<div class="yaowen">
+						<div class="jieshao_header">
+							{volist name='top' id='t'}
+							<span class="yaowen_header_left" name="yao" value="{$t.id}">{$t.guide_name}</span>
+							{/volist}
+ 							<span class="header_right"><a id="a" href="/cms/index/category?id={$top[0]['id']}" target="_blank">更多<i class="layui-icon layui-icon-right"></i></a></span>
+						</div>
+						{volist name='topinfo' id='tt' key='k'}
+						<div name="yao{$tt.id}" {if($k!="1")} style="display: none"{/if}>
+						<ul>
+							{volist name='tt.article' id='ttt'}
+							<li>
+								<a href="{$ttt.url}" target="_blank" class="yaowan_txt" title="{$ttt.title}">{$ttt.title}</a><span>{:date("Y-m-d",$ttt.time)}</span>
+							</li>
+                             {/volist}
+						</ul>
+						</div>
+
+					{/volist}
+					</div>
+
+				</div>
+				<div class="layui-col-xs3 jieshao">
+					<div class="jieshao_header">
+						<span class="jieshao_header_left">中心介绍</span>
+						<span class="header_right"><a href="/cms/index/centre?id=11" target="_blank">更多<i class="layui-icon layui-icon-right"></i></a></span>
+					</div>
+					<div class="btn_main">
+						<a href="/cms/index/centre?id=29" target="_blank">
+							<div class="jieshao_btn"><span><img src="__PUBLIC__/img/cms1.0/map.png"/></span>中心地图<i class="layui-icon layui-icon-right blueright"></i></div>
+						</a>
+						<a href="/cms/index/centre?id=36" target="_blank">
+							<div class="jieshao_btn"><span><img src="__PUBLIC__/img/cms1.0/xinxi.png"/></span>中心简介<i class="layui-icon layui-icon-right blueright"></i></div>
+						</a>
+						<a href="/cms/index/centre?id=35" target="_blank">
+							<div class="jieshao_btn"><span><img src="__PUBLIC__/img/cms1.0/phone.png"/></span>联系电话<i class="layui-icon layui-icon-right blueright"></i></div>
+						</a>
+					</div>
+				</div>
+			</div>
+			<div class="tongzhi_main">
+				<div class="layui-col-xs7">
+					<div class="tongzhi">
+						<div class="jieshao_header">
+							{volist name='section' id='s'}
+							<span class="jieshao_header_left" name="yao" value="{$s.id}">{$s.guide_name}</span>
+							{/volist}
+							<span class="header_right"><a id="aa" href="/cms/index/category?id={$section[0]['id']}" target="_blank">更多<i class="layui-icon layui-icon-right"></i></a></span>
+						</div>
+						{volist name='secinfo' id='ss' key='kk'}
+						<div name="yao{$ss.id}" {if($kk!="1")} style="display: none" {/if}>
+						<ul>
+							{volist name='ss.article' id='sss'}
+							<li>
+								<a href="{$sss.url}" class="yaowan_txt2" title="{$sss.title}" target="_blank">{$sss.title}</a><span>{:date("Y-m-d",$sss.time)}</span>
+							</li>
+							{/volist}
+						</ul>
+					</div>
+					{/volist}
+					</div>
+				</div>
+				<div class="layui-col-xs5 jieshao" >
+					<div class="xuanxiang">
+						<div class="jieshao_header">
+							<span class="jieshao_header_left">网上服务</span>
+						</div>
+						<div class="layui-tab layui-tab-card">
+							<ul class="layui-tab-title">
+								{volist name='service' id='se' key='sk'}
+								<li {eq name="sk" value="1"} class="layui-tab-this layui-this" {/eq}>{$se.title}</li>
+								{/volist}
+							</ul>
+							<div class="layui-tab-content" style="height: 252px;">
+								{volist name='serinfo' id='vs' key='kkkk'}
+								<div {if condition="($kkkk==1)"}class="layui-tab-item layui-show"{else}class="layui-tab-item"{/if} >
+								{volist name='$vs' id='s1'}
+								<a href='{$s1.url}'>
+									<div class="jd_btn2" style="height: 55px;"><span><img src="{$s1.log_url}" alt=""></span>{$s1.name}</div>
+								</a>
+								{/volist}
+								</div>
+								{/volist}
+							</div>
+					</div>
+
+					</div>
+				</div>
+			</div>
+			<div><img class="hengfu" src="__PUBLIC__/img/cms1.0/hengfu.png" /></div>
+			<div class="tongzhi_main">
+				<div class="layui-col-xs7">
+					<div class="tongzhi">
+						<div class="jieshao_header">
+							{volist name='bottom' id='b'}
+							<span class="jieshao_header_left" name="yao" value="{$b.id}">{$b.guide_name}</span>
+							{/volist}
+							<span class="header_right"><a id="aaa" href="/cms/index/category?id={$bottom[0]['id']}">更多<i class="layui-icon layui-icon-right"></i></a></span>
+						</div>
+						{volist name='botinfo' id='bb' key='kkk'}
+						<div name="yao{$bb.id}" {if($kkk!="1")} style="display: none" {/if}>
+						<ul>
+							{volist name='bb.article' id='bbb'}
+							<li>
+								<a href="{$bbb.url}" class="yaowan_txt2" title="{$bbb.title}" target="_blank">{$bbb.title}</a><span>{:date("Y-m-d",$bbb.time)}</span>
+							</li>
+                            {/volist}
+						</ul>
+					</div>
+					{/volist}
+					</div>
+				</div>
+				<div class="layui-col-xs5">
+					<a href="/cms/index/admin">
+						<div class="admin_btn"><span><img src="__PUBLIC__/img/cms1.0/admin.png"/></span>管理员登录</div>
+					</a>
+					<div class="jieshao">
+						<div class="jieshao_header">
+							<span class="jieshao_header_left">快速搜索</span>
+						</div>
+						<!--<form action="/cms/index/seek" method="get"><button class="layui-btn  layui-btn-radius" id="sou"></button>-->
+						<div class="sousuo">
+							<input type="text" name="sousuo"  value="" id="sou" placeholder="请输入搜索内容" /><span id="bbbb" ></span>
+						</div>
+						<!--</form>-->
+						<div class="jubaodianhua">
+							<img src="__PUBLIC__/img/cms1.0/bigphone.png" />
+							<div>
+								<p class="dianhua_txt">举报电话</p>
+								<p class="dianhua_num">0791-12333</p>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+			<div class="youlian">
+				<div class="layui-col-xs6">
+					<span>友情链接</span>
+					<div class="layui-input-inline">
+						<select class="xialaxuanze" name="quiz">
+							<option value="">江西省政府</option>
+							<option value="你工作的第一个城市">你工作的第一个城市</option>
+							<option value="你的工号">你的工号</option>
+							<option value="你最喜欢的老师">你最喜欢的老师</option>
+						</select>
+					</div>
+				</div>
+				<div class="layui-col-xs6">
+					<span>地方链接</span>
+					<div class="layui-input-inline">
+						<select class="xialaxuanze" name="quiz">
+							<option value="">江西省政府</option>
+							<option value="你工作的第一个城市">你工作的第一个城市</option>
+							<option value="你的工号">你的工号</option>
+							<option value="你最喜欢的老师">你最喜欢的老师</option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+		<footer>
+			<img class="quanwei" src="__PUBLIC__/img/cms1.0/quanwei.png" />
+			<p>主办单位：江西省职业技能鉴定指导中心 技术支持：北京博奥网络教育科技股份有限公司</p>
+			<p>网上支持（职业资格问答） 　　您是第 9027267 位访问者</p>
+		</footer>
+	</body>
+
+</html>
+
+<script src="__PUBLIC__/layui/layui.js" type="text/javascript" charset="utf-8"></script>
+<!--<script src="__PUBLIC__/layui/layui.all.js" type="text/javascript" charset="utf-8"></script>-->
+<script src="__PUBLIC__/layui/layui.all.js" type="text/javascript" charset="utf-8"></script>
+<script src="__PUBLIC__/js/cms.js" type="text/javascript" charset="utf-8"></script>
+<script>
+
+	layui.use('carousel', function() {
+		var carousel = layui.carousel;
+		//建造实例
+		carousel.render({
+			elem: '#test1',
+			width: '100%',
+			height: '284',
+			arrow: 'none', //始终显示箭头
+			indicator: 'none'
+			//,anim: 'updown' //切换动画方式
+		});
+	});
+
+
+    layui.use(['form','jquery'],function()
+    {
+        var $ = layui.jquery;
+        $('#bbbb').click(function()
+        {
+			var data = $('#sou').val();
+			location.href = "/cms/index/seek?sousuo="+data;
+
+
+        })
+    });
+</script>

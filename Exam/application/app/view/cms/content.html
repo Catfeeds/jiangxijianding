@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport"
+          content="width=device-width,height=device-height,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <title>{$res.title}</title>
+</head>
+<style type="text/css">
+    * {
+        margin: 0px;
+        padding: 0px;
+        touch-action: pan-y;
+    }
+
+    body {
+        width: 100%;
+    }
+
+    .content {
+        width: 18.75rem;
+        padding: 0.625rem;
+    }
+
+    .content h3 {
+        padding-bottom: 0.93rem;
+        line-height: 1.87rem;
+        font-size: 1.125rem;
+    }
+
+    .headers {
+        padding-bottom: 0.93rem;
+        height: 1.25rem;
+    }
+
+    .laiyuan {
+        color: #2F7BE3;
+        float: left;
+        display: inline-block;
+    }
+
+    .tiem {
+        color: #999999;
+        float: right;
+        display: inline-block;
+    }
+
+    .newsimg {
+        width: 100%;
+    }
+
+    .newsimg img {
+        width: 100%;
+    }
+
+    p {
+        color: #333333;
+        line-height: 1.5rem;
+        font-size: 1rem;
+    }
+
+    table {
+        width: 100%;
+    }
+</style>
+<body>
+<div class="content">
+    <h3>{$res.title}</h3>
+    <div class="headers"><span class="laiyuan">来源：{$res.source}</span><span class="tiem">{$res.create_time}</span></div>
+    <div>
+        {$res->content['content']}
+        {volist name="$res->fujians" id='vo'}
+        <div style="margin-top: 10px;">
+            <span style="color: #999;"><img src="__STATIC__/img/app/fujian.png"/>&nbsp;附件：</span>
+            <a href="https://view.officeapps.live.com/op/view.aspx?src={:config('APP_PATH').$vo.url}"
+               style="color: #1296db;">{$vo.name}</a>
+        </div>
+        {/volist}
+    </div>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+    let htmlWidth = document.documentElement.clientWidth || document.body.clientWidth;
+    console.log(htmlWidth)
+    //得到html的Dom元素
+    let htmlDom = document.getElementsByTagName('html')[0];
+    //设置根元素字体大小
+    htmlDom.style.fontSize = htmlWidth / 20 + 'px';
+</script>

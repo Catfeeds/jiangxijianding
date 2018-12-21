@@ -1,0 +1,74 @@
+{extend name='common@layout/nonelayout'}
+{block name='content'}
+<div class="layui-tab-content">
+    <table border="1" class="layui-table" lay-even>
+        <colgroup>
+            <col width="150">
+            <col width="240">
+            <col width="150">
+            <col width="240">
+        </colgroup>
+        <tr>
+            <th>工种名称:</th>
+            <td colspan="3">{$res.name}</td>
+        </tr>
+        <tr>
+            <th>职业代码:</th>
+            <td colspan="3">{$res.code}</td>
+        </tr>
+        <tr>
+            <th>状态:</th>
+            <td colspan="3">{$res.status}</td>
+        </tr>
+        <tr>
+            <th>创建时间:</th>
+            <td colspan="3">{$res.create_time}</td>
+
+        </tr>
+        <tr>
+            <th>上次修改时间:</th>
+            <td colspan="3">{$res.update_time}</td>
+
+        </tr>
+        <tr>
+            <th><b>所属分类:</b></th>
+            <td colspan="3">
+                {$res.workType.name}
+            </td>
+        </tr>
+        <tr>
+            <td><b>职业工种方向数量:</b></td>
+            <td colspan="3">{$res.workDirection|count}&nbsp;个</td>
+        </tr>
+        <tr>
+            <td>
+                <b>职业工种方向:</b>
+            </td>
+            <td colspan="2">{volist name="res.workDirection" id="vo"}{$vo.name}、{/volist}</td>
+            <td>
+                <button data-value="{$res.id}" class="layui-btn-xs layui-btn dir-click">方向管理</button>
+            </td>
+        </tr>
+    </table>
+</div>
+
+{/block}
+
+{block name='script'}
+<script>
+    layui.use('layer',function () {
+        $('.dir-click').on('click', function () {
+            id = $(this).data('value');
+            layer.open({
+                type: 2,
+                anim: 1,
+                skin: 'layui-layer-molv',
+                area: ['100%', '100%'],
+                title: "查看方向",
+                content: urladdr.workDirOne + id,
+            });
+        });
+    });
+
+</script>
+{/block}

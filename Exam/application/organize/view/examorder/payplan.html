@@ -1,0 +1,59 @@
+{extend name="/layout/layout"}
+{block name="css"}
+{/block}
+{block name="content"}
+
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body" style="clear: both; ">
+            <table class="layui-table">
+                <colgroup>
+                    <col width="25%">
+                    <col width="200">
+                    <col>
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>计划名称</th>
+                    <th>缴费截止时间</th>
+                    <th>订单数量</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {volist name="examplan" id="vo"}
+                <tr>
+                    <td>{$vo['title']}</td>
+                    <td>{$vo['pay_endtime']}</td>
+                    <td>{$vo['num']}</td>
+                    <td><a href="{$type}?plan_id={$vo.id}" class="layui-btn layui-btn-sm" >详情</a></td>    
+                </tr>
+                {/volist}
+
+                </tbody>
+            </table>
+        </div>
+        <div class="layui-fluid tp-pages">
+            {$examplan->render()}
+        </div>
+    </div>
+</div>
+
+</body>
+{/block}
+{/extend}
+{block name="script"}
+<script type="text/javascript">
+
+    layui.use('element', function(){
+        var element = layui.element;
+    });
+
+    // $('.toggle').click(function(){
+    //     alert(123)
+    // })
+
+</script>
+{/block}

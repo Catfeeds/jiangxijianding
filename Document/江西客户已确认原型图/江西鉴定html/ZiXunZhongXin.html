@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<link rel="stylesheet" type="text/css" href="css/lay.css" />
+		<link rel="stylesheet" type="text/css" href="css/main.css" />
+		<title>资讯中心</title>
+	</head>
+
+	<body class="WangShangBaoMingBody">
+		<div class="header_top">
+			<div class="layui-container">
+				<div class="layui-col-xs6 jd_header_left"><span>当前日期：2018年9月10日</span><span>10:30</span><span>星期一</span></div>
+				<div class="layui-col-xs6 jd_header_right">
+					<span>设为首页 </span>
+					<span>加入收藏</span>
+					<span>主任信箱</span>
+				</div>
+			</div>
+		</div>
+		<div class="banner"><img src="img/banner.png" /></div>
+		<nav>
+			<div class="layui-container">
+				<ul class="nav">
+					<li>
+						<a href="#">首页</a>
+					</li><span>|</span>
+					<li>
+						<a href="#">政务公开</a>
+					</li><span>|</span>
+					<li>
+						<a href="#">鉴定安排</a>
+					</li><span>|</span>
+					<li>
+						<a href="#">政策法规</a>
+					</li><span>|</span>
+					<li>
+						<a href="#">资讯中心</a>
+					</li><span>|</span>
+					<li>
+						<a href="#">技能竞赛</a>
+					</li><span>|</span>
+					<li>
+						<a href="#">党建园地</a>
+					</li>
+				</ul>
+			</div>
+		</nav>
+		<div class="layui-main WangShangBaoMing">
+			<!--报名左tab边栏-->
+			<div class="layui-col-xs3">
+				<div class="WangShangBaoMing_left ZiXunZhongXin_left">
+					<div class="jieshao_header">
+						<span class="jieshao_header_left marginleft">资讯中心</span>
+					</div>
+					<ul class="wangbao_list">
+						<li class="baoming">
+							<a href="#">中心地图</a>
+						</li>
+						<li>
+							<a href="#">中心简介</a>
+						</li>
+						<li>
+							<a href="#">联系方式</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="layui-col-xs9">
+				<!--报名右边tab内容-->
+
+				<div class="WangShangBaoMing_right">
+					<ul class="wangbao_mains">
+						<li>
+							<div class="wangbao_main">
+								<div class="wangbao_breadcrumb">
+									<span class="wangbao_header">中心地图</span>
+									<span class="layui-breadcrumb" lay-separator=">">
+								  		<a href="">首页</a>
+								  		<a><cite>中心地图</cite></a>
+									</span>
+								</div>
+								<div class="centermap_main">
+									<div style="width:100%;height:230px;" id="dituContent"></div>
+								</div>
+							</div>
+						</li>
+						<li class="hidebb">
+							<div class="wangbao_main">
+								<div class="wangbao_breadcrumb">
+									<span class="wangbao_header">中心简介</span>
+									<span class="layui-breadcrumb" lay-separator=">">
+								  		<a href="">首页</a>
+								  		<a><cite>中心简介</cite></a>
+									</span>
+								</div>
+								<div class="jianjie_main">
+									<p class="color_title">江西省职业技能鉴定指导中心是江西省人力资源和社会保障厅直属事业单位。</p>
+									<p>主要职责：制定并组织实施全省职业技能鉴定考核具体操作办法，经办省本级职业技能鉴定考核工作；负责对各设区市、各行业职业技能鉴定中心进行业务指导；负责职业技能鉴定国家题库日常管理工作，参与国家题库命题开发工作，组织和管理省级题库命题开发工作，开展职业技能鉴定有关课题的研究和咨询服务；负责全省职业技能鉴定考评员的培训、资质审核、发证和管理；承担省级职业技能竞赛的技术性和事务性工作；负责全省职业技能鉴定信息网络的开发、日常管理工作，承担全省职业技能鉴定方面的有关信息统计、处理和分析工作；经办省本级机关事业单位工勤人员的职业技能鉴定工作。
+									</p>
+									<p>主&nbsp;任：王海江</p>
+									<p>书&nbsp;记：汪建辉</p>
+									<p>副主任：钟阳萍、李玉亭、易&nbsp;难、庄金华</p>
+									<p>（一）综合科</p>
+									<p class="color_gray">负责中心公文、人事、财务、会务、党务、档案、保密、接待、宣传、信访、综治、节能等日常工作；负责办公用品和固定资产管理、物业管理、安全保卫、后勤保障和车辆管理；协调、督办有关事项落实；中心领导交办的其它工作。</p>
+									<p>（二）鉴定一科 </p>
+									<p class="color_gray">统一负责省本级职业技能鉴定资格审核和考务工作；承办全省机关事业单位工勤人员三级以上岗位和省本级机关事业单位工勤人员岗位考核工作；指导全省职业技能鉴定考务管理；负责中心前台服务窗口；中心领导交办的其它工作。</p>
+									<p>（三）鉴定二科（信息科）</p>
+									<p class="color_gray">负责全省职业技能鉴定服务管理平台建设和管理；负责提供实操远程监控和机考技术支持；负责职业技能鉴定数据处理和统计分析；负责江西职业资格工作网、中心内部网络和计算机管理与维护；负责鉴定成绩发布和信息查询工作；中心领导交办的其它工作。</p>
+									<p>（四）技能竞赛科</p>
+									<p class="color_gray">协助承办全国技能竞赛的选拔工作；负责省级技能竞赛的技术性和事务性工作；负责专项职业能力考核工作；负责技能等级评价、行业企业自主评价与技能鉴定对接服务；中心领导交办的其他工作。</p>
+									<p>（五）命题科</p>
+									<p class="color_gray">负责国家题库江西省分库的管理与维护，开发与完善省题库；负责鉴定试卷的印制、分装、传递与阅卷、登统分和成绩复核工作；负责命题专家库建设；组织开发鉴定教材、在线测验题库；负责专项职业能力的考核规范编制和题库建设；中心领导交办的其它工作。</p>
+									<p>（六）质量督导科</p>
+									<p class="color_gray">建立落实全省职业技能鉴定质量管理制度；负责全省职业技能鉴定考评员的培训、资质审核、发证和管理；负责职业技能鉴定资料服务工作；协助做好省管鉴定所站年检评价工作；中心领导交办的其它工作。</p>
+									<p>（七）证书科</p>
+									<p class="color_gray">负责全省空白职业资格证书的申领和调配，指导和监管全省职业资格证书制作；负责中心本级职业资格证书制作、发放；负责全省职业资格证书上网和发放数据统计分析工作；中心领导交办的其它工作。</p>
+								</div>
+							</div>
+						</li>
+						<li class="hidebb">
+							<div class="wangbao_main">
+								<div class="wangbao_breadcrumb">
+									<span class="wangbao_header">联系方式</span>
+									<span class="layui-breadcrumb" lay-separator=">">
+								  		<a href="">首页</a>
+								  		<a><cite>联系方式</cite></a>
+									</span>
+								</div>
+								<div class="" style="text-align:center;padding-bottom:30px;" >
+									<div class="layui-col-xs6">
+										<span><img src="img/map2.png"/></span>
+										<span>科室：江西省南昌市江大南路19号</span>
+									</div>
+									<div class="layui-col-xs6">
+										<span><img src="img/phone2.png"/></span>
+										<span>电话：0791-88301905 </span>
+									</div>
+								</div>
+								<div class="lianxifangshi_main" style=" text-align:center">
+									<div class="layui-col-xs6">
+										<span><img src="img/map2.png"/></span>
+										<span>通讯地址：江西省南昌市江大南路19号</span>
+									</div>
+									<div class="layui-col-xs6">
+										<span><img src="img/phone2.png"/></span>
+										<span>电话：0791-88301905 </span>
+									</div>
+									<div class="layui-col-xs6">
+										<span><img src="img/email.png"/></span>
+										<span>邮编：330029</span>
+									</div>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<footer class="footer">
+			<img class="quanwei" src="img/quanwei.png" />
+			<p>主办单位：江西省职业技能鉴定指导中心 技术支持：博奥教育科技有限公司</p>
+			<p>网上支持（职业资格问答） 　　您是第 9027267 位访问者</p>
+		</footer>
+	</body>
+
+</html>
+<script src="js/jquery-1.7.2.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/layui.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/layui.all.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/api?key=&v=1.1&services=true"></script>
+<script type="text/javascript">
+	layui.use(['laypage', 'layer'], function() {
+		var laypage = layui.laypage,
+			layer = layui.layer;
+
+		laypage.render({
+			elem: 'fenye',
+			count: 100,
+			theme: '#CD2D36',
+			layout: ['count', 'prev', 'page', 'next', 'limit', 'refresh', 'skip'],
+			jump: function(obj) {
+				console.log(obj)
+			}
+		});
+	});
+	$(function() {
+		var wangbao_list = $('.wangbao_list li');
+		var wangbao_mains = $('.wangbao_mains>li');
+		var ZhuanJiaImg = $('.zhuanjiaImg')
+		wangbao_list.click(function() {
+			$(this).addClass('baoming').siblings().removeClass('baoming');
+			var h = $(this).index();
+			wangbao_mains.eq(h).show().siblings().hide();
+		});
+	});
+</script>
+<script type="text/javascript">
+    //创建和初始化地图函数：
+    function initMap(){
+        createMap();//创建地图
+        setMapEvent();//设置地图事件
+        addMapControl();//向地图添加控件
+        addMarker();//向地图中添加marker
+    }
+    
+    //创建地图函数：
+    function createMap(){
+        var map = new BMap.Map("dituContent");//在百度地图容器中创建一个地图
+        var point = new BMap.Point(115.951469,28.683185);//定义一个中心点坐标
+        map.centerAndZoom(point,16);//设定地图的中心点和坐标并将地图显示在地图容器中
+        window.map = map;//将map变量存储在全局
+    }
+    
+    //地图事件设置函数：
+    function setMapEvent(){
+        map.enableDragging();//启用地图拖拽事件，默认启用(可不写)
+        map.enableScrollWheelZoom();//启用地图滚轮放大缩小
+        map.enableDoubleClickZoom();//启用鼠标双击放大，默认启用(可不写)
+        map.enableKeyboard();//启用键盘上下左右键移动地图
+    }
+    
+    //地图控件添加函数：
+    function addMapControl(){
+        //向地图中添加缩放控件
+	var ctrl_nav = new BMap.NavigationControl({anchor:BMAP_ANCHOR_TOP_LEFT,type:BMAP_NAVIGATION_CONTROL_LARGE});
+	map.addControl(ctrl_nav);
+        //向地图中添加缩略图控件
+	var ctrl_ove = new BMap.OverviewMapControl({anchor:BMAP_ANCHOR_BOTTOM_RIGHT,isOpen:1});
+	map.addControl(ctrl_ove);
+        //向地图中添加比例尺控件
+	var ctrl_sca = new BMap.ScaleControl({anchor:BMAP_ANCHOR_BOTTOM_LEFT});
+	map.addControl(ctrl_sca);
+    }
+    
+    //标注点数组
+    var markerArr = [{title:"江西省职业技能鉴定中心",content:"我的备注",point:"115.948828|28.683059",isOpen:0,icon:{w:23,h:25,l:46,t:21,x:9,lb:12}}
+		 ];
+    //创建marker
+    function addMarker(){
+        for(var i=0;i<markerArr.length;i++){
+            var json = markerArr[i];
+            var p0 = json.point.split("|")[0];
+            var p1 = json.point.split("|")[1];
+            var point = new BMap.Point(p0,p1);
+			var iconImg = createIcon(json.icon);
+            var marker = new BMap.Marker(point,{icon:iconImg});
+			var iw = createInfoWindow(i);
+			var label = new BMap.Label(json.title,{"offset":new BMap.Size(json.icon.lb-json.icon.x+10,-20)});
+			marker.setLabel(label);
+            map.addOverlay(marker);
+            label.setStyle({
+                        borderColor:"transparent",
+                       color:"red",
+                        cursor:"pointer",
+                        fontSize:"20px",
+                        fontWeight:"700",
+                        background:"transparent",
+                        fontFamily:"Helvetica"
+            });
+			
+			(function(){
+				var index = i;
+				var _iw = createInfoWindow(i);
+				var _marker = marker;
+				_marker.addEventListener("click",function(){
+				    this.openInfoWindow(_iw);
+			    });
+			    _iw.addEventListener("open",function(){
+				    _marker.getLabel().hide();
+			    })
+			    _iw.addEventListener("close",function(){
+				    _marker.getLabel().show();
+			    })
+				label.addEventListener("click",function(){
+				    _marker.openInfoWindow(_iw);
+			    })
+				if(!!json.isOpen){
+					label.hide();
+					_marker.openInfoWindow(_iw);
+				}
+			})()
+        }
+    }
+    //创建InfoWindow
+    function createInfoWindow(i){
+        var json = markerArr[i];
+        var iw = new BMap.InfoWindow("<b class='iw_poi_title' title='" + json.title + "'>" + json.title + "</b><div class='iw_poi_content'>"+json.content+"</div>");
+        return iw;
+    }
+    //创建一个Icon
+    function createIcon(json){
+        var icon = new BMap.Icon("http://app.baidu.com/map/images/us_mk_icon.png", new BMap.Size(json.w,json.h),{imageOffset: new BMap.Size(-json.l,-json.t),infoWindowOffset:new BMap.Size(json.lb+5,1),offset:new BMap.Size(json.x,json.h)})
+        return icon;
+    }
+    
+    initMap();//创建和初始化地图
+</script>

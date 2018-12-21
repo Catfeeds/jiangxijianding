@@ -1,0 +1,109 @@
+{extend name="common@layout/nonelayout" /}
+{block name="css"}
+<style>
+    .duox {
+        border: 1px solid #ccc;
+        width: 140px;
+        float: left;
+        margin-top: 42px;
+        padding: 5px;
+    }
+    .multiSelect{
+        margin-top:-38px;
+    }
+    .duox ul li {
+        padding: 3px 0px;
+    }
+</style>
+{/block}
+{block name="content"}
+<body>
+<form class="layui-form" id="form" enctype="multipart/form-data" style="white-space:nowrap;">
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">申请个数</label>
+        <div class="layui-input-block">
+            <input type="text" name="apply_num" style="width: 200px" id="apply_num" placeholder="请输入个数" autocomplete="off" lay-verify="required" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-upload">
+        <label class="layui-form-label">上传凭证<span style="color: red">*</span></label>
+        <div class="layui-input-block">
+            <input type="file" name="file" id="inp">
+        </div>
+        <div class="layui-upload-list">
+            <label class="layui-form-label"></label>
+            <img class="layui-upload-img" src="" id="demo1" >
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" id="submit" lay-submit lay-filter="formSubmit">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+{/block}
+{/extend}
+{block name="script"}
+<script>
+    layui.use(['form', 'layer','jquery'], function () {
+        var form = layui.form;
+        var $ = layui.jquery;
+        upload = layui.upload;
+
+        inp.onchange = function () {
+            var read = new FileReader() // 创建FileReader对像;
+            read.readAsDataURL(this.files[0]) // 调用readAsDataURL方法读取文件;
+            read.onload = function () {
+                url = read.result // 拿到读取结果;
+                $('#demo1').attr('src', url)
+                $('#demo1').attr('height', '100px')
+            }
+        }
+
+        $('#submit').click(function(){
+            var apply_num = $('#apply_num').val();
+            var src = $('#demo1').attr('src');
+            if(apply_num=='')
+            {
+                layer.msg('请输入申请个数');
+                return false;
+            }
+            if(src=='')
+            {
+                layer.msg('请上传缴费凭证');
+                return false;
+            }
+            form = new FormData($("#form")[0]);
+            $.ajax({
+                type: "POST",//方法类型
+                dataType: "json",//预期服务器返回的数据类型
+                url: urladdr.addCertificate,//url
+                data: form,
+                processData:false,
+                contentType:false,
+                //判断注册状态
+                success:function (data) {
+                    if (data.code==1){
+                        layer.msg(data.msg,{
+                            icon: 1,//提示的样式
+                            time:  2000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                            end: function () {
+                                //当你在iframe页面关闭自身时
+                                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                parent.layer.close(index); //再执行关闭
+                                parent.location.reload();
+                            }
+                        });
+                    }else{
+                        layer.msg(data.msg);
+                    }
+                }
+            });
+            return false;
+
+        })
+    });
+</script>
+{/block}

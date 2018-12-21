@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/layui/css/lay.css" />
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/layui/css/layui.mobile.css" />
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/layui/css/main.css" />
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/layui/css/demand.css"/>
+    <title>成绩查询</title>
+</head>
+
+<body class="Inquiry">
+<div class="header_top">
+    <div class="layui-container">
+        <div class="layui-col-xs6 jd_header_left"><span>当前日期：2018年9月10日</span><span>10:30</span><span>星期一</span></div>
+        <div class="layui-col-xs6 jd_header_right">
+            <span>设为首页 </span>
+            <span>加入收藏</span>
+            <span>主任信箱</span>
+        </div>
+    </div>
+</div>
+<div class="banner"><img src="__PUBLIC__/layui/img/banner.png" /></div>
+<nav>
+    <div class="layui-container">
+        <ul class="nav">
+            <li>
+                <a href="#">首页</a>
+            </li><span>|</span>
+            <li>
+                <a href="#">政务公开</a>
+            </li><span>|</span>
+            <li>
+                <a href="#">鉴定安排</a>
+            </li><span>|</span>
+            <li>
+                <a href="#">政策法规</a>
+            </li><span>|</span>
+            <li>
+                <a href="#">资讯中心</a>
+            </li><span>|</span>
+            <li>
+                <a href="#">技能竞赛</a>
+            </li><span>|</span>
+            <li>
+                <a href="#">党建园地</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div class="chengji_main ">
+    <form class="layui-container layui-form">
+        <div class="login_conent Inquiry_box">
+            <h2>成绩查询</h2>
+            <div class="layui-form-item">
+                <label class="layui-form-label">考生姓名：</label>
+                <div class="layui-input-block">
+                    <input type="text" name="username" lay-verify="username" autocomplete="off" placeholder="请输入姓名" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">证件类型：</label>
+                <div class="layui-input-block">
+                    <select  name="id_type" id="id_type" lay-filter="id_type">
+                        <option value="1">身份证</option>
+                        <option value="2">护照</option>
+                        <option value="3">军官证</option>
+                        <option value="4" >港澳台证</option>
+                        <option value="5" >其他</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">证件号码：</label>
+                <div class="layui-input-block">
+                    <input type="text" name="id_card" lay-verify="id_card" autocomplete="off" placeholder="请输入证件号" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">准考证号：</label>
+                <div class="layui-input-block">
+                    <input type="text" name="TicketNum" lay-verify="TicketNum" autocomplete="off" placeholder="请输入准考证号" class="layui-input">
+                </div>
+            </div>
+            <p class="zhushi">注：输入以上两项内容即可查询</p>
+            <div class="denglu_btn" lay-submit lay-filter="formSub">查询</div>
+        </div>
+    </form>
+
+</div>
+<div class="ChaXun_main" style="display: none;">
+    <h2 class="tanchuang_title">成绩查询结果</h2>
+    <div class="chaxun_main">
+        <span>考生姓名:<span class="stu-name"></span></span></span><span>证件号码：<span class="stu-idnum"></span></span>
+        <table class="layui-table chxun_table myorder_table" lay-skin="line">
+            <colgroup>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col width="60">
+                <col width="60">
+                <col width="60">
+            </colgroup>
+            <thead>
+            <tr>
+                <th>准考证号</th>
+                <th>报考工种</th>
+                <th>报考方向</th>
+                <th>报考等级</th>
+                <th>理论</th>
+                <th>实操</th>
+                <th>综合</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+
+    <div class="double_btn double_qxyj">
+        <div class="dayin_btn payment margin_right_15">确定</div>
+    </div>
+</div>
+<footer class="footer">
+    <img class="quanwei" src="__PUBLIC__/layui/img/quanwei.png" />
+    <p>主办单位：江西省职业技能鉴定指导中心 技术支持：博奥教育科技有限公司</p>
+    <p>网上支持（职业资格问答） 　　您是第 9027267 位访问者</p>
+</footer>
+</body>
+
+</html>
+<script src="__PUBLIC__/layui/layui.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    //Demo
+    layui.use(['form','jquery','layer'], function() {
+        var form = layui.form, $  = layui.jquery;
+        form.on('submit(formSub)',function (data) {
+            var data = data.field;
+            $.ajax({
+                url:'/api/Grade/gradeloginAction',
+                type:'post',
+                data:data,
+                dataType:'json',
+                //判断注册状态
+                success:function (data) {
+                    if (data.code == 1){
+                        layer.open({
+                            type: 1,
+                            title: false,
+                            shadeClose: false,
+                            shade: 0.8,
+                            area: ['700px', '300px'],
+                            content: $('.ChaXun_main'),
+                            success: function () {
+                                var html = '';
+                                $('.stu-name').html(data.data[0].username);
+                                $('.stu-idnum').html(data.data[0].id_card);
+                                $.each(data.data, function (commentIndex, comment) {
+                                    html += "<tr><td>" + comment.TicketNum + "</td><td>"+comment.work_name+"</td><td>"+comment.directionname+"</td><td>"+comment.level+"</td><td>"+comment.theory_score_result+"</td><td>"+comment.watch_score_result+"</td><td>"+comment.synthesize_score_result+"</td></tr>";
+                                });
+                                $(".ChaXun_main").find('tbody').html(html);
+                            },
+                            cancel: function (index, layero) {
+                                $(".ChaXun_main").css('display', 'none');
+                            }
+                        });
+                    }else{
+                        layer.msg(data.msg,{icon:5});
+                    }
+                },error:function (data) {
+                    layer.msg(data.msg);
+                }
+            });
+            //防止页面跳转
+            return false;
+        });
+    });
+
+</script>

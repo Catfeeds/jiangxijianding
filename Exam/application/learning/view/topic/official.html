@@ -1,0 +1,434 @@
+{extend name="layout"}
+{block name="title"}正式题库{/block}
+
+{block name="css"}
+{/block}
+{block name="content"}
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+            <form action="/learning/topic/official?work=<?=isset($_GET['work']) ? $_GET['work'] : ''?>&level=<?=isset($_GET['level']) ? $_GET['level'] : ''?>" method="post">
+                <div class="layui-form-item">
+                    <div class="layui-inline">题型</div>
+                    <div class="layui-inline">
+                        <select name="type" lay-filter="LAY-user-adminrole-type">
+                            <option value="">全部题型</option>
+                            <option {notempty name="search.type"} {if condition="$search.type == 0"} selected="selected" {/if} {/notempty} value="0"></option>
+                            <option {notempty name="search.type"} {if condition="$search.type == 1"} selected="selected" {/if} {/notempty} value="1">单选</option>
+                            <option {notempty name="search.type"} {if condition="$search.type == 2"} selected="selected" {/if} {/notempty} value="2">多选</option>
+                            <option {notempty name="search.type"} {if condition="$search.type == 3"} selected="selected" {/if} {/notempty} value="3">判断</option>
+                            <option {notempty name="search.type"} {if condition="$search.type == 4"} selected="selected" {/if} {/notempty} value="4">填空</option>
+                            <option {notempty name="search.type"} {if condition="$search.type == 5"} selected="selected" {/if} {/notempty} value="5">简答</option>
+                            <option {notempty name="search.type"} {if condition="$search.type == 6"} selected="selected" {/if} {/notempty} value="6">作文</option>
+                            <option {notempty name="search.type"} {if condition="$search.type == 7"} selected="selected" {/if} {/notempty} value="7">论述</option>
+                            <option {notempty name="search.type"} {if condition="$search.type == 8"} selected="selected" {/if} {/notempty} value="8">分析</option>
+                            <option {notempty name="search.type"} {if condition="$search.type == 9"} selected="selected" {/if} {/notempty} value="9">操作题</option>
+                        </select>
+                    </div>
+
+                    <div class="layui-inline">归属题库</div>
+                     <div class="layui-inline">
+                        <select name="range" lay-filter="LAY-user-adminrole-type">
+                            <option value="">全部题库</option>
+                            <option {notempty name="search.range"} {if condition="$search.range == 1"} selected="selected" {/if} {/notempty} value="1">在线练习</option>
+                            <option {notempty name="search.range"} {if condition="$search.range == 2"} selected="selected" {/if} {/notempty} value="2">模拟考试</option>
+                        </select>
+                    </div>
+
+                    <div class="layui-inline">难易程度</div>
+                    <div class="layui-inline">
+                        <select name="topic_level" lay-filter="LAY-user-adminrole-type">
+                            <option value="">全部程度</option>
+                            <option {notempty name="search.topic_level"} {if condition="$search.topic_level == 1"} selected="selected" {/if} {/notempty} value="1">易</option>
+                            <option {notempty name="search.topic_level"} {if condition="$search.topic_level == 2"} selected="selected" {/if} {/notempty} value="2">偏易</option>
+                            <option {notempty name="search.topic_level"} {if condition="$search.topic_level == 3"} selected="selected" {/if} {/notempty} value="3">适中</option>
+                            <option {notempty name="search.topic_level"} {if condition="$search.topic_level == 4"} selected="selected" {/if} {/notempty} value="4">偏难</option>
+                            <option {notempty name="search.topic_level"} {if condition="$search.topic_level == 5"} selected="selected" {/if} {/notempty} value="5">难</option>
+                        </select>
+                    </div>
+                    <!--<div class="layui-inline">审核状态</div>-->
+                    <!--<div class="layui-inline">-->
+                        <!--<select name="topic_state" lay-filter="LAY-user-adminrole-type">-->
+                            <!--<option value="">全部状态</option>-->
+                            <!--<option {notempty name="search.topic_state"} {if condition="$search.topic_state == 1"} selected="selected" {/if} {/notempty} value="1">禁用</option>-->
+                            <!--<option {notempty name="search.topic_state"} {if condition="$search.topic_state == 2"} selected="selected" {/if} {/notempty} value="2">启用</option>-->
+                        <!--</select>-->
+                    <!--</div>-->
+
+                    <div class="layui-inline">
+                        <button class="layui-btn layui-btn-primary reset">重置</button>
+                        <button class="layui-btn" lay-submit>搜索</button>
+                    </div>
+                </div>
+            </form>
+        </div><br><br><br>
+
+        <div class="layui-card-body">
+            <div style="padding-bottom: 9px;">
+                <button class="layui-btn layui-btn-xs addChoose">
+                    <i class="layui-icon">&#xe608;</i> 添加选项题
+                </button>
+                <button class="layui-btn layui-btn-xs addJudge">
+                    <i class="layui-icon">&#xe608;</i> 添加判断题
+                </button>
+                <!--<button class="layui-btn layui-btn-xs addEmpty">-->
+                    <!--<i class="layui-icon">&#xe608;</i> 添加填空题-->
+                <!--</button>-->
+                <button class="layui-btn layui-btn-xs addBrief">
+                    <i class="layui-icon">&#xe608;</i> 添加简答题
+                </button>
+                <!--<button class="layui-btn layui-btn-xs addComposition">-->
+                    <!--<i class="layui-icon">&#xe608;</i> 添加作文题-->
+                <!--</button>-->
+                <button class="layui-btn layui-btn-xs addDescribe">
+                    <i class="layui-icon">&#xe608;</i> 添加论述题
+                </button>
+                <button class="layui-btn layui-btn-xs topicImport">
+                <i class="layui-icon">&#xe608;</i> 批量导入
+                </button>
+                <!--<button class="layui-btn layui-btn-xs addAnalyze">-->
+                    <!--<i class="layui-icon">&#xe608;</i> 添加分析题-->
+                <!--</button>-->
+                <!--<button class="layui-btn layui-btn-xs addOperation">-->
+                    <!--<i class="layui-icon">&#xe608;</i> 添加操作题-->
+                <!--</button>-->
+                <div style="padding-bottom: 10px;float:right;" id="prompt"></div>
+            </div>
+            <table class="layui-table" style="table-layout:fixed;">
+                <colgroup>
+                    <col width="150">
+                    <col width="200">
+                    <col>
+                </colgroup>
+                <thead>
+                <tr>
+                    <th width="5%"></th>
+                    <th>题目</th>
+                    <th>题型</th>
+                    <th>归属题库</th>
+                    <th>难易程度</th>
+                    <th>工种</th>
+                    <th>级别</th>
+                    <th>方向</th>
+                    <th>创建时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {volist name="data" id="vo"}
+                <tr>
+                    <td>{$i}</td>
+                   <td style="white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">{$vo.topic_name}</td>
+                    <td>{$vo->type}</td>
+                    <td>{$vo->range}</td>
+                    <td>{$vo.topic_level}</td>
+                    <td>{$vo.work_name}</td>
+                    <td>{$vo->level_id}</td>
+                    <td>{$vo.work_direction_name}</td>
+                    <td>{$vo.create_time}</td>
+                    <td>
+                        {switch name="$vo.type" }
+                        {case value="1"}
+                        <button data-value="{$vo.id}" class="layui-btn layui-btn-xs select addChoose">修改</button>
+                        {/case}
+                        {case value="2"}
+                        <button data-value="{$vo.id}" class="layui-btn layui-btn-xs select addChoose">修改</button>
+                        {/case}
+                        {case value="3"}
+                        <button data-value="{$vo.id}" class="layui-btn layui-btn-xs select addJudge">修改</button>
+                        {/case}
+                        {case value="4"}
+                        <button data-value="{$vo.id}" class="layui-btn layui-btn-xs select addEmpty">修改</button>
+                        {/case}rief
+                        {case value="5"}
+                        <button data-value="{$vo.id}" class="layui-btn layui-btn-xs select addBrief">修改</button>
+                        {/case}
+                        {case value="6"}
+                        <button data-value="{$vo.id}" class="layui-btn layui-btn-xs select addComposition">修改</button>
+                        {/case}
+                        {case value="7"}
+                        <button data-value="{$vo.id}" class="layui-btn layui-btn-xs select addDescribe">修改</button>
+                        {/case}
+                        {case value="8"}
+                        <button data-value="{$vo.id}" class="layui-btn layui-btn-xs select addAnalyze">修改</button>
+                        {/case}
+                        {case value="9"}
+                        <button data-value="{$vo.id}" class="layui-btn layui-btn-xs select addOperation">修改</button>
+                        {/case}
+                        {/switch}
+
+                        <button data-value="{$vo.id}" data-name="{$vo.topic_name}" class="layui-btn layui-btn-xs layui-btn-danger demo-delete">删除</button>
+                    </td>
+                </tr>
+                {/volist}
+                </tbody>
+            </table>
+            {if condition="count($data)<=0"}
+            <div style="margin: 0 auto;width: 120px;font-size: 20px;">
+                <div class="layui-form-mid layui-word-aux">暂无数据！</div>
+                {else/}
+                <div class="layui-fluid tp-pages">
+                    {$data->render()}
+                </div>
+                {/if}
+        </div>
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name="script"}
+<script type="text/javascript">
+
+    //cookie公共函数
+    function get_cookie(Name) {
+        var search = Name + "="//查询检索的值
+        var returnvalue = "";//返回值
+        if (document.cookie.length > 0) {
+            sd = document.cookie.indexOf(search);
+            if (sd != -1) {
+                sd += search.length;
+                end = document.cookie.indexOf(";", sd);
+                if (end == -1)
+                    end = document.cookie.length;
+                //unescape() 函数可对通过 escape() 编码的字符串进行解码。
+                returnvalue = unescape(document.cookie.substring(sd, end))
+            }
+        }
+        return returnvalue;
+    }
+
+    function getQueryString(key){
+        var reg = new RegExp("(^|&)"+key+"=([^&]*)(&|$)");
+        var result = window.location.search.substr(1).match(reg);
+        return result?decodeURIComponent(result[2]):null;
+    }
+
+    layui.use(['form', 'layer','jquery'], function () {
+        var form  = layui.form, $  = layui.jquery;
+
+        //一键组卷
+        $(".volume").click(function () {
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['1000px', '90%'], //宽高
+                title: "模考组卷",
+                content: "/learning/topic/volume",  //调到新增页面
+                yes: function(index, layero){
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+
+            });
+            return false;
+        });
+
+        //选择工种、级别和方向
+        $(function () {
+
+            if (getQueryString('work') && getQueryString('level')) {
+                if (getQueryString('work') == 0){
+                    $('#prompt').append('<span class="layui-badge"> 考评人员 </span>&nbsp;');
+                } else {
+                    $('#prompt').append('<span class="layui-badge">'+getQueryString("work")+'</span>&nbsp;');
+                }
+                if (getQueryString('level') == 0){
+                    //考评人员无
+                } else {
+                    $('#prompt').append('<span class="layui-badge">'+getQueryString("level")+'</span>&nbsp;');
+                }
+                if (getQueryString('direction') == 0){
+                    //考评人员无
+                } else {
+                    $('#prompt').append('<span class="layui-badge">'+getQueryString("direction")+'</span>&nbsp;');
+                }
+            } else {
+                window.parent.location.href='/learning/topic/officialChoose';
+                return false;
+            }
+
+        });
+        //选项题
+        $(".addChoose").click(function () {
+            var id = $(this).data('value');
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['1000px', '90%'], //宽高
+                title: "选项题",
+                content: "/learning/topic/officialAddChoose/id/"+id,  //调到新增页面
+                yes: function(index, layero){
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+
+            });
+        });
+        //判断题
+        $(".addJudge").click(function () {
+            var id = $(this).data('value');
+
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['1000px', '90%'], //宽高
+                title: "判断题",
+                content: "/learning/topic/officialAddJudge/id/"+id,
+                yes: function(index, layero){
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+        //填空题
+        $(".addEmpty").click(function () {
+            var id = $(this).data('value');
+
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['1000px', '90%'], //宽高
+                title: "填空题",
+                content: "/learning/topic/officialAddEmpty/id/"+id,
+                yes: function(index, layero){
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+        //简答题
+        $(".addBrief").click(function () {
+            var id = $(this).data('value');
+
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['1000px', '90%'], //宽高
+                title: "简答题",
+                content: "/learning/topic/officialAddBrief/id/"+id,
+                yes: function(index, layero){
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+        //作文题
+        $(".addComposition").click(function () {
+            var id = $(this).data('value');
+
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['1000px', '90%'], //宽高
+                title: "作文题",
+                content: "/learning/topic/officialAddComposition/id/"+id,
+                yes: function(index, layero){
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+        $(".topicImport").click(function () {
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['1000px', '90%'], //宽高
+                title: "批量导入",
+                content: "/learning/topic/import",
+                yes: function(index, layero){
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+        //论述题
+        $(".addDescribe").click(function () {
+            var id = $(this).data('value');
+
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['1000px', '90%'], //宽高
+                title: "论述题",
+                content: "/learning/topic/officialAddDescribe/id/"+id,
+                yes: function(index, layero){
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+        //分析题
+        $(".addAnalyze").click(function () {
+            var id = $(this).data('value');
+
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['1000px', '90%'], //宽高
+                title: "分析题",
+                content: "/learning/topic/officialAddAnalyze/id/"+id,
+                yes: function(index, layero){
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+        //操作题
+        $(".addOperation").click(function () {
+            var id = $(this).data('value');
+
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['1000px', '90%'], //宽高
+                title: "简答题",
+                content: "/learning/topic/officialAddOperation/id/"+id,
+                yes: function(index, layero){
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+        //删除题
+        $(".demo-delete").click(function () {
+            var id = $(this).data('value');
+            var name = $(this).data('name');
+            layer.open({
+                title: ['温馨提示'],
+                content: '确定要删除试题: <span style="color: red;">'+ name +' </span>吗？',
+                btn: ['确定', '取消'],
+                shadeClose: true,
+                yes: function(index, layero){
+                    $.ajax({
+                        url:'/api/LearningTopicOfficial/delOffical',
+                        type:'post',
+                        dataType:'json',
+                        data:{
+                            id:id,
+                        },
+                        success:function (data) {
+                            if (data.status==1){
+                                layer.msg(data.msg, {
+                                    icon: 1,
+                                    time: 1000,
+                                    end: function () {
+                                        location.reload();
+                                    }
+                                })
+                            }else{
+                                layer.msg(data.msg)
+                            }
+                        }
+                    });
+                    return false;
+                },
+                btn2: function(index, layero){
+                    layer.close(index);
+                },
+                cancel: function(index,layero){
+                    layer.close(index);
+                },
+
+            });
+        });
+        //重置
+        $(".reset").click(function () {
+            $.each($('form input'),function (index,item) {
+                $(item).val('');
+            });
+            return false;
+        });
+    });
+</script>
+{/block}

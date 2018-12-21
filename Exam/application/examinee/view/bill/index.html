@@ -1,0 +1,143 @@
+
+{extend name="layout"}
+{block name="css"}
+{/block}
+{block name="content"}
+<body>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+            <div class="layui-form-item">
+                <!--<button class="layui-btn" id="addExamInfo">-->
+                <!--<i class="layui-icon">&#xe608;</i> 添加-->
+                <!--</button>-->
+            </div>
+        </div>
+        <div class="layui-card-body">
+            <table class="layui-table">
+                <colgroup>
+                    <col width="5%">
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col width="455px">
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>鉴定计划</th>
+                    <th>工种</th>
+                    <th>方向</th>
+                    <th>级别</th>
+                    <!--<th>理论</th>-->
+                    <!--<th>实操</th>-->
+                    <!--<th>综合</th>-->
+                    <!--<th>论文评审</th>-->
+                    <th>进度</th>
+                    <th>报名时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {volist name="examData" id="vo"}
+                <tr>
+                    <td>{$vo['id']}</td>
+                    <td>{$vo['title']}</td>
+                    <td>{$vo['workname']}</td>
+                    <td>{$vo['directionname']}</td>
+                    <td>{$vo['work_level_subject_level']}</td>
+                    <!--<td></td>-->
+                    <!--<td>-->
+                    <!--</td>-->
+                    <!--<td>-->
+                    <!--</td>-->
+                    <!--<td>-->
+                    <!--</td>-->
+                    <td>
+                        {$vo->status}
+                    </td>
+                    <td>{$vo['create_time']}</td>
+                    <td >
+                        <button class="layui-btn layui-btn-xs layui-btn-warm applyinvoice" data-value="{$vo['id']}" >发票信息</button>
+                        <button class="layui-btn layui-btn-xs layui-btn-normal printbill" data-value="{$vo['id']}" >打印发票</button>
+                        <button class="layui-btn layui-btn-xs layui-btn-normal Mailbill"  data-value="{$vo['id']}" >邮寄发票</button>
+                    </td>
+                </tr >
+                </tbody>
+                {/volist}
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="YouJi_main" style="display: none;">
+    <h2 class="tanchuang_title">邮寄地址确认</h2>
+    <div class="youji_main">
+        <p><img src="__PUBLIC__/front/img/map.png"/></p>
+        <p class="graycolor">地址</p>
+        <p>抚州市长椿街12号</p>
+        <p class="fengexian"></p>
+        <p><img src="__PUBLIC__/front/img/phone.png"/></p>
+        <p class="graycolor">电话</p>
+        <p>15055666655</p>
+
+    </div>
+    <p class="graycolor" style="text-align: center;">温馨提示：邮费到付</p>
+    <div class="double_btn double_qxyj">
+        <div class="dayin_btn payment margin_right_15">确定</div>
+        <div class="gray_btn payment">取消</div>
+    </div>
+</div>
+
+</body>
+{/block}
+{block name="script"}
+<script type="text/javascript">
+    layui.use('element', function(){
+        var element = layui.element;
+    });
+
+    layui.use(['form', 'layer','jquery'], function () {
+        $('.applyinvoice').on('click', function () {
+            id = $(this).data('value');
+            layer.open({
+                type: 2,
+                area: ['500px', '650px'],
+                title: "填写发票信息",
+                content: '/examinee/Bill/applyinfo?id='+id,
+            });
+            return false;
+        });
+
+        $('.printbill').on('click', function () {
+            id = $(this).data('value');
+            layer.open({
+                type: 2,
+                area: ['500px', '650px'],
+                title: "发票申请",
+                content: '/examinee/Bill/printbill?id='+id,
+            });
+            return false;
+        });
+
+        $('.Mailbill').on('click', function () {
+            id = $(this).data('value');
+            layer.open({
+                type: 2,
+                area: ['417px', '406px'],
+                title: "邮寄地址确认",
+                content: '/examinee/Bill/mail?id='+id,
+            });
+            return false;
+        });
+
+    });
+</script>
+{/block}

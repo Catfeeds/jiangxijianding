@@ -1,0 +1,297 @@
+{extend name="layout"}
+{block name="title"}管理中心{/block}
+{block name="css"}
+
+{/block}
+{block name="content"}
+    <!-- 内容主体区域 -->
+<body>
+    <div style="padding: 15px;">
+        <form class="layui-form" action="" id="addform">
+            <div class="layui-col-xs3 layui-col-md3">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">姓名</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="username" value="{$datas.username|default=''}" name="username" required  lay-verify="required"  autocomplete="off" class="layui-input" style="width: 66%;">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">证件号</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="id_no" value="{$usernamaIdno.usernameIdno|default=''}" name="id_no" required lay-verify="required" placeholder="请输入证件号" autocomplete="off" class="layui-input" disabled>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">联系方式</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="mobile" value="{$usernamaIdno.mobile|default=''}" name="mobile" required lay-verify="required"  autocomplete="off" class="layui-input" disabled>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">邮编</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="zip_code"  value="{$datas['zip_code']|default=''}" name="zip_code" required lay-verify="required" placeholder="请输入邮编" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-xs6 layui-col-md6">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">性别</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="gender" value="男" title="男" {$datas.gender == '男'? 'checked': '';}>
+                        <input type="radio" name="gender" value="女" title="女" {$datas.gender == '女'? 'checked': '';}>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">文化程度</label>
+                    <div class="layui-input-block" style="width:24%">
+                       <select style="width:100px" name="education"  id="education" lay-filter="education" lay-verify="required|education">
+                           <option value=""></option>
+                           <option value="1"  {if condition="$datas.education eq '1'"}selected{/if}>博士</option>
+                           <option value="2"  {if condition="$datas.education eq '2'"}selected{/if}>硕士</option>
+                           <option value="3"  {if condition="$datas.education eq '3'"}selected{/if}>研究生</option>
+                           <option value="4"  {if condition="$datas.education eq '4'"}selected{/if}>专科</option>
+                           <option value="5"  {if condition="$datas.education eq '5'"}selected{/if}>本科</option>
+                           <option value="6"  {if condition="$datas.education eq '6'"}selected{/if}>高职</option>
+                           <option value="7"  {if condition="$datas.education eq '7'"}selected{/if}>中专</option>
+                           <option value="8"  {if condition="$datas.education eq '8'"}selected{/if}>技校</option>
+                           <option value="9"  {if condition="$datas.education eq '9'"}selected{/if}>高中</option>
+                           <option value="10" {if condition="$datas.education eq '10'"}selected{/if}>初中</option>
+                           <option value="11" {if condition="$datas.education eq '11'"}selected{/if}>小学</option>
+                       </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-form-item" >
+                        <label class="layui-form-label">选择地区</label>
+                        <div class="layui-input-inline">
+                            <select name="provid" values="{$datas['provid']|default=''}" provid="{$datas['provid']|default=''}" id="provid" lay-filter="provid">
+                                <option value="{$datas.provid}|default=''"> {$datas.provid|default=''} </option>
+                            </select>
+                        </div>
+                        <div class="layui-input-inline">
+                            <select name="cityid" values="{$datas['cityid']|default=''}"  id="cityid" lay-filter="cityid">
+                                <option value="{$datas.cityid}|default=''"> {$datas.cityid|default=''} </option>
+                            </select>
+                        </div>
+                        <div class="layui-input-inline">
+                            <select name="areaid" values="{$datas['areaid']|default=''}" id="areaid" lay-filter="areaid">
+                                <!--<option value="">请选择市</option>-->
+                                <option value="{$datas.areaid}|default=''"> {$datas.areaid|default=''} </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="layui-col-xs3 layui-col-md3" style="height: 140px;">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">出生日期</label>
+                    <div class="layui-input-inline">
+                        <input type="date" value="{$datas['birthday']|default=''}" name="birthday" required lay-verify="required" placeholder="请输入日期" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">工作单位</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="company" value="{$datas['company']|default=''}" name="company" required lay-verify="required" placeholder="请输入工作单位" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">通讯地址</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="address" value="{$datas['address']|default=''}" name="address" required lay-verify="required" placeholder="请输入地址" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="layui-col-xs12 layui-col-md12 photo_main">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">照片</label>
+                    <div class="layui-input-inline">
+                        <button type="button" name="avatar" class="layui-btn" id="preview_btn"><i class="layui-icon">&#xe67c;</i>上传图片</button>
+                        <div class="layui-upload-list">
+                            <input type="hidden" name="avatar" id="preview_input" lay-verify="required" value="">
+                            <img class="layui-upload-img"  src="{$datas['avatar']|default=''}" id="preview_image"  width="330" height="437">
+                            <p id="preview_text"></p>
+                        </div>
+                    </div>
+                    <div class="photo_zhuyi">
+                        <p class="redcolor">注意*</p>
+                        <p>1. 照片须为近期、头部正面、无帽饰、单色背景的证件照。生活照、风景照等均不符合要求;</p>
+                        <p>2. 照片的规格为：高3.7厘米，宽2.8厘米，分辨率为80像素/厘米以上*.jpg格式;</p>
+                        <p>3.要求上传的照片文件大小在40～80KB之间;</p>
+                    </div>
+                </div>
+                <!--<div style="margin: 0;text-align: center;">-->
+                    <!--<div id="clipArea" style="margin: 20px; height: 300px;"></div>-->
+
+                    <!--<input type="file" id="file">-->
+                    <!--<span id="clipBtn" style=" margin: 20px;">截取</span>-->
+                    <!--<div id="view" style="margin: 0 auto; width: 330px;  height: 437px;">-->
+                        <!--<img class="layui-upload-img"  src="{$datas['avatar']|default=''}" id="preview_image"  >-->
+                    <!--</div>-->
+                <!--</div>-->
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button type="submit" class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                    <!--<button type="reset" class="layui-btn layui-btn-primary">重置</button>-->
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+{/block}
+
+<!--<script src="__PUBLIC__/layui/assets/jquery-1.12.4.js"></script>-->
+
+<!--<script src="__PUBLIC__/layui/layui.js"></script>-->
+
+{block name="script"}
+<script src="__PUBLIC__/layui/assets/data.js"></script>
+<script src="__PUBLIC__/layui/assets/province.js"></script>
+<script src="__JS__/jquery.min.js"></script>
+<script src="__JS__/saveimg/iscroll-zoom.js"></script>
+<script src="__JS__/saveimg/hammer.js"></script>
+<script src="__JS__/saveimg/lrz.all.bundle.js"></script>
+<script src="__JS__/saveimg/jquery.photoClip.js"></script>
+<script>
+
+    //document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
+
+    //clipArea.destroy();
+
+    //JavaScript代码区域
+    layui.use(['form', 'layer','jquery','element','upload'], function () {
+        var form = layui.form;
+        var $ = layui.jquery;
+        var element = layui.element;
+
+        //验证姓名
+        $("#username").blur(function () {
+            var reg = /^[a-zA-Z\u4e00-\u9fa5]+$/;
+//            var reg = /^[a-zA-Z0-9_\u4e00-\u9fa5\\s·]+$/;
+            if (!($('#username').val().match(reg))) {
+                layer.msg('姓名仅支持中文或字母');
+            }
+        });
+
+        //验证身份证
+//        $("#id_no").change(function(){
+//            var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+//            if(!($('#id_no').val().match(reg))){
+//                layer.msg('身份证格式错误');
+//            }
+//        });
+
+        //验证地址
+//            $('#address').change(function() {
+//                var reg = /^[a-zA-Z0-9\u4e00-\u9fa5\\s·]+$/;
+//                if(!($('#address').val().match(reg))){
+//                    layer.msg('通讯地址不能有特殊字符');
+//                }
+//            });
+
+        //验证邮编
+        $('#zip_code').change(function () {
+            var reg = /^[0-9]{6}$/;
+            if (!($('#zip_code').val().match(reg))) {
+                layer.msg('邮编格式不正确,请输入6位数字');
+            }
+        });
+//        email: [/^[a-z0-9._%-]+@([a-z0-9-]+\.)+[a-z]{2,4}$|^1[3|4|5|7|8]\d{9}$/, '邮箱格式不对']
+//        });
+
+        //添加表单监听事件
+        form.on('submit(formDemo)', function (data) {
+            data = data.field;
+//            data.provids = $("#provid").find("option:selected").val();
+//            data.cityids = $("#cityid").find("option:selected").val();
+//            data.areaids = $("#areaid").find("option:selected").val();
+            $.post("/api/UserInfo/updataInfo", data, function (data) {
+                if (data.code == 1) {
+                    layer.msg(data.msg);
+                } else {
+                    layer.msg(data.msg);
+                }
+            });
+            //防止页面跳转
+            return false;
+        });
+
+
+        function simpleUpload(name) {
+            var upload = layui.upload
+            var form = layui.form;
+            var uploadBtn = name + '_btn';
+            var inputId = name + "_input";
+            var imageId = name + "_image"
+            var textId = name + "_text";
+
+            upload.render({
+                elem: ('#' + uploadBtn),
+                url: '/examinee/BaseInfo/upload',
+                accept: 'file',
+                auto: false,
+                exts: "jpg|png|gif|jpeg",
+                before: function (obj) {
+                    layer.load();
+                },
+                choose: function (obj) {
+
+                    var flag = true;
+                    obj.preview(function (index, file, result) {
+//                    load_index = layer.load(2, {
+//                        time : 20 * 1000
+//                    });
+//                    if(file.size<40 || file.size>80){
+//                        layer.msg("您上传的图片大小必须是40~80KB!");
+//                    }else{
+                        var img = new Image();
+                        img.src = result;
+                        img.onload = function () {
+                            if (img.width == 330 && img.height == 437) {
+                                obj.upload(index, file); //满足条件调用上传方法
+//                                $('#' + imageId).attr('src', result);
+//                                $('#' + inputId).val(result);
+                            } else {
+                                flag = false;
+                                layer.msg("您上传的图片宽高必须是330*437尺寸!");
+                            }
+                        }
+                        return flag;
+//                    }
+                    });
+                },
+                done: function (res) {
+                    if (res == 404) {
+                        return layer.msg('上传失败');
+                    } else {
+                        $('#' + imageId).attr('src', res);
+                        $('#' + inputId).val(res);
+                        layer.closeAll('loading');
+                    }
+                },
+                error: function () {
+                    //演示失败状态，并实现重传
+                    layer.close(load_index);
+                    var demoText = $('#' + textId);
+                    demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+                    demoText.find('.demo-reload').on('click', function () {
+                        uploadInst.upload();
+                    });
+                }
+            });
+        }
+
+        simpleUpload("preview");
+
+
+    });
+
+</script>
+{/block}}

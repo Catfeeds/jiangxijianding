@@ -1,0 +1,169 @@
+{include file='content/daohang'}
+		<div class="layui-main WangShangBaoMing">
+			<!--报名左tab边栏-->
+			<style type="text/css">
+				.sousuos {
+					height: 35px;
+					padding: 0px 10px;
+					background: #ECECEC;
+					border-radius: 20px;
+					width: 180px;
+					margin:20px auto;
+					position: absolute;
+				}
+
+				.sousuos i {
+					color: #C52730;
+					font-size: 26px;
+					display: inline-block;
+					padding-top: 5px;
+					float: right;
+				}
+
+				.xinwensousuo {
+					height: 35px;
+					width: 115px;
+					border: 0px;
+					background: transparent;
+			</style>
+			<form action="">
+			<div class="layui-col-xs3">
+				<div class="WangShangBaoMing_left">
+					<div class="jieshao_header">
+						<span class="jieshao_header_left marginleft">全文检索</span>
+					</div>
+					<div class="sousuos">
+						<input type="" name="sousuo" id="sousuo" value="" placeholder="请输入关键字" class="xinwensousuo" autocomplete="off">
+						<!--<i class="layui-icon layui-icon-search"></i>-->
+					</div>
+					<button style="width: 60px;position: relative;margin-top: 22px;margin-left: 138px;background: #ED1E1E;" class="layui-btn layui-btn-sm layui-btn-radius" id="sou">搜索</button>
+					
+				</div>
+			</div>
+			</form>
+			<div class="layui-col-xs9">
+				<!--报名右边tab内容-->
+
+				<div class="WangShangBaoMing_right">
+					<ul class="wangbao_mains">
+						<li>
+							<div class="wangbao_main">
+								<div class="wangbao_breadcrumb">
+									<span class="wangbao_header">关键字搜索</span>
+									<span class="layui-breadcrumb" lay-separator=">">
+								  		<a href="">首页</a>
+								  		<a><cite>关键字搜索</cite></a>
+									</span>
+								</div>
+								<ul id="aaa" style="height: auto;">
+
+								</ul>
+							</div>
+						</li>
+
+					</ul>
+
+				</div>
+					<div id="fen">     <input type="hidden" id="count" value="{$infos}">
+						<input type="hidden" id="data" value="{$data}">
+					<div id="fenye" class="wangbao_fenye">
+					</div>
+				</div>
+			</div>
+		</div>
+<footer class="footer">
+	<img class="quanwei" src="__PUBLIC__/img/cms1.0/quanwei.png" />
+	<p>主办单位：江西省职业技能鉴定指导中心 技术支持：博奥网络教育科技股份有限公司</p>
+	<p>网上支持（职业资格问答） 　　您是第 9027267 位访问者</p>
+</footer>
+	</body>
+
+</html>
+
+<script src="__PUBLIC__/layui/layui.js" type="text/javascript" charset="utf-8"></script>
+<script src="__PUBLIC__/layui/layui.all.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+    layui.use(['laypage', 'layer','jquery'], function() {
+
+        var laypage = layui.laypage,
+            layer = layui.layer;
+        var $ = layui.jquery;
+        var count = $('#count').val();
+        var id = $('#id').val();
+        var data = $("#data").val();
+
+		laypage.render({
+            elem: 'fenye',
+            count:count,
+            theme: '#CD2D36',
+            layout: ['count', 'prev', 'page', 'next', 'limit', 'refresh', 'skip'],
+            jump: function(obj) {
+                var pag = obj.curr;
+                var limit=obj.limit;
+				$.post('seek',{data:data,pag:pag,limit:limit},function(data)
+                {
+                    var html ='';
+                    for(var i=0;i<data.length;i++)
+                    {
+                        html+='<li><a href="'+data[i].url+'">';
+                        html+='<i></i>'+data[i].title.slice(0,30)+'......'+'<span class="rightfloat">'+data[i].time+'</span></a>';
+                        html+='</li>';
+                    }
+                    $('#aaa').html(html);
+                })
+			}
+        });
+    });
+         function paged(data)
+		 {
+             layui.use(['laypage', 'layer','jquery'], function() {
+
+                 var laypage = layui.laypage,
+                     layer = layui.layer;
+                 var $ = layui.jquery;
+                 var count = $('#count').val();
+				 var data = $("#data").val();
+
+                 laypage.render({
+                     elem: 'fenye',
+                     count:count,
+                     theme: '#CD2D36',
+                     layout: ['count', 'prev', 'page', 'next', 'limit', 'refresh', 'skip'],
+                     jump: function(obj) {
+                         var pag = obj.curr;
+                         var limit=obj.limit;
+                         $.post('seek',{data:data,pag:pag,limit:limit},function(data)
+                         {
+                             var html ='';
+                             for(var i=0;i<data.length;i++)
+                             {
+                                 html+='<li><a href="'+data[i].url+'">';
+                                 html+='<i></i>'+data[i].title.slice(0,30)+'......'+'<span class="rightfloat">'+data[i].time+'</span></a>';
+                                 html+='</li>';
+                             }
+                             $('#aaa').html(html);
+                         })
+                     }
+                 });
+             });
+		 };
+         layui.use('jquery',function()
+		 {
+		     var $ = layui.jquery;
+		    $('#sou').click(function()
+			{
+			    var data = $('#sousuo').attr('value');
+			    paged(data);
+			})
+		 });
+    $(function() {
+		var wangbao_list = $('.wangbao_list li');
+		var wangbao_mains = $('.wangbao_mains>li');
+		var ZhuanJiaImg = $('.zhuanjiaImg')
+		wangbao_list.click(function() {
+			$(this).addClass('baoming').siblings().removeClass('baoming');
+			var h = $(this).index();
+			wangbao_mains.eq(h).show().siblings().hide();
+		});
+	});
+</script>

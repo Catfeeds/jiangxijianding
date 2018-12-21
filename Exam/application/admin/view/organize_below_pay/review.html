@@ -1,0 +1,128 @@
+{extend name="common@layout/nonelayout" /}
+{block name="css"}
+{/block}
+{block name="content"}
+<body>
+<form class="layui-form">
+<div class="layui-card-body layui-form">
+    <table class="layui-table" id="table">
+        <thead>
+        <tr>
+            <td>ID</td>
+            <th>姓名</th>
+            <th>证件号</th>
+            <th>所报工种</th>
+            <th>所报级别</th>
+            <th>理论单价</th>
+            <th>实操单价</th>
+            <th>综合单价</th>
+            <th>订单价格</th>
+        </tr>
+        </thead>
+        <tbody>
+        {volist name="objDetail" id="vo"}
+        <tr>
+            <td>{$i}</td>
+            <td>{$vo.user_name}</td>
+            <td>{$vo.id_card}</td>
+            <td>{$vo.work_name}</td>
+            <td>{:config('EnrollStatusText.work_level_subject_level')[$vo.level]}</td>
+            <td>{$vo.lilun_price}</td>
+            <td>{$vo.shicao_price}</td>
+            <td>{$vo.zonghe_price}</td>
+            <td>{$vo.total_money}</td>
+        </tr>
+        {/volist}
+        {volist name="objDetail" length='1' id="vo"}
+        申请组织 :{$vo.organize_name}
+        组织类型:{switch name="$vo['organize_type']"}
+        {case value="1"}鉴定所{/case}
+        {case value="2"}院校{/case}
+        {case value="3"}机构{/case}
+        {case value="-1"}其他{/case}
+        {default /}其他
+        {/switch}
+        {/volist}
+        </tbody>
+    </table>
+
+    <center>
+        <div class="lhj-content">
+            {volist name="objDetail" length='1' id="vo"}
+            <a href="{$vo.order_path}" class="layui-btn layui-btn-sm" download="{$vo.order_path}" target="_blank">下载审核材料</a>
+            <button name="detail" listid="{$vo.order_path}" class="layui-btn layui-btn-sm preview">
+                查看审核材料
+            </button>
+            {/volist}
+            <button class="layui-btn layui-btn-sm" lay-filter="agree" lay-submit  order_num="{$order_num}">
+                通过
+            </button>
+        </div>
+
+    </center>
+</div>
+</form>
+</body>
+{/block}
+{/extend}
+{block name="script"}
+<script>
+    layui.use(['form', 'layer','jquery'], function () {
+        var form = layui.form;
+        var $ = layui.jquery;
+        $(".preview").click(function () {
+            var listid = $(this).attr("listid");
+            parent.layer.open({
+                type: 2,
+                title: false,
+                area: ['95%', '95%'],
+                shade: 0.8,
+                shadeClose: true,
+                content:listid
+            });
+            return false;
+        });
+        //添加表单监听事件
+        form.on('submit(agree)', function (data) {
+            var order_num = $(this).attr('order_num');
+            layer.open({
+                title: ['温馨提示'],
+                content: '<div style="color:#767676">确定审核通过吗？</div>',
+                btn: ['确定', '取消'],
+                shadeClose: true,
+                //回调函数
+                yes: function(index, layero){
+                    $.ajax({
+                        url:urladdr.organizeBelowPay,
+                        type:'post',
+                        data:{order_num:order_num},
+                        dataType:'json',
+                        success:function (data) {
+                            if (data.code==1){
+                                layer.msg(data.msg,{
+                                    icon: 1,//提示的样式
+                                    time:  1000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                                    end: function () {
+                                        //当你在iframe页面关闭自身时
+                                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                        parent.layer.close(index); //再执行关闭
+                                        parent.location.reload();
+
+                                    }
+                                });
+                            }else{
+                                layer.msg(data.msg);
+                            }
+                        }
+                    });
+                    //防止页面跳转
+                    return false;
+                }
+            });
+            //防止页面跳转
+            return false;
+        });
+
+    });
+</script>
+{/block}

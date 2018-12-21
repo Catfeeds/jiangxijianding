@@ -1,0 +1,76 @@
+{extend name="common@layout/nonelayout" /}
+{block name="css"}
+<link rel="stylesheet" href="__PUBLIC__/layui/css/layui.css">
+{/block}
+{block name="content"}
+<body>
+<div class="content" style="padding-top: 48px">
+    <div class="content_header_red">
+        <div class="content_header_red_text" style="text-align: center;font-size: 36px;line-height: 55px;">请先下载导入模板，并按模板文件填写员工信息后进行导入！<br/>
+            (<a href="__PUBLIC__/cert.xlsx" style="text-decoration: underline;color: skyblue;">模板下载</a>)
+        </div>
+    </div>
+    <form method="post" enctype="multipart/form-data" id="form" class="layui-form">
+        <!--   <form action="{:url('admin/mechanism/batch')}" method="post" enctype="multipart/form-data" onsubmit="return submitBefore();">-->
+        <div class="content_jiben" style="text-align:center;">
+            <div class="content_jiben_tou">上传xlsx文件：<input type="file" name="file" id="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" style="    border: 1px solid #ccc;width: 500px;"/></div>
+            <input type="submit" id="submit" value="批量上传" style="display: inline;" class="nav1_left_shangchuan">
+            <input type="hidden" value="{$cert_id}" id="cert_id" name="cert_id">
+        </div>
+    </form>
+</div>
+</body>
+{/block}
+{/extend}
+{block name="script"}
+<script src="__PUBLIC__/layui/layui.js"></script>
+<script>
+    layui.use(['form', 'layer','jquery'], function () {
+        var form = layui.form;
+        var $ = layui.jquery;
+        $('#submit').click(function(){
+
+            var file = document.getElementById("file").value;
+            var submit = document.getElementById("submit");
+            var cert_id = $("#cert_id").val();
+            if (file==""){
+                layer.msg('上传文件不能为空',{time:1000});
+                return false;
+            }else{
+                form = new FormData($("#form")[0]);
+                // submit.value = "文件上传中，请等待...";
+                // submit.disabled = true;
+                // submit.style.width = '200px';
+                $.ajax({
+                    url:'/admin/DiplomaAuditing/certificateImport',
+                    type:'POST',
+                    data:form,
+                    dataType:'json',
+                    processData:false,
+                    contentType:false,
+                    success:function (data) {
+                        if (data.code==1){
+                            alert(data.msg);
+                            // layer.msg(data.msg,{
+                            //     icon: 1,//提示的样式
+                            //     time:  2000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                            //     end: function () {
+                            //         //当你在iframe页面关闭自身时
+                            //         var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                            //         parent.layer.close(index); //再执行关闭
+                            //         parent.location.reload();
+                            //     }
+                            // });
+                        }else{
+                            layer.msg(data.msg);
+                        }
+                    }
+                });
+                return false;
+            }
+
+        })
+    });
+
+</script>
+{/block}

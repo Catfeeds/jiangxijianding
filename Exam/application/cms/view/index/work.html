@@ -1,0 +1,160 @@
+{include file='content/daohang'}
+		<div class="JianDingSuo_main layui-container">
+			<h3 class="baoming_title">
+				<span class="baoming_title_span">鉴定所查询</span>
+				<span class="sousuo_input rightfloat">
+				  <input type="text" name="title" id="sou" lay-verify="title" autocomplete="off" placeholder="请输入搜索机构" class="layui-input"><img id="sousuo" class="sousuosmall" src="__PUBLIC__/img/cms1.0/sousuosmall.png"/>
+				</span>
+			</h3>
+
+			<div class="JianDingSuo_main_top layui-form">
+
+
+				<div class="layui-form-item">
+					<div class="layui-inline">
+						<label class="layui-form-label">鉴定工种</label>
+						<div class="layui-input-inline">
+							<select name="Work" id="Work"  lay-filter="work" lay-search="">
+								<option value="">请选择工种</option>
+								{volist name="arrWork" id="vo"}
+								<option value="{$vo.id}" {if $map['work']== $vo['id']} selected {/if}>{$vo.name}</option>
+								{/volist}
+							</select>
+						</div>
+					</div>
+					<div class="layui-inline">
+						<label class="layui-form-label">方向</label>
+						<div class="layui-input-inline">
+							<select name="WorkDirection" id="WorkDirection" lay-filter="WorkDirection"  lay-search="">
+								<option value="">请选择方向</option>
+								{volist name="arrWorkDirection" id="vo"}
+								<option value="{$vo.id}" {if $map['WorkDirection']== $vo['id']} selected {/if}>{$vo.name}</option>
+								{/volist}
+							</select>
+						</div>
+					</div>
+					<div class="layui-inline">
+						<label class="layui-form-label">等级</label>
+						<div class="layui-input-inline">
+							<select name="Level" id="Level"  lay-filter="Level" lay-search="">
+								<option value="">请选择等级</option>
+								{volist name="arrLevel" id="vo"}
+								<option value="{$vo}" {if $map['Level']== $vo} selected {/if}>{$vo}级</option>
+								{/volist}
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-input-block">
+							<button class="layui-btn  layui-btn-xs layui-btn-radius" style="background-color: red;" id="sub">立即提交</button>
+							<button type="reset" class="layui-btn layui-btn-primary layui-btn-xs">重置</button>
+						</div>
+					</div>
+				</div>
+
+
+		</div>
+			<h3 class="baoming_title topmargin">
+				<table class="layui-table" lay-even="" lay-skin="nob">
+					 <colgroup>
+					    <col width="10%">
+					    <col width="30%">
+					    <col width="40%">
+					    <col width="20%">
+					  </colgroup>
+				<tbody>
+				   <tr>
+						<td>属性</td>
+						<td>名称</td>
+						<td>地址</td>
+						<td>鉴定工种</td>
+					</tr>
+				  </tbody>
+				 </table> 
+			</h3>
+			<div class="JianDingSuo_main_table">
+			<table class="layui-table" lay-even="" lay-skin="nob">
+				 <colgroup>
+				    <col width="10%">
+					    <col width="30%">
+					    <col width="40%">
+					    <col width="20%">
+				  </colgroup>
+				<tbody>
+				{volist name="arrOrganize" id="vo"}
+					<tr>
+						<td>{$vo->type}</td>
+						<td>{$vo.name}</td>
+						<td>{$vo.address}</td>
+						<td>
+						<a id="detil" organize_id="{$vo['id']}" organize_type="{$vo['type']}" class="chankangongz detil">
+							查看
+						</a>
+						</td>
+					</tr>
+				{/volist}
+				</tbody>
+			</table>
+			</div>
+		</div>
+{include file='content/foot'}
+	</body>
+
+</html>
+
+<script src="__PUBLIC__/layui/layui.js" type="text/javascript" charset="utf-8"></script>
+<script src="__PUBLIC__/layui/layui.all.js" type="text/javascript" charset="utf-8"></script>
+<script src="__PUBLIC__/js/urladdr/urladdr.js" type="text/javascript" charset="utf-8"></script>
+
+<script type="text/javascript">
+    layui.use(['form', 'layer','jquery'], function () {
+		var form = layui.form;
+		var laydate = layui.laydate;
+		var $ = layui.jquery;
+		form.render();
+
+        $(".detil").click(function () {
+            var id =$(this).attr("organize_id");
+            var type =$(this).attr("organize_type");
+
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['1000px', '50%'], //宽高
+                title: "组织详情",
+                content: urladdr.IndexOrganize+"?id="+id+"&type="+type,  //调到详情页面
+                yes: function(index, layero){
+                    //do something
+                    layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+            });
+        });
+        $('#sousuo').click(function(){
+            var data = $('#sou').val();
+            var work=$("#Work").val();
+            var WorkDirection=$("#WorkDirection").val();
+            var level=$("#Level").val();
+            var type=$(".thisbg").val();
+         //  location.href = '/cms/index/work?sou='+data+"&work="+work+"&WorkDirection="+WorkDirection+"&Level="+level+"&type="+type;
+		});
+        $("#sub").click( function(data){
+            // var data = $('#sou').val();
+             var work=$("#Work").val();
+             var WorkDirection=$("#WorkDirection").val();
+           var level=$("#Level").val();
+             var type=$(".thisbg").val();
+            location.href = '/cms/index/work?type='+type+"&work="+work+"&WorkDirection="+WorkDirection+"&Level="+level;
+		});
+
+	$('.JianDingSuo_main_top ul li').bind('click', function() {
+		$('.thisbg').removeClass('thisbg');
+		$(this).addClass('thisbg');
+		// var type = $(this).val();
+      //   var work=$("#Work").val();
+      //   var WorkDirection=$("#WorkDirection").val();
+      //   var level=$("#Level").val();
+      // location.href = '/cms/index/work?type=' + type+"&work="+work+"&WorkDirection="+WorkDirection+"&Level="+level;
+	});
+    });
+
+</script>

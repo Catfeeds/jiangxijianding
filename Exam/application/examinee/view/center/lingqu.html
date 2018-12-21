@@ -1,0 +1,63 @@
+{extend name="nonelayout"}
+{block name="css"}
+{/block}
+{block name='content'}
+    <div class="LingQu_main">
+        <h2 class="tanchuang_title">现场领取</h2>
+        <div class="youji_main">
+            <p><img src="__PUBLIC__/front/img/time.png"/></p>
+            <p class="graycolor">现场领取时间</p>
+            <p>2018-09-09 9：00~2018--09-15 17：00</p>
+            <p class="fengexian"></p>
+            <p><img src="__PUBLIC__/front/img/map.png"/></p>
+            <p class="graycolor">地点</p>
+            <p>{$userinfo.exam_site}</p>
+        </div>
+        <div class="double_btn double_qxyj">
+            <div class="dayin_btn payment margin_right_15 formit" data-value="{$userinfo.id}">确定</div>
+            <div class="gray_btn payment layui-layer-close cancel">取消</div>
+        </div>
+    </div>
+{/block}
+{block name='script'}
+<script type="text/javascript">
+    layui.use(['form', 'layer','jquery','element'], function () {
+        var $ = layui.jquery, layer = layui.layer;
+        $(".formit").on('click',function () {
+            id = $(this).data('value');
+            $.post('/api/Certificate/invite', {'id': id}, function (data) {
+                layer.msg(data.msg,{
+                    icon: 1,//提示的样式
+                    time:  2000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                    end: function () {
+                        $.get("{:url('/examinee/Center/indexcert')}", function(data) {
+                            window.parent.$("#iframeContent").html(data); //初始化加载界面
+                            //取消遮罩的时候
+                            $(".layui-layer-shade").hide();
+                        });
+                    }
+                });
+            });
+            return false;
+        })
+    });
+
+    $('.cancel').on('click',function () {
+        layer.msg(data.msg,{
+            icon: 1,//提示的样式
+            time:  2000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+            end: function () {
+                $.get("{:url('/examinee/Center/indexcert')}", function(data) {
+                    window.parent.$("#iframeContent").html(data); //初始化加载界面
+                    //取消遮罩的时候
+                    $(".layui-layer-shade").hide();
+                });
+            }
+        });
+    })
+
+</script>
+{/block}
+
+
+

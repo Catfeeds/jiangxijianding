@@ -1,0 +1,85 @@
+{extend name="common@layout/nonelayout" /}
+{block name="css"}
+{/block}
+{block name="content"}
+<body>
+<div class="layui-card-body layui-form">
+    <h2>鉴定计划名称:{volist name="arrWork" length='1' id="vo"}
+        {$vo.title}
+        {/volist}</h2>
+    <table class="layui-table" id="table">
+        <thead>
+        <tr>
+            <td>ID</td>
+            <th>姓名</th>
+            <th>证件号</th>
+            <th>所报工种</th>
+            <th>所报级别</th>
+            <th>理论单价</th>
+            <th>实操单价</th>
+            <th>综合单价</th>
+            <th>订单价格</th>
+            <th>申请组织</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        {volist name="objDetail" id="vo"}
+        <tr>
+            <td>{$i}</td>
+            <td>{$vo.user_name}</td>
+            <td>{$vo.id_card}</td>
+            <td>{$vo.work_name}</td>
+            <td>{:config('EnrollStatusText.work_level_subject_level')[$vo.level]}</td>
+            <td>{$vo.lilun_price}</td>
+            <td>{$vo.shicao_price}</td>
+            <td>{$vo.zonghe_price}</td>
+            <td>{$vo.total_money}</td>
+            <td>{$vo.organize_name}{switch name="$vo['organize_type']"}
+                {case value="1"}鉴定所{/case}
+                {case value="2"}院校{/case}
+                {case value="3"}机构{/case}
+                {case value="-1"}其他{/case}
+                {default /}其他
+                {/switch}</td>
+        </tr>
+        {/volist}
+
+        </tbody>
+    </table>
+
+    {volist name="objDetail"  length='1' id="vo"}
+    {if $vo.review_time!= ''}
+    <br><br><hr class="layui-bg-red">
+    <table class="layui-table">
+        <center><h3>已审核详情</h3></center>
+        <tr>
+            <th width="200px">被审核姓名</th>
+            <th width="200px">被审核证件号</th>
+            <th width="200px">审核人</th>
+            <th width="200px">审核时间</th>
+            <th width="200px">审核ip</th>
+            <th width="200px">审核原因</th>
+        </tr>
+        {volist name="objDetail" id="vo"}
+        <tr>
+            <td width="200px">{$vo.user_name}</td>
+            <td width="200px">{$vo.id_card}</td>
+            <td width="200px">{$vo.admin_name}</td>
+            <td width="200px"><?=date("Y-m-d H:i:s",$vo['review_time'])?></td>
+            <td width="200px">{$vo.review_ip}</td>
+            <td width="200px">{$vo.reason}</td>
+        </tr>
+        {/volist}
+    </table>
+    {/if}
+    {/volist}
+
+
+
+
+</div>
+</body>
+{/block}
+{/extend}
+{block name="script"}{/block}

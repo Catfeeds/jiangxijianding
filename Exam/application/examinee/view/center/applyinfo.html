@@ -1,0 +1,145 @@
+{extend name="nonelayout"}
+{block name="css"}
+<style>
+.leftfloat{float:left}
+    .company_table{display: none}
+    .borderwid{border-width: 0px}
+.payments {
+    margin: auto;
+    height: 35px;
+    line-height: 30px;
+}
+.layui-form-label {
+    width: 85px;
+}
+.layui-input-block {
+    margin-left: 115px;
+}
+</style>
+
+{/block}
+{block name='content'}
+<div style="width: 400px;margin-top: 20px;margin-left: 30px;">
+    <div class="layui-form">
+        <div class="layui-form-item">
+            <input type="hidden" name="order_id" value="{$detaildata['order_id']?$detaildata['order_id']:''}">
+            <input type="hidden" name="total_money" value="{$detaildata['total_money']?$detaildata['total_money']:''}">
+            <label class="layui-form-label">发票抬头</label>
+            <div class="layui-input-block">
+                <div class="leftfloat"><input type="radio" lay-filter="type"  name="type" value="1" {if ($invoiceData['type']==1)} checked {/if} title="个人" ></div>
+                <div class="leftfloat"><input type="radio" lay-filter="type" name="type" value="2" {if ($invoiceData['type']==2)} checked {/if} title="公司" ></div>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">发票抬头</label>
+            <div class="layui-input-block">
+                <input type="text" name="invoice_name" value="{$invoiceData['invoice_name']?$invoiceData['invoice_name']:''}" placeholder="" required lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+
+        <div class="layui-form-item  company_table">
+            <label class="layui-form-label">纳税人识别号</label>
+            <div class="layui-input-block">
+                <input type="text" name="identification" value="{$invoiceData['identification']?$invoiceData['identification']:''}" placeholder="" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item company_table">
+            <label class="layui-form-label">开户行名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="bank" value="{$invoiceData['bank']?$invoiceData['bank']:''}"  placeholder=""  autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item company_table">
+            <label class="layui-form-label">开户行账号</label>
+            <div class="layui-input-block">
+                <input type="text" name="number" value="{$invoiceData['number']?$invoiceData['number']:''}"  placeholder=""  autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item company_table">
+            <label class="layui-form-label">开户行地址</label>
+            <div class="layui-input-block">
+                <input type="text" name="bankaddress"  value="{$invoiceData['bankaddress']?$invoiceData['bankaddress']:''}"  placeholder=""  required lay-verify="required"  autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item ">
+            <label class="layui-form-label">邮寄地址</label>
+            <div class="layui-input-block">
+                <input type="text" name="address"  value="{$invoiceData['address']?$invoiceData['address']:''}"   placeholder="" required lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item ">
+            <label class="layui-form-label">电话</label>
+            <div class="layui-input-block">
+                <input type="text" name="phone"  value="{$invoiceData['phone']?$invoiceData['phone']:''}"  placeholder=""  autocomplete="off" class="layui-input">
+            </div>
+        </div>
+       <!-- <div class="layui-form-item company_table">
+            <label class="layui-form-label">邮箱</label>
+            <div class="layui-input-block">
+                <input type="text" name="email"  value="{$invoiceData['email']?$invoiceData['email']:''}"  placeholder=""  autocomplete="off" class="layui-input">
+            </div>
+        </div>-->
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="dayin_btn payments borderwid margin_right_15" style="margin-left: 50px;margin-top: 20px;" lay-submit lay-filter="formDemo">确认提交</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+{/block}
+{block name='script'}
+<script type="text/javascript">
+
+    layui.use(['form', 'laypage','laydate','layer','jquery'], function() {
+        var form = layui.form,
+                $ = layui.jquery;
+        form.render();
+        var laydate = layui.laydate;
+        $ = layui.jquery;
+        form.render();
+
+        var laypage = layui.laypage;
+        var aaa=function() {
+            var typevalue = $("input[name=type]:checked").val();
+            if(typevalue == 1){
+                $(".geren_table").show();
+                $(".company_table").hide();
+            }else{
+                $(".company_table").show();
+                $(".geren_table").hide();
+            }
+        }
+        aaa();
+        form.on('radio(type)',function (data) {
+            aaa();
+        })
+
+
+        //监听提交
+        form.on('submit(formDemo)', function (data) {
+            var formData = data.field;
+            $.post("/api/Invoice/add", formData, function (data) {
+                if (data.code === 1) {
+                    layer.msg(data.msg,{
+                        icon: 1,//提示的样式
+                        time:  2000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                        end: function () {
+                            $.get("{:url('/examinee/Center/indexBill')}", function(data) {
+                                window.parent.$("#iframeContent").html(data); //初始化加载界面
+                                //取消遮罩的时候
+                                $(".layui-layer-shade").hide();
+                            });
+                        }
+                    });
+                } else {
+                    layer.msg(data.msg, {icon: 5});
+                }
+            });
+            return false;
+        });
+    });
+</script>
+{/block}

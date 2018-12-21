@@ -1,0 +1,125 @@
+{extend name="common@layout/nonelayout" /}
+{block name="css"}
+<style type="text/css">
+    .divList{
+        overflow-y: scroll; max-height: 88%;padding: 0px 20px;
+    }
+    .divList table{
+       width:100%;
+        text-align:center;
+    }
+    .divList table tr td:first-child{
+        text-align: right;
+    }
+</style>
+{/block}
+{block name="content"}
+<body>
+<form class="layui-form"  style="white-space:nowrap;">
+    <div class="layui-form-item">
+        <label class="layui-form-label">工种类型：</label>
+        <div class="layui-input-block layui-inline">
+            <select name="work_type" id="work_type" lay-filter="work_type_change" lay-search>
+                {volist name="workTypeArr" id="vo"}
+                <option value="{$vo.work_type_id}" {if $vo.work_type_id==$workType}selected{/if} >{$vo.work_type_name}</option>
+                {/volist}
+            </select>
+        </div>
+    <div class="layui-inline">
+            <button  class="layui-btn layui-btn-sm " lay-submit lay-filter="saveWork" >修改</button>
+            <input type="hidden" name="examid" value="{$examid}"/>
+    </div>
+    <div class="divList">
+        <table class="layui-table">
+            <thead><tr><td width="35%;">工种</td><td>级别</td></tr></thead>
+            {volist name="workLevel" id="wl"}
+            <tr>
+                <td >            <input type="checkbox" value="{$wl.name}" class="cbWork{$wl.id}"  name="work[{$wl.id}]" title="{$wl.name}" {if $wl.ischecked==1}checked{/if} >
+                </td>
+                <td >
+                    {volist name="wl.level" id="l"}
+                    {if ($l.id==0)}
+                        {$l.level}
+                    {else/}
+                        <input type="checkbox" value="{$l.id}" lay-filter="cbLevel" data-pid="{$wl.id}" name="worklevel[{$wl.id}][]" title="{$l.level}" {if $l.ischecked==1}checked{/if}>
+                    {/if}
+                    {/volist}
+
+                </td>
+            </tr>
+            {/volist}
+        </table>
+    </div>
+    </div>
+</form>
+{/block}
+{/extend}
+{block name="script"}
+<script>
+    function replaceUrlParam(name,value) {
+        var search = window.location.search;
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = search.substr(1).match(reg);
+        if (r != null) {
+            location.href = location.pathname+ search.replace(unescape(r[0]), r[1]+name + "=" + value + unescape(r[3]));
+        }else{
+            if(search.length==0){
+                location.href =  location.pathname+"?"+name+"="+value;
+            }else{
+                location.href =  location.pathname+search+"&"+name+"="+value;
+            }
+        }
+    }
+    layui.use(['form', 'layer','jquery'], function () {
+        var layer=layui.layer;
+        var form = layui.form;
+        var $ = layui.jquery;
+
+        form.on('select(work_type_change)', function(data){
+            replaceUrlParam('worktype',data.value);
+        });
+        form.on('checkbox(cbLevel)',function (data) {
+            if($(this).prop("checked")){
+                $(".cbWork"+$(this).data("pid")).prop("checked",true);
+                form.render();
+            }
+        });
+        form.on('submit(saveWork)', function (data) {
+            data=data.field;
+            data['work_type_name']=$("#work_type option:selected").text();
+            layer.open({
+                title: ['温馨提示'],
+                content: '<div style="color:#767676">确定要修改当前鉴定计划的工种级别吗？</div>',
+                btn: ['确定', '取消'],
+                shadeClose: true,
+                //回调函数
+                yes: function(index, layero){
+                    $.ajax({
+                        url:urladdr.updateExamPlanWork,
+                        type:'post',
+                        data:data,
+                        dataType:'json',
+                        success:function (data) {
+                            if (data.code==1){
+                                layer.msg(data.msg,{
+                                    icon: 1,//提示的样式
+                                    time:  2000, //2秒关闭（如果不配置，默认是3秒）//设置后不需要自己写定时关闭了，单位是毫秒
+                                    end: function () {
+                                        //当你在iframe页面关闭自身时
+                                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                        parent.layer.close(index); //再执行关闭
+                                        parent.location.reload();
+                                    }
+                                });
+                            }else{
+                                layer.msg(data.msg);
+                            }
+                        }
+                    });
+                }
+            });
+            return false;
+        });
+    });
+</script>
+{/block}

@@ -1,0 +1,89 @@
+{extend name="common@layout/nonelayout" /}
+{block name="css"}
+{/block}
+{block name="content"}
+<body>
+
+<form class="layui-form">
+
+    <table border="1" class="layui-table" >
+        <tr>
+            <td>名称</td>
+            <td>{volist name="arrWork" length='1' id="vo"}{$vo.name}{/volist}</td>
+            <td>昵称</td>
+            <td>{volist name="arrWork" length='1' id="vo"}{$vo.name}{/volist}</td>
+            <td>代码</td>
+            <td>{volist name="arrWork" length='1' id="vo"}{$vo.code}{/volist}</td>
+        </tr>
+        <tr>
+            <td>负责人</td>
+            <td>{volist name="arrWork" length='1' id="vo"}{$vo.dutyer}{/volist}</td>
+            <td>联系人</td>
+            <td>{volist name="arrWork" length='1' id="vo"}{$vo.linkman}{/volist}</td>
+            <td>地址</td>
+            <td>{volist name="arrWork" length='1' id="vo"}{$vo.address}{/volist}</td>
+        </tr>
+        <tr>
+            <td>联系电话</td>
+            <td>{volist name="arrWork" length='1' id="vo"}{$vo.phone}{/volist}</td>
+            <td>组织类型</td>
+            <td>{volist name="arrWork" length='1' id="vo"}{if ($vo['type']==1)}鉴定所{elseif($vo['type'] == 2)}院校{else/}机构{/if}{/volist}</td>
+            <td>状态</td>
+            <td>{volist name="arrWork" length='1' id="vo"}{if ($vo['status']==1)}可用{else/}不可用{/if}{/volist}</td>
+        </tr>
+        <tr>
+            <td>建设时间</td>
+            <td>{volist name="arrWork" length='1' id="vo"}{$vo.build_date}{/volist}</td>
+            <td>创建时间</td>
+            <td>{volist name="arrWork" length='1' id="vo"}{$vo.create_time}{/volist}</td>
+            <td>修改时间</td>
+            <td>{volist name="arrWork" length='1' id="vo"}{$vo.update_time}{/volist}</td>
+        </tr>
+    </table>
+    <table border="1" class="layui-table">
+        <tr>
+            <td>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">工种名称</label>
+                </div>
+            </td>
+            <td>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">工种方向</label>
+                </div>
+            </td>
+            <td>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">工种级别</label>
+                </div>
+            </td>
+        </tr>
+        {volist name="arrWork" id="vo"}
+        <tr>
+            <td>
+                {$vo.workname}
+            </td>
+            <td>
+                {volist name="vo.wdname" id="v"}
+                {$v}
+                <br>
+                {/volist}
+            </td>
+            <td>
+                <!--<span class="layui-bg-orange">-->
+                {volist name="vo.level" id="v"}
+                {:config('EnrollStatusText.work_level_subject_level')[$v]}
+                {/volist}
+                <!--</span>-->
+            </td>
+            {/volist}
+        </tr>
+
+    </table>
+
+
+</form>
+</body>
+{/block}
+{/extend}
+{block name="script"}{/block}
